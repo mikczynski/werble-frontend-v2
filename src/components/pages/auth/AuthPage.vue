@@ -18,8 +18,6 @@
   <register-options-component v-else-if="renderedPage === 'register'"></register-options-component>
   <reset-password-options-component v-else></reset-password-options-component>
 
-
-
 </template>
 
 <script>
@@ -34,7 +32,8 @@ export default {
   name: "AuthPage",
   components: {
     ResetPasswordOptionsComponent,
-    RegisterOptionsComponent, LoginOptionsComponent, ResetPasswordForm, RegisterForm, LoginForm},
+    RegisterOptionsComponent, LoginOptionsComponent, ResetPasswordForm, RegisterForm, LoginForm
+  },
   data() {
     return {
       renderedPage: 'login',
@@ -43,12 +42,14 @@ export default {
       responseErrorsObj: null
     }
   },
-  watch:{
+  methods:{
+
+  },
+  watch: {
     $route: {
       immediate: true,
-      handler(){
-        switch (this.$route.name)
-        {
+      handler() {
+        switch (this.$route.name) {
           case 'login':
             this.renderedPage = 'login';
             this.pageTitle = 'Login';
@@ -63,7 +64,8 @@ export default {
             break;
 
           default:
-            this.renderedPage = 'login'; break;
+            this.renderedPage = 'login';
+            break;
         }
       }
     }

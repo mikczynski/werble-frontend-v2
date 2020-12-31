@@ -2,6 +2,12 @@ import AuthPage from "@/components/pages/auth/AuthPage";
 import NotFoundPage from "@/components/pages/NotFoundPage";
 import LogoutPage from "@/components/pages/auth/LogoutPage";
 import Home from "@/components/pages/home/Home";
+import EventsPage from "@/components/pages/events/EventsPage";
+import MapPage from "@/components/pages/events/pages/MapPage";
+import CreatedEventsPage from "@/components/pages/events/pages/CreatedEventsPage";
+import AvalaibleEventsPage from "@/components/pages/events/pages/AvalaibleEventsPage";
+import ProfilePage from "@/components/pages/profile/ProfilePage";
+import ProfileInfo from "@/components/pages/profile/ProfileInfo";
 
 export default [
     //Not found placeholder
@@ -18,36 +24,33 @@ export default [
     //User actions
     {path: '/home', component: Home, name: 'home', meta: {requiresAuth: true}},
     {path: '/logout', component: LogoutPage, name: 'logout', meta: {requiresAuth: true}},
-    //
-    //
-    //
-    //
-    // {
-    //     path: '/events',
-    //     component: EventsPage,
-    //     name: 'events',
-    //     props: {title: 'events'},
-    //     meta: {requiresAuth: true},
-    //     redirect: {name: 'events-map'},
-    //     children: [
-    //         {path: 'map', component: EventsMapPage, name: 'events-map'},
-    //         {path: 'created', component: CreatedEvents, name: 'events-created'},
-    //         {path: 'participating', component: NotFoundPage, name: 'events-participating'},
-    //         {path: 'available', component: AvailableEvents, name: 'events-available'},
-    //     ]
-    // },
-    // {
-    //     path: '/profile',
-    //     component: ProfilePage,
-    //     name: 'profile',
-    //     meta: {requiresAuth: true},
-    //     redirect: {name: 'profile-info'},
-    //     children: [
-    //         {path: 'info', component: ProfileInfo, name: 'profile-info'},
-    //         {path: 'settings', component: NotFoundPage, name: 'profile-settings'},
-    //     ]
-    // },
-    // {path: '/friend', component: Friends, name: 'participating', meta: {requiresAuth: true}},
+
+    {
+        path: '/events',
+        component: EventsPage,
+        name: 'events',
+        props: {title: 'events'},
+        meta: {requiresAuth: true},
+        redirect: {name: 'events-map'},
+        children: [
+            {path: 'map', component: MapPage, name: 'events-map'},
+            {path: 'created', component: CreatedEventsPage, name: 'events-created'},
+            {path: 'participating', component: NotFoundPage, name: 'events-participating'},
+            {path: 'available', component: AvalaibleEventsPage, name: 'events-available'},
+        ]
+    },
+    {
+        path: '/profile',
+        component: ProfilePage,
+        name: 'profile',
+        meta: {requiresAuth: true},
+        redirect: {name: 'profile-info'},
+        children: [
+            {path: 'info', component: ProfileInfo, name: 'profile-info'},
+            {path: 'settings', component: NotFoundPage, name: 'profile-settings'},
+        ]
+    },
+    {path: '/friend', component: NotFoundPage, name: 'participating', meta: {requiresAuth: true}},
 
 
 ];

@@ -1,14 +1,13 @@
 <template>
-    <PageTitle>{{ title }}</PageTitle>
     <events-nav></events-nav>
     <router-view></router-view>
 </template>
 
 <script>
 import EventsNav from './components/EventsNavComponent.vue'
-import PageTitle from "@/components/UI/PageTitle";
+
 export default {
-  components: {PageTitle, EventsNav },
+  components: {EventsNav },
     props:['title'],
     methods:{
       setPosition: function () {
@@ -38,7 +37,6 @@ export default {
         }
 
         navigator.geolocation.getCurrentPosition(success,error,options);
-
       },
     },
     mounted() {

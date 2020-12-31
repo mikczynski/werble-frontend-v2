@@ -1,17 +1,24 @@
+import service from './service';
+
 export default {
-    async getEvents( params, config ){
-        return await axios.post('user/events/local', { params: params} , config);
+    getEvents( params, config ){
+        return service({requiresAuth:true})
+            .post('user/events/local', { params: params} , config);
     },
-    async getCreatedEvents(params, config){
-        return await axios.post('user/events', { params: params}, config);
+    getCreatedEvents(params, config){
+        return service({requiresAuth:true})
+            .post('user/events', { params: params}, config);
     },
-    async createEvent(){
-        return await axios.post('/user/events/create');
+    createEvent(){
+        return service({requiresAuth:true})
+            .post('/user/events/create');
     },
-    async updateEvent(params, config){
-        return await axios.post('/forgotPassword');
+   updateEvent(params, config){
+        return service({requiresAuth:true})
+            .post('/forgotPassword', {params: params}, config);
     },
-    async deleteEvent(params, config){
-        return  await axios.post('/forgotPassword');
+    deleteEvent(params, config){
+        return  service({requiresAuth:true})
+            .post('/forgotPassword', {params: params}, config);
     },
 }

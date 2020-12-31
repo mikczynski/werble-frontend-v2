@@ -1,7 +1,12 @@
 /* Global Store state*/
 export default function() {
     return{
-        token: null,
-        isAuthenticated: false,
+        isLoading: false,
+        responseErrors: null,
+        validationErrors: null,
+
+        baseApiUrl: "http://192.168.10.10/api/",
+        googleMapsApiKey: "AIzaSyBYIzqk9PklDC0cTCssbscSZEITklTBq2g",
+
     }
 }

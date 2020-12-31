@@ -1,14 +1,22 @@
+import service from './service';
+
+
+
 export default {
-    async login(params, config) {
-        return await axios.post('/login', {params: params}, config);
+    login(params, config) {
+        return service()
+            .post('/login', {params: params}, config);
     },
-    async register(params, config) {
-        return await axios.post('/register', {params: params}, config);
+    register(params, config) {
+        return service()
+            .post('/register', {params: params}, config);
     },
-    async logout() {
-        return await axios.post('/logout');
+    forgotPassword(params, config) {
+        return service()
+            .post('/forgotPassword', {params: params}, config);
     },
-    async forgotPassword(params, config) {
-        return await axios.post('/forgotPassword');
+    logout() {
+        return service({requiresAuth: true})
+            .post('/logout');
     },
 }

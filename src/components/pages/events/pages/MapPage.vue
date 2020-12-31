@@ -35,7 +35,7 @@
 
 <script>
 import TheMapAlternative from '../components/TheMapComponentAlt'
-import CreateEventForm from "@/pages/events/CreateEventForm";
+import CreateEventForm from "@/components/pages/events/forms/CreateEventForm";
 // import TheMap from './TheMap'
 
 export default {

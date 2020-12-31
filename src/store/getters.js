@@ -1,9 +1,18 @@
 /* Global Store getters */
 export default {
-    token(state){
-        return state.token;
+    isLoading(state){
+        return state.isLoading;
     },
-    isAuthenticated(state){
-        return state.isAuthenticated;
+    responseErrors(state){
+        return state.responseErrors;
+    },
+    validationErrors(state){
+        return state.validationErrors;
+    },
+    baseApiUrl(state){
+        return state.baseApiUrl;
+    },
+    googleMapsApiKey(state){
+        return state.googleMapsApiKey;
     }
 }
