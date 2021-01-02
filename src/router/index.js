@@ -1,4 +1,4 @@
-import store from "@/store";
+import Store from "@/store";
 
 /* Import Vue-Router createRouter */
 import {createRouter} from "vue-router";
@@ -18,16 +18,16 @@ const router = createRouter(routerConfig);
 
 
 router.beforeEach((to, _, next) => {
-    if (to.meta.requiresAuth && !store.getters.isAuthenticated) {
+    if (to.meta.requiresAuth && !Store.getters.isAuthenticated) {
         next('/login');
     }
-    else if (to.meta.requiresUnauth && store.getters.isAuthenticated) {
+    else if (to.meta.requiresUnauth && Store.getters.isAuthenticated) {
         next('/');
     }
     else {
         next();
     }
-    console.log("(router.js)isAuthenticated: " + store.getters.isAuthenticated);
+    console.log("(router.js)isAuthenticated: " + Store.getters.isAuthenticated);
 });
 
 export default router;

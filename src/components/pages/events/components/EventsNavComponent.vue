@@ -12,21 +12,26 @@ export default {
   data() {
     return {
       items: [
-        { label: "Map", to: "/events/map", visible: () => this.isAuthenticated },
+        { label: "Map", to: "/events/map",
+          icon: 'pi pi-fw pi-map',
+        },
         {
           label: "Available",
           to: "/events/available",
+          icon: 'pi pi-fw pi-list',
           visible: () => this.isAuthenticated,
         },
         {
           label: "Created",
           to: "/events/created/",
+          icon: 'pi pi-fw pi-map-marker',
           visible: () => this.isAuthenticated,
         },
 
         {
           label: "Participating",
           to: "/events/participating",
+          icon: 'pi pi-fw pi-users',
           visible: () => this.isAuthenticated,
         },
 

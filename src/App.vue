@@ -19,6 +19,13 @@ export default {
     TheFooter,
     TheContainer,
     TheHeader
+  },
+  created() {
+    if(localStorage.getItem('token')){
+      this.$store.commit('setToken',localStorage.getItem('token'));
+    }
+    else localStorage.removeItem('token')
+    this.$store.commit('setResponseError',null);
   }
 }
 

@@ -8,7 +8,7 @@
 </template>
 
 <script>
-
+import {mapGetters,mapActions} from 'vuex'
 export default {
   data() {
     return {
@@ -31,7 +31,8 @@ export default {
         {
           label: "Logout",
           icon: 'pi pi-fw pi-power-off',
-          to: "/logout"
+          to: "/logout",
+          command: this.logout
         },
       ],
       itemsUnauthenticated: [
@@ -41,10 +42,15 @@ export default {
     };
   },
   computed: {
-    isAuthenticated() {
-      return this.$store.getters.isAuthenticated;
-    },
+    ...mapGetters([
+        'isAuthenticated'
+    ])
   },
+  methods:{
+    ...mapActions([
+        'logout'
+    ])
+  }
 }
 
 </script>

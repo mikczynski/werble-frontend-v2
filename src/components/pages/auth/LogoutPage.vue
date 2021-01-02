@@ -1,4 +1,5 @@
 <template>
+    <h2>{{pageTitle}}</h2>
     <p>{{ message }}</p>
 <!--    <button @click="testAuth">test isAuth</button>-->
 
@@ -9,7 +10,7 @@
 export default {
   data(){
     return {
-      title: "Logged out",
+      pageTitle: "Logged out",
       message: "You have been logged out!"
     }
   },

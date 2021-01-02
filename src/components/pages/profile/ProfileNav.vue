@@ -1,8 +1,6 @@
 <template>
 <div>
-    <TabMenu
-      :model="items"
-    />
+    <TabMenu :model="items"/>
 </div>
 </template>
 
@@ -14,10 +12,14 @@ export default {
   data() {
     return {
       items: [
-        { label: "Your Profile", to: "/profile/info", visible: () => this.isAuthenticated },
         {
-          label: "App Settings",
+          label: "Your Profile", to: "/profile/info",
+          icon: 'pi pi-fw pi-user-edit',
+         },
+        {
+          label: "Settings",
           to: "/profile/settings",
+          icon: 'pi pi-fw pi-cog',
           visible: () => this.isAuthenticated,
         },
       ]
@@ -28,11 +30,7 @@ export default {
       return this.$store.getters.isAuthenticated;
     },
   },
-    methods:{
-      async logout(){
-        await this.$store.dispatch('logout');
-      }
-    },
+
 };
 </script>
 <style scoped>

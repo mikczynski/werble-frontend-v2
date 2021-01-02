@@ -1,5 +1,5 @@
 <template>
-   <PageTitle>{{ title }}</PageTitle>
+   <h2>{{ pageTitle }}</h2>
    <profile-nav></profile-nav>
    <router-view></router-view>
 </template>
@@ -10,7 +10,7 @@ export default {
   components: { ProfileNav },
   data(){
     return{
-        title:"Your profile",
+        pageTitle:"Your profile",
     }
 
   }

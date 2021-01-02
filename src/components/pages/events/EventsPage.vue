@@ -1,4 +1,5 @@
 <template>
+    <h2>{{pageTitle}}</h2>
     <events-nav></events-nav>
     <router-view></router-view>
 </template>
@@ -9,6 +10,11 @@ import EventsNav from './components/EventsNavComponent.vue'
 export default {
   components: {EventsNav },
     props:['title'],
+    data(){
+      return {
+        pageTitle: 'Events',
+      }
+    },
     methods:{
       setPosition: function () {
 

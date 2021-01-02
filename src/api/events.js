@@ -1,24 +1,24 @@
 import service from './service';
 
 export default {
-    getEvents( params, config ){
+    getEvents(radius){
         return service({requiresAuth:true})
-            .post('user/events/local', { params: params} , config);
+            .get('user/events/local',radius);
     },
-    getCreatedEvents(params, config){
+    getCreatedEvents(data, config){
         return service({requiresAuth:true})
-            .post('user/events', { params: params}, config);
+            .post('user/events', data, config);
     },
     createEvent(){
         return service({requiresAuth:true})
             .post('/user/events/create');
     },
-   updateEvent(params, config){
+   updateEvent(data, config){
         return service({requiresAuth:true})
-            .post('/forgotPassword', {params: params}, config);
+            .post('/forgotPassword', data, config);
     },
-    deleteEvent(params, config){
+    deleteEvent(data, config){
         return  service({requiresAuth:true})
-            .post('/forgotPassword', {params: params}, config);
+            .post('/forgotPassword', data, config);
     },
 }

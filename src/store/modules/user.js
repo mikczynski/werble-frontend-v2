@@ -1,3 +1,5 @@
+import api from '@/api'
+
 export default {
     state: () => {
         return{
@@ -33,21 +35,20 @@ export default {
         setIsAdmin(context, payload) {
             context.commit('setIsAdmin',payload);
         },
-        // async getProfile(context){
-        //     try
-        //     {
-        //         const response = await HTTP.get('user/profile',{
-        //             headers: {'Authorization' : 'Bearer ' + this.getters.access_token}
-        //         });
-        //         const data = response.data.data;
-        //
-        //         context.commit('setProfile',data);
-        //         console.log(data);
-        //     }
-        //     catch(error){
-        //         console.log(error);
-        //     }
-        // },
+        async getProfile(context){
+            context.commit('setResponseError',null);
+            try
+            {
+                const response = await api.user.getProfile('user/profile');
+                const data = response.data.data;
+
+                context.commit('setProfile',data);
+                console.log(data);
+            }
+            catch(error){
+                console.log(error);
+            }
+        },
         // async editProfile(context,payload){
         //     let errors;
         //     try

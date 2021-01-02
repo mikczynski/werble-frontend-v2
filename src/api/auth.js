@@ -1,23 +1,20 @@
 import service from './service';
 
-
-
-
 export default {
-    login(serviceConfig, data) {
-        return service(serviceConfig)
+    login(data) {
+        return service()
             .post('login', data);
     },
     register(data) {
         return service()
-            .post('/register', data);
+            .post('register', data);
     },
     forgotPassword(data) {
         return service()
-            .post('/forgotPassword', data);
+            .post('forgotPassword', data);
     },
     logout() {
         return service({requiresAuth: true})
-            .post('/logout');
+            .post('logout');
     },
 }

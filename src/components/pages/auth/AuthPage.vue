@@ -7,7 +7,7 @@
     </ul>
   </InlineMessage>
 
-
+  <h2>{{pageTitle}}</h2>
   <!--  Show forms-->
   <login-form v-if="renderedPage === 'login'"></login-form>
   <register-form v-else-if="renderedPage === 'register'"></register-form>

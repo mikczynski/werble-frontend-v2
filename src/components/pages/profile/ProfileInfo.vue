@@ -7,7 +7,7 @@
   <!--  </InlineMessage>-->
   <div class="p-fluid">
 
-    <Fieldset class="p-p-2">
+    <Fieldset class="p-p-2 p-my-2">
       <template #legend>
         Account info
       </template>
