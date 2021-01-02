@@ -11,6 +11,9 @@ export default {
     setValidationError(state,payload){
         state.validationError = payload;
     },
+    setIsApiSyncActive(state,payload){
+        state.isApiSyncActive = payload;
+    }
 
 
 }

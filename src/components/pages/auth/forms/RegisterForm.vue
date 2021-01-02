@@ -28,9 +28,9 @@
 
       <div class="p-field p-grid">
         <div class="p-col">
-          <Button type="submit" :class="submitButtonClass" :label="submitButtonText" :disabled="isLoading"/>
+          <Button type="submit" :class="submitButtonClass" :label="submitButtonText" :disabled="isApiSyncActive"/>
         </div>
-        <div class="p-col" v-if="!isLoading">
+        <div class="p-col" v-if="!isApiSyncActive">
           <Button
               type="reset"
               class="p-button-info p-button-text"
@@ -65,10 +65,10 @@ export default {
 },
   computed: {
     submitButtonText() {
-      return this.isLoading ? "Loading..." : "Submit";
+      return this.isApiSyncActive ? "Loading..." : "Submit";
     },
     submitButtonClass() {
-      return {'p-button-outlined': this.isLoading};
+      return {'p-button-outlined': this.isApiSyncActive};
     },
     inputLoginClass(){
       return { 'p-invalid' : this.errors.login !== ''};
@@ -82,6 +82,9 @@ export default {
     inputEmailClass(){
       return { 'p-invalid' : this.errors.email !== ''};
     },
+    isApiSyncActive() {
+      return this.$store.getters.isApiSyncActive;
+    }
   },
   methods: {
     resetFormErrors(){

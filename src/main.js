@@ -2,6 +2,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 
+
 /* Import Vue Router & Vuex Store*/
 import router from "@/router";
 import store from "@/store";
@@ -27,12 +28,10 @@ window.axios = require('axios');
 /* Create Vue App */
 const app = createApp(App);
 
-
 /* Add modules to app */
 app.use(router);
 app.use(store);
 app.use(PrimeVue);
-
 
 /* Global components */
 app.component('Calendar',Calendar);

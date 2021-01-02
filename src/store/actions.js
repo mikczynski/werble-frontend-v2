@@ -9,4 +9,7 @@ export default {
     setValidationError(context, payload) {
         context.commit('setValidationError',payload);
     },
+    setIsApiSyncActive(context,payload) {
+        context.commit('setIsApiSyncActive',payload);
+    }
 }

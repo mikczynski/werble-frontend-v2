@@ -1,7 +1,3 @@
-import service from '@/api/service'
-console.log(service())
-
-
 export default {
     state: () => {
         return{

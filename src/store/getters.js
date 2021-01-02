@@ -3,8 +3,8 @@ export default {
     isLoading(state){
         return state.isLoading;
     },
-    responseErrors(state){
-        return state.responseErrors;
+    responseError(state){
+        return state.responseError;
     },
     validationErrors(state){
         return state.validationErrors;
@@ -14,5 +14,8 @@ export default {
     },
     googleMapsApiKey(state){
         return state.googleMapsApiKey;
+    },
+    isApiSyncActive(state){
+        return state.isApiSyncActive;
     }
 }

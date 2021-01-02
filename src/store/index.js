@@ -1,7 +1,6 @@
 /* Import Vuex CreateStore */
-
+// import Vuex from 'vuex';
 import {createStore} from "vuex";
-
 
 /* Global store parts */
 import actions from "./actions";
@@ -28,7 +27,11 @@ const storeConfig = {
     modules,
 }
 
-
 /* Init Global Store */
-const store = createStore(storeConfig);
-export default store;
+// const store = createStore(storeConfig);
+// const store = new Vuex.Store(storeConfig);
+// export default store;
+//const store = new Vuex.Store(storeConfig);
+
+// export default new Vuex.Store(storeConfig);
+export default createStore(storeConfig);

@@ -10,7 +10,7 @@
       </div>
 
       <div class="p-field p-mx-auto" style="max-width: 10rem">
-        <Button type="submit" :class="submitButtonClass" class="p-d-block p-mx-auto" :disabled="isLoading">
+        <Button type="submit" :class="submitButtonClass" class="p-d-block p-mx-auto" :disabled="isApiSyncActive">
           {{ submitButtonText }}
         </Button>
       </div>
@@ -35,10 +35,13 @@ export default {
   },
   computed:{
     submitButtonText(){
-      return this.isLoading ? "Loading..." : "Reset password";
+      return this.isApiSyncActive ? "Loading..." : "Reset password";
     },
     submitButtonClass(){
-      return {'p-button-outlined': this.isLoading};
+      return {'p-button-outlined': this.isApiSyncActive};
+    },
+    isApiSyncActive() {
+      return this.$store.getters.isApiSyncActive;
     }
 
   },
@@ -52,9 +55,9 @@ export default {
       console.log('login submit');
       const email = this.input.email;
 
-      this.isLoading = true;
+      this.isApiSyncActive = true;
       this.requestErrorsObj = await this.$store.dispatch('resetPassword',email);
-      this.isLoading = false;
+      this.isApiSyncActive = false;
       this.$emit('clicked')
     },
 

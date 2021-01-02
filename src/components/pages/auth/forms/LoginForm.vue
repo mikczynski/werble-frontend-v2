@@ -15,7 +15,7 @@
       </div>
 
       <div class="p-field p-mx-auto" style="max-width: 10rem">
-        <Button type="submit" :class="submitButtonClass" class="p-d-block p-mx-auto" :disabled="isLoading">
+        <Button type="submit" :class="submitButtonClass" class="p-d-block p-mx-auto" :disabled="isApiSyncActive">
           {{ submitButtonText }}
         </Button>
       </div>
@@ -25,6 +25,8 @@
 </template>
 
 <script>
+import {mapGetters, mapActions} from 'vuex'
+
 export default {
   name: "LoginForm",
 
@@ -42,41 +44,57 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+        'isApiSyncActive',
+        'responseError'
+    ]),
     submitButtonText() {
-      return this.isLoading ? "Loading..." : "Log in";
+      return this.isApiSyncActive ? "Loading..." : "Log in";
     },
     submitButtonClass() {
-      return {'p-button-outlined': this.isLoading};
+      return {'p-button-outlined': this.isApiSyncActive};
     },
     inputLoginClass() {
       return {'p-invalid': this.errors.login !== ''};
     },
     inputPasswordClass() {
       return {'p-invalid': this.errors.password !== ''};
-    }
+    },
+    // isApiSyncActive() {
+    //   return this.$store.getters.isApiSyncActive;
+    // },
+
   },
   methods: {
+    ...mapActions([
+        'setIsApiSyncActive',
+        'setResponseError'
+    ]),
+    async submitForm() {
+      this.setResponseError('');
+      this.checkForm();
+      if (this.responseError) return;
+
+      console.log('(login form)login submit');
+
+      const credentials = {
+        login: this.input.login,
+        password: this.input.password
+      };
+      this.setIsApiSyncActive(true);
+
+      const requestErrorsObj = await this.$store.dispatch('login', credentials);
+
+      this.isLoading = false;
+      this.$emit('onResponse', requestErrorsObj);
+    },
+
     resetFormErrors() {
       this.errors.any = false;
       this.errors.login = '';
       this.errors.password = '';
     },
-    async submitForm() {
-      this.requestErrors = '';
-      this.checkForm();
-      if (this.errors.any) return;
 
-      console.log('login submit');
-      const credentials = {
-        login: this.input.login,
-        password: this.input.password
-      };
-
-      this.isLoading = true;
-      const requestErrorsObj = await this.$store.dispatch('login', credentials);
-      this.isLoading = false;
-      this.$emit('onResponse', requestErrorsObj);
-    },
     checkForm() {
       this.resetFormErrors();
       //login
