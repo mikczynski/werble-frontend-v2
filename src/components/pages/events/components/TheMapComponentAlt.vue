@@ -4,8 +4,6 @@
 
 <script>
 import {Loader} from 'google-maps'
-
-
 export default {
   data() {
     return {
@@ -63,7 +61,7 @@ export default {
                 '<strong>Description</strong>: ' + events[i].description+ "<br>" +
                 '<strong>Date: </strong>' + events[i].datetime + "<br>" +
                 '<strong>Distance: </strong>' + events[i].distance + 'km' + '<br>' +
-                '<button @click="alert">Test</button>';
+                '<button onclick="alert(12);">Test</button>';
 
 
 

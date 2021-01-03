@@ -1,16 +1,16 @@
 import service from './service';
 
 export default {
-    getProfile( params, config ){
+    getProfile(){
         return service({requiresAuth:true})
-            .post('user/profile', { params: params} , config);
+            .get('user/profile');
     },
-    editProfile(params, config){
+    editProfile(data, config){
         return service({requiresAuth:true})
-            .post('user/profile/edit', { params: params}, config);
+            .put('user/profile/edit', data, config);
     },
-    setPosition(){
+    setPosition(data,config){
         return service({requiresAuth:true})
-            .post('user/position');
+            .put('user/position',data,config);
     },
 }

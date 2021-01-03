@@ -7,7 +7,7 @@ import MapPage from "@/components/pages/events/pages/MapPage";
 import CreatedEventsPage from "@/components/pages/events/pages/CreatedEventsPage";
 import AvalaibleEventsPage from "@/components/pages/events/pages/AvalaibleEventsPage";
 import ProfilePage from "@/components/pages/profile/ProfilePage";
-import ProfileInfo from "@/components/pages/profile/ProfileInfo";
+import ProfileInfo from "@/components/pages/profile/forms/ProfileInfo";
 
 export default [
     //Not found placeholder

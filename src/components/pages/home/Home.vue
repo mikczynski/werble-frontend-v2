@@ -1,12 +1,13 @@
 <template>
-  <h2>HOME</h2>
-  <h3>Welcome, {{ userLogin}}</h3>
+  <h2>HomePage</h2>
+  <h3>Welcome, {{}}</h3>
 </template>
 
 <script>
 
 export default {
   created() {
+
   },
   computed:{
 
@@ -15,8 +16,6 @@ export default {
 
     },
     components: {
-
-
     },
     data(){
       return {

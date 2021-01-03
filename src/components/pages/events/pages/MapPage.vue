@@ -13,11 +13,13 @@
       button</p>
   </div>
   <div class="p-p-2 p-grid">
+
     <div class="p-col">
       <label for="switch"> Create event mode <span
           :style="createEventModeInfoColor">{{ createEventModeInfo }}</span></label>
       <InputSwitch id="switch" v-model="createEventEnabled"/>
     </div>
+
     <div class="p-col">
       <label for="radius"> Pick searching area radius: </label>
       <InputText v-model.number="radius" disabled style="width:3rem" type="number"></InputText>
@@ -28,21 +30,26 @@
     <Button v-if="newEvent" @click="showDialog" class="p-mt-2" style="height: 2rem" type="button">Show dialog ...</Button>
   </div>
 
-  <the-map-alternative :showDialog="showDialog" :api-key="googleMapsApiKey" :createEventEnabled="createEventEnabled"
-                       :radius="radiusKm"></the-map-alternative>
+  <the-map-alternative
+      :showDialog="showDialog"
+      :api-key="googleMapsApiKey"
+      :createEventEnabled="createEventEnabled"
+      :radius="radiusKm">
+  </the-map-alternative>
+
 
 </template>
 
 <script>
 import TheMapAlternative from '../components/TheMapComponentAlt'
 import CreateEventForm from "@/components/pages/events/forms/CreateEventForm";
-// import TheMap from './TheMap'
+// import TheMapComponent from "@/components/pages/events/components/TheMapComponent";
 
 export default {
   components: {
+    // TheMapComponent,
     CreateEventForm,
     TheMapAlternative,
-    // TheMap
   },
   computed: {
     radiusKm() {
@@ -68,6 +75,7 @@ export default {
     }
   },
   data() {
+
     return {
       createEventEnabled: false,
       radius: this.$store.getters.searchRadius,

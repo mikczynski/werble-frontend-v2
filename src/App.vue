@@ -1,6 +1,11 @@
 <template>
   <the-header></the-header>
 
+  <loading
+      :active="isApiSyncActive"
+      :is-full-page="fullPage">
+  </loading>
+
   <the-container>
     <router-view></router-view>
   </the-container>
@@ -12,20 +17,33 @@
 import TheHeader from "@/components/layout/TheHeader";
 import TheContainer from "@/components/layout/TheContainer";
 import TheFooter from "@/components/layout/TheFooter";
+import Loading from 'vue3-loading-overlay';
+// Import stylesheet
+import 'vue3-loading-overlay/dist/vue3-loading-overlay.css'
 
 export default {
   name: 'App',
   components: {
     TheFooter,
     TheContainer,
-    TheHeader
+    TheHeader,
+    Loading
   },
   created() {
-    if(localStorage.getItem('token')){
-      this.$store.commit('setToken',localStorage.getItem('token'));
+    this.$store.commit('setResponseError','');
+  },
+  computed: {
+    isApiSyncActive() {
+      return this.$store.getters.isApiSyncActive;
+    },
+    fullPage() {
+      return true;
     }
-    else localStorage.removeItem('token')
-    this.$store.commit('setResponseError',null);
+  },
+  watch: {
+    isApiSyncActive(newVal) {
+     console.log(newVal);
+    },
   }
 }
 
@@ -45,6 +63,5 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
 </style>

@@ -1,3 +1,5 @@
+import api from '@/api'
+
 export default {
     state: () => {
         return{
@@ -38,63 +40,64 @@ export default {
         }
     },
     actions: {
-        // async getEvents(context){
-        //     try
-        //     {
-        //         console.log()
-        //         const response = await HTTP.get('',{
-        //             headers: {'Authorization' : 'Bearer ' + this.getters.access_token},
-        //             params: { radius: context.getters.searchRadius},
-        //         });
-        //
-        //         const data = response.data.data;
-        //         context.commit('setEvents',data);
-        //     }
-        //     catch(error){
-        //         console.log(error);
-        //     }
-        // },
-        // async getCreatedEvents(context){
-        //     try
-        //     {
-        //         console.log()
-        //         const response = await HTTP.get('user/events',{
-        //             headers: {'Authorization' : 'Bearer ' + this.getters.access_token},
-        //             params: { radius: context.getters.searchRadius},
-        //         });
-        //
-        //         const data = response.data.data;
-        //         console.log("to array:" + data)
-        //         for(let i = 0;i < data.length; ++i){
-        //             console.log(data[i]);
-        //         }
-        //
-        //         context.commit('setCreatedEvents',data);
-        //     }
-        //     catch(error){
-        //         console.log(error);
-        //     }
-        //
-        // },
-        // async createEvent(context,payload){
-        //     console.log(payload);
-        //     let errors = [];
-        //     let response = null;
-        //     try {
-        //         response = await HTTP.post('user/events/create', payload, { headers: {'Authorization' : 'Bearer ' + this.getters.access_token}});
-        //         const data = await response.data;
-        //         console.log(data);
-        //     }
-        //     catch (error) {
-        //         errors = context.dispatch('handleResponseError', error);
-        //     }
-        //     return errors;
-        // },
-        // setSearchRadius(context, payload) {
-        //     context.commit('setSearchRadius',payload);
-        // },
-        // setNewEventPosition(context, payload) {
-        //     context.commit('setNewEventPosition',payload);
-        // }
+        async getEvents(context){
+            context.commit('setResponseError','');
+            context.commit('setIsApiSyncActive',true);
+            try
+            {
+                const response = await api.events.getEvents({
+                    params: { radius: context.getters.searchRadius},
+                });
+                const data = response.data.data;
+                context.commit('setEvents',data);
+            }
+            catch(error){
+                const handledError = api.handleResponseError(error);
+                context.commit('setResponseError',handledError);
+            }
+            context.commit('setIsApiSyncActive',false);
+        },
+
+        async getCreatedEvents(context){
+            context.commit('setResponseError','');
+            context.commit('setIsApiSyncActive',true);
+            try
+            {
+                const response = await api.events.getCreatedEvents('user/events',{
+                    headers: {'Authorization' : 'Bearer ' + this.getters.access_token},
+                    params: { radius: context.getters.searchRadius},
+                });
+                const data = response.data.data;
+                context.commit('setCreatedEvents',data);
+            }
+            catch(error){
+                const handledError = api.handleResponseError(error);
+                context.commit('setResponseError',handledError);
+            }
+            context.commit('setIsApiSyncActive',false);
+        },
+
+        async createEvent(context,payload){
+            context.commit('setResponseError','');
+            context.commit('setIsApiSyncActive',true);
+            try {
+                await api.events.createEvent(payload);
+                // const response = await api.events.createEvent(payload);
+                // const data = await response.data;
+            }
+            catch (error) {
+                const handledError = api.handleResponseError(error);
+                context.commit('setResponseError',handledError);
+            }
+            context.commit('setIsApiSyncActive',false);
+        },
+
+        setSearchRadius(context, payload) {
+            context.commit('setSearchRadius',payload);
+        },
+
+        setNewEventPosition(context, payload) {
+            context.commit('setNewEventPosition',payload);
+        }
     },
 }

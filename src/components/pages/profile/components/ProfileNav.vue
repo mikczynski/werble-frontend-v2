@@ -20,7 +20,6 @@ export default {
           label: "Settings",
           to: "/profile/settings",
           icon: 'pi pi-fw pi-cog',
-          visible: () => this.isAuthenticated,
         },
       ]
     };

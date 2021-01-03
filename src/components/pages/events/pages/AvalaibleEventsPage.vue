@@ -12,7 +12,7 @@
 
 <script>
 export default {
-  name: "AvalaibleEvents",
+  name: "AvailableEvents",
   data(){
     return{
       eventList: this.$store.getters.events,

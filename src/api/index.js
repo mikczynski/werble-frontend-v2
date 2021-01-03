@@ -18,6 +18,7 @@ export default {
             console.log(error.response.headers);
             if(error.response.status === 401) Store.commit('clearToken');
             return error.response;
+
         } else if (error.request) {
             // The request was made but no response was received
             // `error.request` is an instance of XMLHttpRequest in the browser and an instance of

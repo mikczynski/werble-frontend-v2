@@ -4,13 +4,7 @@ import router from "@/router";
 export default {
     state: () => {
         return {
-            token: {
-                token_type: String,
-                access_token: String,
-                refresh_token: String,
-                expires_in: Number
-            },
-            isAuthenticated: false,
+            token: localStorage.getItem('token'),
         }
     },
 
@@ -31,27 +25,29 @@ export default {
             return state.token;
         },
         isAuthenticated: state => {
-            return state.isAuthenticated;
+            return !!state.token;
+            //return state.isAuthenticated;
         },
+
 
     },
 
     mutations: {
         setToken(state, payload) {
             state.token = payload;
+            state.isAuthenticated = !!localStorage.getItem('token'),
             localStorage.setItem('token',payload);
-            state.isAuthenticated = true;
         },
         clearToken(state) {
             state.token = null;
-            state.isAuthenticated = false;
             localStorage.removeItem('token');
+            state.isAuthenticated = false;
         }
     },
     actions: {
         //login action
         async login(context, payload) {
-            context.commit('setResponseError',null);
+            context.commit('setResponseError','');
             const requestData = {
                 login: payload.login,
                 password: payload.password
@@ -59,22 +55,17 @@ export default {
             context.commit('setIsApiSyncActive',true);
             try {
                 const response = await api.auth.login(requestData);
-                const data = response.data;
-                context.commit('setToken', data);
-
-                //save token
-
-                console.warn('token: ');
-                console.log(data);
+                const token = response.data;
+                console.log(token);
+                context.commit('setToken', token);
                 await router.push({ name: 'home', params: { loggedIn: 'true' } });
-                context.commit('setIsApiSyncActive',false);
             }
             catch (error) {
-                context.commit('setIsApiSyncActive',false);
+                context.commit('clearToken');
                 const handledError = api.handleResponseError(error);
-                context.commit('setResponseError',handledError);
-
+                await context.dispatch('setResponseError',handledError);
             }
+            context.commit('setIsApiSyncActive',false);
         },
 
         async register(context, payload) {
@@ -95,14 +86,12 @@ export default {
                 console.warn('token: ');
                 console.log(data);
                 await router.push({ name: 'home', params: { showLoggedInMessage: '1' } });
-                context.commit('setIsApiSyncActive',false);
-
             }
             catch (error) {
-                context.commit('setIsApiSyncActive',false);
                 const handledError = api.handleResponseError(error);
                 context.commit('setResponseError',handledError);
             }
+            context.commit('setIsApiSyncActive',false);
         },
 
 
@@ -112,12 +101,11 @@ export default {
             try {
                 await api.auth.logout();
                 context.commit('clearToken');
-                context.commit('setIsApiSyncActive',false);
             } catch (error) {
-                context.commit('setIsApiSyncActive',false);
                 const handledError = api.handleResponseError(error);
                 context.commit('setResponseError',handledError);
             }
+            context.commit('setIsApiSyncActive',false);
             console.log('(modules/auth.js) afterLogout: isAuthenticated:' + context.getters.isAuthenticated);
         },
 

@@ -10,13 +10,11 @@ export default ({requiresAuth = false,} = {}) => {
         }
     };
 
-    // options.baseURL = Store.getters.baseApiUrl;
     // Decide to add token or not
-
     if (requiresAuth) {
         options.headers.Authorization = 'Bearer ' + Store.getters.token.access_token;
     }
-
+    //console.log(Store.getters.token.access_token);
     const instance = axios.create(options);
 
     instance.interceptors.response.use(response => {

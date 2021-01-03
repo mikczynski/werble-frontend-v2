@@ -1,11 +1,10 @@
 /* Global Store mutations */
 export default {
-
-    setIsLoading(state,payload){
-        state.isLoading = payload;
-    },
     setResponseError(state,payload){
         state.responseError = payload;
+    },
+    setResponseMessage(state,payload){
+        state.responseMessage = payload;
     },
     //
     setValidationError(state,payload){

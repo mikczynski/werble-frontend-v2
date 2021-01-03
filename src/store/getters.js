@@ -1,10 +1,10 @@
 /* Global Store getters */
 export default {
-    isLoading(state){
-        return state.isLoading;
-    },
     responseError(state){
         return state.responseError;
+    },
+    responseMessage(state){
+        return state.responseMessage;
     },
     validationErrors(state){
         return state.validationErrors;

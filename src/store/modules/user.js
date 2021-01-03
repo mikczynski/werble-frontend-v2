@@ -35,55 +35,41 @@ export default {
         setIsAdmin(context, payload) {
             context.commit('setIsAdmin',payload);
         },
+
         async getProfile(context){
             context.commit('setResponseError',null);
+            context.commit('setIsApiSyncActive',true);
             try
             {
                 const response = await api.user.getProfile('user/profile');
                 const data = response.data.data;
-
                 context.commit('setProfile',data);
-                console.log(data);
             }
             catch(error){
-                console.log(error);
+                const handledError = api.handleResponseError(error);
+                context.commit('setResponseError',handledError);
             }
+            context.commit('setIsApiSyncActive',false);
         },
-        // async editProfile(context,payload){
-        //     let errors;
-        //     try
-        //     {
-        //         const response = await HTTP.put('user/profile/edit',payload,{
-        //             headers: {'Authorization' : 'Bearer ' + this.getters.access_token},
-        //         });
-        //
-        //         const data = response.data.data;
-        //         context.commit('setProfile',data);
-        //         console.log(data);
-        //     } catch (error) {
-        //         errors = context.dispatch('handleResponseError',error);
-        //     }
-        //
-        //     return errors;
-        // },
-        // async setPosition(context,payload){
-        //     try {
-        //         const position = {
-        //             latitude: payload.latitude,
-        //             longitude: payload.longitude
-        //         };
-        //         context.commit('setPosition',position);
-        //         await HTTP.put('user/position',position,{
-        //             headers: {'Authorization' : 'Bearer ' + this.getters.access_token}
-        //         });
-        //
-        //     }
-        //     catch (error)
-        //     {
-        //         console.log(error);
-        //     }
-        //
-        // }
+
+        async editProfile(context,payload){
+            context.commit('setResponseError',null);
+            context.commit('setIsApiSyncActive',true);
+
+            try
+            {
+                const response = await api.user.editProfile(payload);
+                const data = response.data.data;
+                context.commit('setProfile',data);
+
+            } catch (error) {
+                const handledError = api.handleResponseError(error);
+                context.commit('setResponseError',handledError);
+            }
+            context.commit('setIsApiSyncActive',false);
+        },
+
+
     },
 
 

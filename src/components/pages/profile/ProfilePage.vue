@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import ProfileNav from './ProfileNav.vue'
+import ProfileNav from './components/ProfileNav.vue'
 export default {
   components: { ProfileNav },
   data(){
