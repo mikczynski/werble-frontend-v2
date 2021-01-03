@@ -14,6 +14,9 @@ export default {
     setIsApiSyncActive(context,payload) {
         context.commit('setIsApiSyncActive',payload);
     },
+    clearResponseError(context) {
+        context.commit('clearResponseError');
+    },
     getGeolocation(context) {
         if (!navigator.geolocation) return;
 
@@ -44,7 +47,7 @@ export default {
         navigator.geolocation.getCurrentPosition(success,error,options);
     },
     async setPosition(context,payload){
-        context.commit('setResponseError',null);
+        context.commit('clearResponseError');
         context.commit('setIsApiSyncActive',true);
         const position = {
             latitude: payload.latitude,

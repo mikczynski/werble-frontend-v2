@@ -65,7 +65,7 @@ export default {
             {
                 const response = await api.events.getCreatedEvents('user/events',{
                     headers: {'Authorization' : 'Bearer ' + this.getters.access_token},
-                    params: { radius: context.getters.searchRadius},
+                    params: { distance: context.getters.searchRadius},
                 });
                 const data = response.data.data;
                 context.commit('setCreatedEvents',data);
