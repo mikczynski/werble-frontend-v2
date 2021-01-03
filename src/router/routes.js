@@ -29,7 +29,6 @@ export default [
         path: '/events',
         component: EventsPage,
         name: 'events',
-        props: {title: 'events'},
         meta: {requiresAuth: true},
         redirect: {name: 'events-map'},
         children: [

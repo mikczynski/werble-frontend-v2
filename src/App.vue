@@ -1,6 +1,8 @@
 <template>
   <the-header></the-header>
 
+  <the-info></the-info>
+
   <loading
       :active="isApiSyncActive"
       :is-full-page="fullPage">
@@ -20,17 +22,19 @@ import TheFooter from "@/components/layout/TheFooter";
 import Loading from 'vue3-loading-overlay';
 // Import stylesheet
 import 'vue3-loading-overlay/dist/vue3-loading-overlay.css'
+import TheInfo from '@/components/layout/TheInfo'
 
 export default {
   name: 'App',
   components: {
+    TheInfo,
     TheFooter,
     TheContainer,
     TheHeader,
     Loading
   },
   created() {
-    this.$store.commit('setResponseError','');
+    // this.$store.commit('setResponseError','');
   },
   computed: {
     isApiSyncActive() {
@@ -41,8 +45,7 @@ export default {
     }
   },
   watch: {
-    isApiSyncActive(newVal) {
-     console.log(newVal);
+    isApiSyncActive() {
     },
   }
 }

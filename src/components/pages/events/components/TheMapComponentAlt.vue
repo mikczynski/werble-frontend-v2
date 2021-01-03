@@ -64,8 +64,6 @@ export default {
                 '<button onclick="alert(12);">Test</button>';
 
 
-
-
             console.log("event " + i + ": " + events[i].name);
             const marker = new this.google.maps.Marker({
               map: this.map,
@@ -90,6 +88,7 @@ export default {
 
 
         getPosition() {
+
           this.position = this.$store.getters.position
         },
 

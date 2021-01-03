@@ -1,33 +1,40 @@
 <template>
-  <Dialog header="Create event form" v-model:visible="displayDialog" :style="{width: '80vw'}" :modal="true">
+  <Dialog header="Create event form" v-model:visible="displayDialog" :contentStyle="{width: '80vw', overflow: 'visible'}" :modal="true">
     <CreateEventForm :close-dialog="closeDialog"></CreateEventForm>
-
   </Dialog>
-
 
   <p v-if="userPosition">Your position: <strong>{ lat: {{ userPosition.latitude.toFixed(7) }}, lng:
     {{ userPosition.longitude.toFixed(7) }} }</strong></p>
-  <div class="p-d-block p-d-md-block border p-p-2">
+
+  <div class="p-d-block p-d-md-block border p-p-2 p-my-2">
     <p> To create event turn <strong>Create event mode</strong> on and click on the map</p>
     <p> To join or leave an event click on a marker and click on a <strong>Join</strong> or <strong>Leave</strong>
       button</p>
   </div>
-  <div class="p-p-2 p-grid">
 
-    <div class="p-col">
+  <div class="p-p-2 p-d-flex p-jc-between">
+    <div></div>
+
+    <div class="p-mr-2">
       <label for="switch"> Create event mode <span
           :style="createEventModeInfoColor">{{ createEventModeInfo }}</span></label>
-      <InputSwitch id="switch" v-model="createEventEnabled"/>
+      <InputSwitch id="switch" v-model="createEventEnabled"/><br>
+      <Button v-if="newEvent && createEventEnabled" @click="showDialog" class="p-mt-2" style="height: 2rem" type="button">Create event</Button>
     </div>
 
-    <div class="p-col">
-      <label for="radius"> Pick searching area radius: </label>
-      <InputText v-model.number="radius" disabled style="width:3rem" type="number"></InputText>
-      km
+    <div class="p-mr-2">
+      <label for="radius"> Pick searching area radius: <span style="color:chocolate;">{{ radius }} km</span> </label>
       <Slider id="radius" v-model="radius" :max="radiusMax" :min="radiusMin" :step="radiusStep" class="p-mt-2 p-pb-0"
               @input="setRadius"/>
     </div>
-    <Button v-if="newEvent" @click="showDialog" class="p-mt-2" style="height: 2rem" type="button">Show dialog ...</Button>
+
+    <div class="p-mr-2">
+      <Button class="p-mt-2 p-button-help" style="height: 2rem" type="button">Refresh map</Button>
+
+    </div>
+
+    <div></div>
+
   </div>
 
   <the-map-alternative
@@ -117,6 +124,12 @@ export default {
 </script>
 
 <style scoped>
+
+/*.p-panel{*/
+/*  height: 80vh;*/
+/*  width: 80vw;*/
+/*}*/
+
 .border {
   border: 1px solid #0a428b;
 }

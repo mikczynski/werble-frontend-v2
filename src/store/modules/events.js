@@ -69,6 +69,7 @@ export default {
                 });
                 const data = response.data.data;
                 context.commit('setCreatedEvents',data);
+                context.commit('setResponseMessage',response.data.message);
             }
             catch(error){
                 const handledError = api.handleResponseError(error);
@@ -82,8 +83,9 @@ export default {
             context.commit('setIsApiSyncActive',true);
             try {
                 await api.events.createEvent(payload);
-                // const response = await api.events.createEvent(payload);
-                // const data = await response.data;
+                const response = await api.events.createEvent(payload);
+                console.log(response)
+                context.commit('setResponseMessage',response.data.message);
             }
             catch (error) {
                 const handledError = api.handleResponseError(error);

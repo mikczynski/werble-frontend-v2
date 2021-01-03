@@ -37,7 +37,7 @@ export default {
         },
 
         async getProfile(context){
-            context.commit('setResponseError',null);
+            context.commit('setResponseError','');
             context.commit('setIsApiSyncActive',true);
             try
             {
@@ -53,7 +53,7 @@ export default {
         },
 
         async editProfile(context,payload){
-            context.commit('setResponseError',null);
+            context.commit('setResponseError','');
             context.commit('setIsApiSyncActive',true);
 
             try

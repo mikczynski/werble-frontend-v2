@@ -35,7 +35,7 @@ export default {
     mutations: {
         setToken(state, payload) {
             state.token = payload;
-            state.isAuthenticated = !!localStorage.getItem('token'),
+            state.isAuthenticated = !!localStorage.getItem('token');
             localStorage.setItem('token',payload);
         },
         clearToken(state) {
@@ -69,7 +69,7 @@ export default {
         },
 
         async register(context, payload) {
-            context.commit('setResponseError',null);
+            context.commit('setResponseError','');
             const requestData = {
                 login: payload.login,
                 email: payload.email,
@@ -96,7 +96,7 @@ export default {
 
 
         async logout(context) {
-            context.commit('setResponseError',null);
+            context.commit('setResponseError','');
             context.commit('setIsApiSyncActive',true);
             try {
                 await api.auth.logout();

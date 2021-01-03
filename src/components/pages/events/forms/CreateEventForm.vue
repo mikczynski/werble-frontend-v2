@@ -19,17 +19,17 @@
       </div>
       <div class="p-field">
         <div class="p-field p-col-12 p-md-4">
-          <label for="datetime">Date and time:</label>
-          <Calendar id="datetime"  v-model="input.datetime" :showSeconds="true" :showTime="true" dateFormat="yy-mm-dd" />
           <label for="latitude">Latitude:</label>
           <InputText id="latitude" v-model="input.latitude" type="text" disabled/>
           <label for="longitude">Longitude:</label>
           <InputText id="longitude" v-model="input.longitude" type="text" disabled/>
+          <label for="datetime">Date and time:</label>
+          <Calendar id="datetime" v-model="input.datetime" :showSeconds="false" :showTime="true" dateFormat="yy-mm-dd"/>
         </div>
         <InlineMessage v-if="errors.datetime">{{ errors.datetime }}</InlineMessage>
         <div class="p-field p-grid">
           <div class="p-col">
-            <Button  label="Create event" type="submit"/>
+            <Button label="Create event" type="submit"/>
           </div>
           <div class="p-col">
             <Button
@@ -46,6 +46,8 @@
 </template>
 
 <script>
+import {mapActions,mapGetters} from "vuex";
+
 export default {
   name: "CreateEventForm",
   props: ['longitude', 'latitude', 'closeDialog'],
@@ -55,12 +57,13 @@ export default {
         name: '',
         location: '',
         description: '',
-        datetime: '',
+        datetime: null,
         latitude: this.$store.getters.newEventPosition['lat'].toFixed(7),
         longitude: this.$store.getters.newEventPosition['lng'].toFixed(7),
       },
       errors: {
         name: '',
+        description: '',
         location: '',
         datetime: '',
         longitude: 0,
@@ -71,9 +74,23 @@ export default {
   },
   computed:
       {
+        ...mapGetters([
+            'newEventPositon'
+        ])
       },
   methods: {
+    ...mapActions([
+      'setIsApiSyncActive',
+      'setResponseError',
+        'createEvent'
+    ]),
+
     async submitForm() {
+      this.setResponseError('');
+      this.checkForm();
+      if (this.errors.any) return;
+      if (this.responseError) return;
+
       console.log("DATATATATA: " + this.input.datetime.toString());
       const input_date = new Date(this.input.datetime);
       const formatted_Date =
@@ -81,45 +98,53 @@ export default {
           + " " + input_date.getHours() + ":" + input_date.getMinutes() + ":" + input_date.getSeconds()
 
       const storePos = this.$store.getters.newEventPosition;
-      console.log(typeof storePos);
-
       const formData = {
         name: this.input.name,
         location: this.input.location,
-        datetime:formatted_Date.toString(), //this.input.datetime,
+        datetime: formatted_Date.toString(), //this.input.datetime,
         description: this.input.description,
         longitude: storePos['lng'],
         latitude: storePos['lat'],
       }
-      await this.$store.dispatch('createEvent',formData)
+
+       await this.createEvent(formData)
 
     },
+
     resetFormErrors() {
       this.errors.any = false;
-      this.errors.login = '';
-      this.errors.password = '';
-    }
+      this.errors.name = '';
+      this.errors.location = '';
+      this.errors.description = '';
+      this.errors.datetime = '';
+      this.errors.latitude = '';
+      this.errors.longitude = ''
+    },
 
-    // checkForm() {
-    //   this.resetFormErrors();
-    //   //login
-    //   if (this.input.login === '')
-    //     this.errors.login += 'Login field is required. ';
-    //
-    //   if (this.input.login.length < 4)
-    //     this.errors.login += 'Login must be at least 4 characters long.';
-    //
-    //   //password
-    //   if (this.input.password === '')
-    //     this.errors.password += 'Password field is required. ';
-    //
-    //   if (this.input.password.length < 8)
-    //     this.errors.password += 'Password  must be at least 8 characters long.';
-    //
-    //
-    //   if (this.errors.login !== '' || this.errors.password !== '')
-    //     this.errors.any = true;
-    // }Tue Dec 29 2020 06:50:19 GMT+0100
+    checkForm() {
+      this.resetFormErrors();
+      //login
+      if (this.input.name === '')
+        this.errors.name += 'Name field is required. ';
+
+      if (this.input.location === '')
+        this.errors.location += 'Location field is required.';
+
+      if (this.input.description === '')
+        this.errors.description += 'Description field is required.';
+
+      //password
+      if (this.input.datetime === null)
+        this.errors.datetime += 'Datetime field is required. ';
+
+      if (!this.input.latitude || !this.input.longitude)
+        this.errors.longitude = this.errors.latitude += 'Coordinates are required to create event';
+
+
+      if (this.errors.name || this.errors.location
+          || this.errors.datetime || this.errors.latitude || this.errors.longitude || this.errors.description)
+        this.errors.any = true;
+    }
   }
 }
 
@@ -129,6 +154,7 @@ export default {
 form {
 
 }
+
 
 h2 {
   text-align: center;
