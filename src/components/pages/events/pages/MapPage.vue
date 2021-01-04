@@ -1,18 +1,18 @@
 <template>
   <Dialog
-    header="Create event form"
-    v-model:visible="displayDialog"
-    :contentStyle="{ width: '80vw', overflow: 'visible' }"
-    :modal="true"
+      header="Create event form"
+      v-model:visible="displayDialog"
+      :contentStyle="{ width: '80vw', overflow: 'visible' }"
+      :modal="true"
   >
     <CreateEventForm :close-dialog="closeDialog"></CreateEventForm>
   </Dialog>
 
-  <p v-if="userPosition">
+  <p v-if="position">
     Your position:
     <strong
-      >{ lat: {{ userPosition.latitude.toFixed(7) }}, lng:
-      {{ userPosition.longitude.toFixed(7) }} }</strong
+    >Lat: {{ position.latitude.toFixed(7) }}, Lng:
+      {{ position.longitude.toFixed(7) }}</strong
     >
   </p>
 
@@ -34,118 +34,119 @@
       <label for="switch">
         Create event mode
         <span :style="createEventModeInfoColor">{{
-          createEventModeInfo
-        }}</span></label
+            createEventModeInfo
+          }}</span></label
       >
-      <InputSwitch id="switch" v-model="createEventEnabled" /><br />
+      <InputSwitch id="switch" v-model="createEventEnabled"/>
+      <br/>
       <Button
-        v-if="newEvent && createEventEnabled"
-        @click="showDialog"
-        class="p-mt-2"
-        style="height: 2rem"
-        type="button"
-        >Create event</Button
+          v-if="clickedPosition && createEventEnabled"
+          @click="showDialog"
+          class="p-mt-2"
+          style="height: 2rem"
+          type="button"
+      >Create event
+      </Button
       >
     </div>
 
     <div class="p-mr-2">
-      <label for="radius">
-        Pick searching area radius:
-        <span style="color:chocolate;">{{ radius }} km</span>
+      <label for="searchDistanceInput">
+        Pick searching area distance:
+        <span style="color:chocolate;">{{ searchDistanceInput }} km</span>
       </label>
+
       <Slider
-        id="radius"
-        v-model="radius"
-        :max="radiusMax"
-        :min="radiusMin"
-        :step="radiusStep"
-        class="p-mt-2 p-pb-0"
-        @input="setRadius"
+          id="searchDistanceInput"
+          v-model="searchDistanceInput"
+          :max="searchDistanceMax"
+          :min="searchDistanceMin"
+          :step="searchDistanceStep"
+
+          class="p-mt-2 p-pb-0"
       />
     </div>
 
     <div class="p-mr-2">
-      <Button class="p-mt-2 p-button-help" style="height: 2rem" type="button"
-        >Refresh map</Button
+      <Button
+          @click="getEvents" class="p-mt-2 p-button-help" style="height: 2rem" type="button"
+      >Reload events
+      </Button
       >
     </div>
 
     <div></div>
   </div>
 
-  <the-map> </the-map>
+  <the-map></the-map>
 </template>
 
 <script>
-import TheMap from "../map/TheMap";
-
+import TheMap from "./map/TheMap";
+import {mapGetters, mapActions} from 'vuex'
 import CreateEventForm from "@/components/pages/events/forms/CreateEventForm";
-// import TheMapComponent from "@/components/pages/events/components/TheMapComponent";
 
 export default {
   components: {
-    // TheMapComponent,
     CreateEventForm,
     TheMap,
   },
   computed: {
-    radiusKm() {
-      return this.$store.getters.searchRadius * 1000;
-    },
-    googleMapsApiKey() {
-      return this.$store.getters.googleMapsApiKey;
-    },
+    ...mapGetters([
+      'searchDistance',
+      'searchDistanceMin',
+      'searchDistanceMax',
+      'searchDistanceStep',
+      'searchDistanceKM',
+      'events',
+      'position',
+      'profile',
+      'clickedPosition',
+      'googleMapsApiKey'
+    ]),
+
     createEventModeInfo() {
-      return this.createEventEnabled ? "enabled" : "disabled";
+      return this.createEventEnabled ? "enabled" : "disabled"
     },
     createEventModeInfoColor() {
-      return this.createEventEnabled ? "color: green" : "color: red";
+      return this.createEventEnabled ? "color: green" : "color: red"
     },
-    userPosition() {
-      return this.$store.getters.position;
-    },
-    userProfile() {
-      return this.$store.getters.profile;
-    },
-    newEvent() {
-      return this.$store.getters.newEventPosition;
-    },
+
   },
   data() {
     return {
+      searchDistanceInput: 20,
       createEventEnabled: false,
-      radius: this.$store.getters.searchRadius,
-      radiusMax: 40,
-      radiusMin: 4,
-      radiusStep: 4,
       displayDialog: false,
     };
   },
   watch: {
-    radius() {
-      this.setRadius();
+    searchDistanceInput(newVal) {
+      this.setSearchDistance(newVal);
     },
+    searchDistance(){},
+    events() {},
   },
 
   created() {
+    this.searchDistanceInput = this.searchDistance;
     this.getEvents();
   },
+
   methods: {
+    ...mapActions([
+      'setSearchDistance',
+      'getEvents'
+    ]),
+
     toggleCreateEvent() {
-      this.createEventEnabled = !this.createEventEnabled;
-    },
-    setRadius() {
-      this.$store.dispatch("setSearchRadius", this.radius);
+      this.createEventEnabled = !this.createEventEnabled
     },
     closeDialog() {
-      this.displayDialog = false;
+      this.displayDialog = false
     },
     showDialog() {
-      this.displayDialog = true;
-    },
-    async getEvents() {
-      await this.$store.dispatch("getEvents");
-      console.log(this.$store.getters.events);
+      this.displayDialog = true
     },
   },
 };

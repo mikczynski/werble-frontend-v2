@@ -1,12 +1,16 @@
 import api from '@/api'
 
 export default {
-    state: () => {
+    state() {
         return{
             events : [],
             createdEvents: [],
-            searchRadius: 10,
-            newEventPosition: null,
+            participatingEvents: [],
+            searchDistance: 10,
+            searchDistanceMin: 4,
+            searchDistanceMax: 40,
+            searchDistanceStep: 4,
+            clickedPosition: null,
         }
     },
     getters: {
@@ -16,16 +20,28 @@ export default {
         createdEvents(state){
             return state.createdEvents;
         },
-        searchRadius(state){
-            return state.searchRadius;
+        searchDistance(state){
+            return state.searchDistance;
         },
-        newEventPosition(state){
-            return state.newEventPosition;
+        searchDistanceMin(state){
+            return state.searchDistanceMin;
+        },
+        searchDistanceMax(state){
+            return state.searchDistanceMax;
+        },
+        searchDistanceStep(state){
+            return state.searchDistanceStep;
+        },
+        searchDistanceKM(state){
+            return state.searchDistance * 1000;
+        },
+        clickedPosition(state){
+            return state.clickedPosition;
         }
     },
     mutations: {
-        setNewEventPosition(state,payload){
-            state.newEventPosition = payload;
+        setClickedPosition(state,payload){
+            state.clickedPosition = payload;
         },
         setEvents(state,payload){
             state.events = payload;
@@ -33,23 +49,27 @@ export default {
         setCreatedEvents(state,payload){
             state.createdEvents = payload;
         },
-        setSearchRadius(state,payload){
-            if(payload < 24) state.searchRadius = 4;
-            else if(payload > 40) state.searchRadius =40;
-            else state.searchRadius = payload;
+        setSearchDistance(state,payload){
+            if (payload < 4) state.searchDistance = 4;
+            else if(payload > 40) state.searchDistance =40;
+            else state.searchDistance = payload;
         }
     },
     actions: {
+        setSearchDistance(context,payload) {
+            context.commit('setSearchDistance',payload);
+        },
         async getEvents(context){
             context.commit('setResponseError','');
             context.commit('setIsApiSyncActive',true);
             try
             {
                 const response = await api.events.getEvents({
-                    params: { radius: context.getters.searchRadius},
+                    params: { radius: context.getters.searchDistanceKM},
                 });
                 const data = response.data.data;
                 context.commit('setEvents',data);
+                console.log(data);
             }
             catch(error){
                 const handledError = api.handleResponseError(error);
@@ -63,10 +83,9 @@ export default {
             context.commit('setIsApiSyncActive',true);
             try
             {
-                const response = await api.events.getCreatedEvents('user/events',{
-                    headers: {'Authorization' : 'Bearer ' + this.getters.access_token},
-                    params: { distance: context.getters.searchRadius},
-                });
+                const response = await api.events.getCreatedEvents(
+                    {params: { distance: context.getters.searchDistance}},
+                );
                 const data = response.data.data;
                 context.commit('setCreatedEvents',data);
                 context.commit('setResponseMessage',response.data.message);
@@ -93,13 +112,5 @@ export default {
             }
             context.commit('setIsApiSyncActive',false);
         },
-
-        setSearchRadius(context, payload) {
-            context.commit('setSearchRadius',payload);
-        },
-
-        setNewEventPosition(context, payload) {
-            context.commit('setNewEventPosition',payload);
-        }
     },
 }

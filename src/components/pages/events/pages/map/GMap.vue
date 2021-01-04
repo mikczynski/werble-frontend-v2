@@ -17,6 +17,7 @@ export default {
     disableDefaultUI: Boolean,
     markers: Array,
     mapDidLoad: Function,
+    drawMarkers: Boolean
   },
 
   setup(props) {
@@ -31,8 +32,8 @@ export default {
     // markers on the map
     let currentMarkers = [];
 
-    //load in the google script
-    const fetchGMapsSript = async () => {
+    //loads in the google script
+    const fetchGMapsScript = async () => {
       store.commit("setIsApiSyncActive", true);
       const key = props.apiKey;
 
@@ -49,20 +50,19 @@ export default {
       store.commit("setIsApiSyncActive", false);
     };
 
-    //fetch google maps script on mounted
+    //fetches google maps script on mounted
     onMounted(() => {
-      fetchGMapsSript();
+      fetchGMapsScript();
     });
 
-    //clear google map script
+    //clears google map script
     onUnmounted(() => {
       window.google = {};
     });
 
     /**
-     * remove the map from the markers and empty the array
+     * removes the map from the markers and empty the array
      */
-
     const clearMarkers = () => {
       currentMarkers.forEach((m) => {
         m.map = null;
@@ -70,33 +70,37 @@ export default {
       currentMarkers = [];
     };
 
+    //calculates map bounds based on markers
     const calcMapBounds = () => {
+      if(!props.markers.length ) return;
       const bounds = new window.google.maps.LatLngBounds();
       props.markers.forEach((marker) => {
-        bounds.extend(new window.google.maps.LatLng(marker.lat, marker.lng));
+        bounds.extend(new window.google.maps.LatLng(marker.latitude, marker.longitude));
       });
       map.value.fitBounds(bounds);
     };
 
+    //loads map markers
     const loadMapMarkers = () => {
-      if (!props.markers.length) return;
+      if (!props.markers.length || !props.drawMarkers) return;
 
       //always clear before loading
       clearMarkers();
 
       props.markers.forEach((markerInfo) => {
         // put marker on the map
+
         const mapMarker = new window.google.maps.Marker({
           position: new window.google.maps.LatLng(
-            markerInfo.lat,
-            markerInfo.lng
+            markerInfo.latitude,
+            markerInfo.longitude
           ),
           map: map.value,
-          title: markerInfo.title,
+          title: markerInfo.name,
         });
         // create info window
         mapMarker.infoWindow = new window.google.maps.InfoWindow({
-          content: markerInfo.title,
+          content: markerInfo.name,
         });
 
         //add listener onClick event to marker
@@ -110,6 +114,7 @@ export default {
         currentMarkers.push(mapMarker);
       });
 
+      //calc bounds
       calcMapBounds();
     };
 
@@ -125,13 +130,13 @@ export default {
     /**
      *  this functiopn is called as soon as the map is initlilzed
      */
-    window.initMap = async () => {
-      store.commit("setIsApiSyncActive", true);
-      map.value = await new window.google.maps.Map(mapDivRef.value, {
+    window.initMap =  () => {
+
+      map.value = new window.google.maps.Map(mapDivRef.value, {
         mapTypeId: props.mapType || "roadmap",
         zoom: props.zoom || 8,
         disableDefaultUI: props.disableDefaultUI || false,
-        center: props.center || { lat: 40.689247, lng: -74.044502 },
+        center: props.center || { lat: 51.469664788, lng: 22.457664836 },
       });
 
       loadMapMarkers();
@@ -141,7 +146,6 @@ export default {
 
       //let know the map is loaded and reday
       props.mapDidLoad && props.mapDidLoad(map, window.google.maps);
-      store.commit("setIsApiSyncActive", false);
     };
 
     return {

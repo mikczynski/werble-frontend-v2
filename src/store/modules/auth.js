@@ -4,7 +4,7 @@ import router from "@/router";
 export default {
     state: () => {
         return {
-            token: localStorage.getItem('token'),
+            token: localStorage.getItem('token') || null,
         }
     },
 
@@ -26,7 +26,6 @@ export default {
         },
         isAuthenticated: state => {
             return !!state.token;
-            //return state.isAuthenticated;
         },
 
 
@@ -35,13 +34,11 @@ export default {
     mutations: {
         setToken(state, payload) {
             state.token = payload;
-            state.isAuthenticated = !!localStorage.getItem('token');
             localStorage.setItem('token',payload);
         },
         clearToken(state) {
             state.token = null;
             localStorage.removeItem('token');
-            state.isAuthenticated = false;
         }
     },
     actions: {

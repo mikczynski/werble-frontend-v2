@@ -34,7 +34,7 @@ export default {
     Loading
   },
   created() {
-    // this.$store.commit('setResponseError','');
+    this.$store.commit('setToken',localStorage.getItem('token'));
   },
   computed: {
     isApiSyncActive() {

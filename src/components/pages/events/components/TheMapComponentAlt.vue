@@ -26,6 +26,7 @@ export default {
       newEventPosition: null,
     }
   },
+
   mounted() {
     this.loading = true;
     this.setLoader();

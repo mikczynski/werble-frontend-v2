@@ -17,10 +17,10 @@ export default {
     clearResponseError(context) {
         context.commit('clearResponseError');
     },
+
     getGeolocation(context) {
         if (!navigator.geolocation) return;
 
-        // const that = this;
 
         const options = {
             enableHighAccuracy: true,
@@ -46,6 +46,7 @@ export default {
 
         navigator.geolocation.getCurrentPosition(success,error,options);
     },
+
     async setPosition(context,payload){
         context.commit('clearResponseError');
         context.commit('setIsApiSyncActive',true);

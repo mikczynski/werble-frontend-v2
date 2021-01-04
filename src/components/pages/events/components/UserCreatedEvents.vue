@@ -6,7 +6,7 @@ export default {
 setup (props){
   const events = ref([]);
   const getEvents = async () => {
-    events.value = await api.events.getCreatedEvents();
+    // events.value = await api.events.getCreatedEvents();
   }
 }
 

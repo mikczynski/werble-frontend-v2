@@ -13,6 +13,7 @@ export default {
         return service({requiresAuth:true})
             .post('/user/events/create',data);
     },
+
    updateEvent(data, config){
         return service({requiresAuth:true})
             .put('/forgotPassword', data, config);
