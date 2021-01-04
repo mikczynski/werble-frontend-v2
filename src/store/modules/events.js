@@ -50,8 +50,8 @@ export default {
             state.createdEvents = payload;
         },
         setSearchDistance(state,payload){
-            if (payload < 4) state.searchDistance = 4;
-            else if(payload > 40) state.searchDistance =40;
+            if (payload < state.searchDistanceMin) state.searchDistance = state.searchDistanceMin;
+            else if(payload > state.searchDistanceMax) state.searchDistance = state.searchDistanceMax;
             else state.searchDistance = payload;
         }
     },
@@ -65,7 +65,7 @@ export default {
             try
             {
                 const response = await api.events.getEvents({
-                    params: { distance: context.getters.searchDistanceKM},
+                    params: { distance: context.getters.searchDistance},
                 });
                 const data = response.data.data;
                 context.commit('setEvents',data);
