@@ -45,6 +45,7 @@
           class="p-mt-2"
           style="height: 2rem"
           type="button"
+
       >Create event
       </Button
       >
@@ -78,7 +79,9 @@
     <div></div>
   </div>
 
-  <the-map></the-map>
+  <the-map
+    :create-event-enabled="createEventEnabled"
+  ></the-map>
 </template>
 
 <script>

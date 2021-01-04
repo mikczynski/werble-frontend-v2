@@ -4,7 +4,7 @@ import LogoutPage from "@/components/pages/auth/LogoutPage";
 import Home from "@/components/pages/home/Home";
 import EventsPage from "@/components/pages/events/EventsPage";
 import MapPage from "@/components/pages/events/pages/MapPage";
-import AvalaibleEventsPage from "@/components/pages/events/pages/AvalaibleEventsPage";
+import AvailableEventsPage from "@/components/pages/events/pages/available/AvailableEventsPage"
 import ProfilePage from "@/components/pages/profile/ProfilePage";
 import ProfileInfo from "@/components/pages/profile/forms/ProfileInfo";
 
@@ -34,7 +34,7 @@ export default [
             {path: 'map', component: MapPage, name: 'events-map'},
             {path: 'created', component: NotFoundPage, name: 'events-created'},
             {path: 'participating', component: NotFoundPage, name: 'events-participating'},
-            {path: 'available', component: AvalaibleEventsPage, name: 'events-available'},
+            {path: 'available', component: AvailableEventsPage, name: 'events-available'},
         ]
     },
     {

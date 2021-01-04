@@ -33,8 +33,8 @@ export default {
   data() {
     return {
       input: {
-        login: '',
-        password: ''
+        login: 'mikczynski',
+        password: '12345678'
       },
       errors: {
         login: '',

@@ -1,5 +1,5 @@
 import Store from '@/store'
-import axios from "axios"
+// import axios from "axios"
 
 export default ({requiresAuth = false,} = {}) => {
 
@@ -15,7 +15,7 @@ export default ({requiresAuth = false,} = {}) => {
         options.headers.Authorization = 'Bearer ' + Store.getters.token.access_token;
     }
     //console.log(Store.getters.token.access_token);
-    const instance = axios.create(options);
+    const instance = window.axios.create(options);
 
     instance.interceptors.response.use(response => {
         console.log('OK!');
@@ -26,4 +26,3 @@ export default ({requiresAuth = false,} = {}) => {
 
     return instance;
 };
-

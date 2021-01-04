@@ -21,6 +21,10 @@ import InputSwitch from "primevue/components/inputswitch/InputSwitch";
 import Textarea from "primevue/components/textarea/Textarea";
 import ProgressSpinner from "primevue/components/progressspinner/ProgressSpinner";
 import InlineMessage from "primevue/components/inlinemessage/InlineMessage";
+import DataTable from "primevue/components/datatable/DataTable";
+import Column from "primevue/components/column/Column";
+import ColumnGroup from "primevue/components/columngroup/ColumnGroup";
+import Row from "primevue/components/row/Row";
 
 /* Make Axios global */
 window.axios = require('axios');
@@ -46,7 +50,10 @@ app.component('InputSwitch',InputSwitch);
 app.component('Textarea',Textarea);
 app.component('ProgressSpinner',ProgressSpinner);
 app.component('InlineMessage',InlineMessage);
-
+app.component('DataTable',DataTable);
+app.component('Column',Column);
+app.component('ColumnGroup',ColumnGroup);
+app.component('Row',Row);
 
 /* Mount Vue App */
 app.mount('#app')
