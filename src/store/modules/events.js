@@ -7,9 +7,9 @@ export default {
             createdEvents: [],
             participatingEvents: [],
             searchDistance: 10,
-            searchDistanceMin: 4,
-            searchDistanceMax: 40,
-            searchDistanceStep: 4,
+            searchDistanceMin: 5,
+            searchDistanceMax: 50,
+            searchDistanceStep: 5,
             clickedPosition: null,
         }
     },
@@ -65,7 +65,7 @@ export default {
             try
             {
                 const response = await api.events.getEvents({
-                    params: { radius: context.getters.searchDistanceKM},
+                    params: { distance: context.getters.searchDistanceKM},
                 });
                 const data = response.data.data;
                 context.commit('setEvents',data);

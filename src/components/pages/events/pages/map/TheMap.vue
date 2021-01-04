@@ -41,7 +41,7 @@ export default defineComponent({
       GServices: null,
       //computed
       googleMapsApiKey: computed(()=> store.getters.googleMapsApiKey),
-      center: computed(()=> {return {lat: 51.469664788, lng: 22.457664836}})
+      center: null// computed(()=> {return {lat: 51.469664788, lng: 22.457664836}})
     });
 
     //watch events getter for changes
