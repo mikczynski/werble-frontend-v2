@@ -99,6 +99,7 @@ export default {
     const addPanButton = () => {
       //create button element
       const panButton = document.createElement("button");
+      panButton.classList.add('p-button');
       panButton.textContent = "Pan to your current location";
       const infoWindow = new window.google.maps.InfoWindow();
       map.value.controls[window.google.maps.ControlPosition.BOTTOM_CENTER].push(panButton);
@@ -111,7 +112,7 @@ export default {
           };
 
           infoWindow.setPosition(pos);
-          infoWindow.setContent("Location found.<br> Lat: " + pos.lat.toFixed(7) + ', Lng: ' + pos.lng.toFixed(7));
+          infoWindow.setContent("You are here!<br> Lat: " + pos.lat.toFixed(7) + ', Lng: ' + pos.lng.toFixed(7));
           infoWindow.open(map.value);
           map.value.panTo(pos);
           map.value.setCenter(pos);
@@ -240,14 +241,14 @@ export default {
           // content:
         });
         const pos = {
-          lat: mapsMouseEvent.latLng.lat(),
-          lng: mapsMouseEvent.latLng.lng(),
+          latitude: mapsMouseEvent.latLng.lat(),
+          longitude: mapsMouseEvent.latLng.lng(),
         }
         console.log(pos);
         store.dispatch("setClickedPosition", pos);
 
         infoWindow.setContent(
-            "{ lat: " + pos.lat.toFixed(7) + ", lng: " + pos.lng.toFixed(7) + " }"
+            "Location chosen for new event.<br> Lat: " + pos.latitude.toFixed(7) + ', Lng: ' + pos.longitude.toFixed(7)
         );
         infoWindow.open(map.value);
       });
@@ -290,7 +291,6 @@ export default {
       createUserCircle();
       addMapClickListener();
       //make sure map fits all the markesr
-      calcMapBounds();
 
       //let know the map is loaded and reday
       props.mapDidLoad && props.mapDidLoad(map, window.google.maps);

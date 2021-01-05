@@ -58,8 +58,8 @@ export default {
         location: '',
         description: '',
         datetime: null,
-        latitude: this.$store.getters.newEventPosition['lat'].toFixed(7),
-        longitude: this.$store.getters.newEventPosition['lng'].toFixed(7),
+        latitude: this.$store.getters.clickedPosition['latitude'].toFixed(7),
+        longitude: this.$store.getters.clickedPosition['longitude'].toFixed(7),
       },
       errors: {
         name: '',
@@ -82,7 +82,7 @@ export default {
     ...mapActions([
       'setIsApiSyncActive',
       'setResponseError',
-        'createEvent'
+      'createEvent'
     ]),
 
     async submitForm() {

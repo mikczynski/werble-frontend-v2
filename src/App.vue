@@ -23,6 +23,7 @@ import Loading from 'vue3-loading-overlay';
 // Import stylesheet
 import 'vue3-loading-overlay/dist/vue3-loading-overlay.css'
 import TheInfo from '@/components/layout/TheInfo'
+import {mapActions} from 'vuex'
 
 export default {
   name: 'App',
@@ -34,7 +35,14 @@ export default {
     Loading
   },
   created() {
-    this.$store.commit('setToken',localStorage.getItem('token'));
+    console.log(JSON.parse(localStorage.getItem('token')))
+    if(localStorage.getItem('token'))
+    {
+      this.$store.commit('setToken',JSON.parse(localStorage.getItem('token')));
+
+    }
+    else
+      this.$router.push('login');
   },
   computed: {
     isApiSyncActive() {
@@ -47,6 +55,9 @@ export default {
   watch: {
     isApiSyncActive() {
     },
+  }  ,
+  methods: {
+    ...mapActions(['getGeolocation','getProfile']),
   }
 }
 

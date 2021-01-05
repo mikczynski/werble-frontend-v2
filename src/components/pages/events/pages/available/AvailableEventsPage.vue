@@ -15,6 +15,7 @@
              class="p-datatable-sm p-datatable-striped"
              sortField="distance" :sortOrder="1"
              removableSort
+             dataKey="event_id"
   >
     <template #header >
       <div>
@@ -22,6 +23,21 @@
         <h3>List of Available events in <strong style="color:goldenrod">{{ searchDistance}} km</strong>  radius.</h3>
         <span>In total there are <span style="color:green">{{events ? events.length : 0 }}</span> events.</span>
       </div>
+      <div class="table-header">
+        List of Customers
+        <span class="p-input-icon-left">
+                <i class="pi pi-search" />
+                <InputText v-model="filters['global']" placeholder="Global Search" />
+            </span>
+      </div>
+    </template>
+
+    <template #empty>
+      No events found.
+    </template>
+
+    <template #loading>
+      Loading events data. Please wait.
     </template>
 
     <Column field="event_id" header="id" :sortable="true"></Column>
@@ -54,6 +70,12 @@ import { mapActions,mapGetters } from 'vuex';
 export default {
 
   name: "AvailableEvents",
+  data(){
+    return {
+          eventsLocal: null,
+          filters: {},
+    }
+  },
   computed: {
     ...mapGetters([
         'events',
@@ -67,6 +89,7 @@ export default {
     },
   mounted() {
     this.$store.dispatch('getEvents');
+    this.eventsLocal = this.events;
   }
 }
 </script>

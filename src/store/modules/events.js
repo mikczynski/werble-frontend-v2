@@ -56,6 +56,9 @@ export default {
         }
     },
     actions: {
+        setClickedPosition(context,payload){
+            context.commit('setClickedPosition',payload);
+        },
         setSearchDistance(context,payload) {
             context.commit('setSearchDistance',payload);
         },

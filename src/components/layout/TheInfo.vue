@@ -7,6 +7,7 @@
   <br />
 
   <InlineMessage severity="warn" v-if="responseError">
+    <p v-if="responseError.message">{{ responseError.message }}</p>
     <p v-if="responseError.data.message">{{ responseError.data.message }}</p>
     <p v-if="responseError.data.error">
       {{ responseError.data.error.message }}

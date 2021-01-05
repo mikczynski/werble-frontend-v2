@@ -4,7 +4,7 @@ import router from "@/router";
 export default {
     state: () => {
         return {
-            token: localStorage.getItem('token') || null,
+            token: JSON.parse(localStorage.getItem('token')) || null,
         }
     },
 
@@ -34,11 +34,11 @@ export default {
     mutations: {
         setToken(state, payload) {
             state.token = payload;
-            localStorage.setItem('token',payload);
+            localStorage.setItem('token',JSON.stringify(payload));
         },
         clearToken(state) {
             state.token = null;
-            localStorage.removeItem('token');
+            localStorage.token = null;
         }
     },
     actions: {
@@ -50,10 +50,10 @@ export default {
                 password: payload.password
             }
             context.commit('setIsApiSyncActive',true);
+
             try {
                 const response = await api.auth.login(requestData);
                 const token = response.data;
-                console.log(token);
                 context.commit('setToken', token);
                 await router.push({ name: 'home', params: { loggedIn: 'true' } });
             }
@@ -78,10 +78,8 @@ export default {
             try {
                 // const config = {headers: {'Content-type': 'application/json'}};
                 const response = await api.auth.register(requestData);
-                const data = response.data;
-                context.commit('setToken', data);
-                console.warn('token: ');
-                console.log(data);
+                const token = response.data;
+                context.commit('setToken', token);
                 await router.push({ name: 'home', params: { showLoggedInMessage: '1' } });
             }
             catch (error) {
@@ -98,6 +96,7 @@ export default {
             try {
                 await api.auth.logout();
                 context.commit('clearToken');
+                await router.push('logout');
             } catch (error) {
                 const handledError = api.handleResponseError(error);
                 context.commit('setResponseError',handledError);

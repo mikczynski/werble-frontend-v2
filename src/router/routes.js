@@ -3,7 +3,7 @@ import NotFoundPage from "@/components/pages/NotFoundPage";
 import LogoutPage from "@/components/pages/auth/LogoutPage";
 import Home from "@/components/pages/home/Home";
 import EventsPage from "@/components/pages/events/EventsPage";
-import MapPage from "@/components/pages/events/pages/MapPage";
+import MapPage from "@/components/pages/events/pages/map/MapPage";
 import AvailableEventsPage from "@/components/pages/events/pages/available/AvailableEventsPage"
 import ProfilePage from "@/components/pages/profile/ProfilePage";
 import ProfileInfo from "@/components/pages/profile/forms/ProfileInfo";

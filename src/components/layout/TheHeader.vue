@@ -1,18 +1,24 @@
 <template>
   <header>
     <!-- Show this menu if user is authenticated-->
-    <Menubar v-if="isAuthenticated" :model="itemsAuthenticated" />
+    <Menubar v-if="isAuthenticated" :model="authenticatedNavItems">
+      <template #end>
+        <Button @click="routerLogout" label="Logout" icon="pi pi-power-off" :style="{'margin-left': '0 .5em'}" class="p-button-outlined"/>
+      </template>
+
+    </Menubar>
     <!-- Show this if user is not authenticated   -->
-    <Menubar v-else :model="itemsUnauthenticated" />
+    <Menubar v-else :model="unauthenticatedNavItems"/>
   </header>
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import {mapGetters, mapActions} from "vuex";
+
 export default {
   data() {
     return {
-      itemsAuthenticated: [
+      authenticatedNavItems: [
         {
           label: "Home",
           icon: "pi pi-fw pi-home",
@@ -23,7 +29,7 @@ export default {
           icon: "pi pi-fw pi-calendar",
           to: "/events",
           items: [
-            { label: "Map", to: "/events/map", icon: "pi pi-fw pi-map" },
+            {label: "Map", to: "/events/map", icon: "pi pi-fw pi-map"},
             {
               label: "Available",
               to: "/events/available",
@@ -59,16 +65,11 @@ export default {
             },
           ],
         },
-        {
-          label: "Logout",
-          icon: "pi pi-fw pi-power-off",
-          to: "/logout",
-          command: this.logout,
-        },
       ],
-      itemsUnauthenticated: [
-        { label: "Login", to: "/login" },
-        { label: "Register", to: "/register" },
+
+      unauthenticatedNavItems: [
+        {label: "Login", to: "/login"},
+        {label: "Register", to: "/register"},
       ],
     };
   },
@@ -77,6 +78,9 @@ export default {
   },
   methods: {
     ...mapActions(["logout"]),
+    routerLogout(){
+      this.logout();
+    }
   },
 };
 </script>

@@ -1,7 +1,7 @@
 <template>
-   <h2>{{ pageTitle }}</h2>
-   <profile-nav></profile-nav>
-   <router-view></router-view>
+  <h2>{{ pageTitle }}</h2>
+  <profile-nav></profile-nav>
+  <router-view></router-view>
 </template>
 
 <script>
@@ -10,13 +10,12 @@ export default {
   components: { ProfileNav },
   data(){
     return{
-        pageTitle:"Your profile",
+      pageTitle:"Your profile",
     }
-
   }
 }
 </script>
 
 <style>
-    
+
 </style>

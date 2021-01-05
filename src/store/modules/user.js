@@ -15,6 +15,15 @@ export default {
         position(state){
             return state.position;
         },
+        user_id(state){
+          return state.profile.user_id;
+        },
+        fullName(state){
+             return state.profile.first_name + ' ' + state.profile.last_name;
+        },
+        login(state){
+            return state.profile.login;
+        },
         isAdmin(state){
             return state.isAdmin;
         },

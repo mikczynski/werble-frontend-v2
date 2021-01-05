@@ -1,21 +1,21 @@
 <template>
-<div>
-    <TabMenu :model="items"/>
-</div>
+  <div>
+    <TabMenu :model="profileNavItems"/>
+  </div>
 </template>
 
 <script>
-import TabMenu from "primevue/tabmenu";
+import TabMenu from 'primevue/tabmenu'
 
 export default {
-  components: {  TabMenu },
+  components: {TabMenu},
   data() {
     return {
-      items: [
+      profileNavItems: [
         {
           label: "Your Profile", to: "/profile/info",
           icon: 'pi pi-fw pi-user-edit',
-         },
+        },
         {
           label: "Settings",
           to: "/profile/settings",
@@ -24,18 +24,13 @@ export default {
       ]
     };
   },
-  computed: {
-    isAuthenticated() {
-      return this.$store.getters.isAuthenticated;
-    },
-  },
-
 };
+
 </script>
 <style scoped>
-div{
+div {
 
-   justify-content: center; 
+  justify-content: center;
   display: flex;
   width: 100%;
 }
@@ -48,6 +43,6 @@ div{
 }
 
 .p-menuitem-text {
-  color:red;
+  color: red;
 }
 </style>

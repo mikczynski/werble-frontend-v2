@@ -40,15 +40,14 @@
       <InputSwitch id="switch" v-model="createEventEnabled"/>
       <br/>
       <Button
-          v-if="clickedPosition && createEventEnabled"
+          :disabled="!(clickedPosition && createEventEnabled)"
           @click="showDialog"
-          class="p-mt-2"
-          style="height: 2rem"
+          icon="pi pi-plus"
+          class="p-button-success"
           type="button"
-
-      >Create event
-      </Button
-      >
+          content = "Create event"
+          label="Create event"
+      />
     </div>
 
     <div class="p-mr-2">
@@ -79,15 +78,17 @@
     <div></div>
   </div>
 
-  <the-map
+<!-- Render map if store position and events are se -->
+  <the-map v-if="position"
     :create-event-enabled="createEventEnabled"
   ></the-map>
+  <InlineMessage v-else class="p-message-info" > Your geolocation is not loaded</InlineMessage>
 </template>
 
 <script>
-import TheMap from "./map/TheMap";
+import TheMap from "./TheMap";
 import {mapGetters, mapActions} from 'vuex'
-import CreateEventForm from "@/components/pages/events/forms/CreateEventForm";
+import CreateEventForm from "@/components/pages/events/pages/map/CreateEventForm";
 
 export default {
   components: {
@@ -156,10 +157,6 @@ export default {
 </script>
 
 <style scoped>
-/*.p-panel{*/
-/*  height: 80vh;*/
-/*  width: 80vw;*/
-/*}*/
 
 .border {
   border: 1px solid #0a428b;

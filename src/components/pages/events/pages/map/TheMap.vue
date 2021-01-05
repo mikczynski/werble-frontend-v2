@@ -17,7 +17,7 @@
 // import { defineComponent } from 'vue'
 import {useStore } from 'vuex';
 import GMap from "./GMap";
-import {reactive, computed, defineComponent, toRefs, watch, onMounted} from "vue";
+import {reactive, computed, defineComponent, toRefs, watch, /*onMounted*/} from "vue";
 
 export default defineComponent({
   components: {GMap},
@@ -26,9 +26,10 @@ export default defineComponent({
   },
   setup() {
     //fetch events when mounted
-    onMounted(()=>{
-      store.dispatch('getGeolocation');
-    })
+    // onMounted(()=>{
+    //   store.dispatch('getGeolocation');
+    //   if(store.getters.position) store.dispatch('getEvents');
+    // })
     const store = useStore();
     const state = reactive({
       searchDistance: store.getters.searchDistance,
