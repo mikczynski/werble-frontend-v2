@@ -11,6 +11,7 @@ export default {
             searchDistanceMax: 50,
             searchDistanceStep: 5,
             clickedPosition: null,
+            createEventEnabled: false,
         }
     },
     getters: {
@@ -37,6 +38,9 @@ export default {
         },
         clickedPosition(state){
             return state.clickedPosition;
+        },
+        createEventEnabled(state){
+            return state.createEventEnabled;
         }
     },
     mutations: {
@@ -46,8 +50,8 @@ export default {
         setEvents(state,payload){
             state.events = payload;
         },
-        setCreatedEvents(state,payload){
-            state.createdEvents = payload;
+        toggleCreateEventEnabled(state) {
+            state.createEventEnabled = !state.createEventEnabled;
         },
         setSearchDistance(state,payload){
             if (payload < state.searchDistanceMin) state.searchDistance = state.searchDistanceMin;
@@ -56,6 +60,9 @@ export default {
         }
     },
     actions: {
+        toggleCreateEventEnabled(context) {
+            context.commit('toggleCreateEventEnabled');
+        },
         setClickedPosition(context,payload){
             context.commit('setClickedPosition',payload);
         },

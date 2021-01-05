@@ -28,7 +28,9 @@
   </div>
 
   <div class="p-p-2 p-d-flex p-jc-between">
-    <div></div>
+    <div class="">
+
+    </div>
 
     <div class="p-mr-2">
       <label for="switch">
@@ -37,22 +39,14 @@
             createEventModeInfo
           }}</span></label
       >
-      <InputSwitch id="switch" v-model="createEventEnabled"/>
+      <InputSwitch id="switch"  :modelValue="createEventEnabled" @click="toggleCreateEventEnabled"/>
       <br/>
-      <Button
-          :disabled="!(clickedPosition && createEventEnabled)"
-          @click="showDialog"
-          icon="pi pi-plus"
-          class="p-button-success"
-          type="button"
-          content = "Create event"
-          label="Create event"
-      />
+
     </div>
 
     <div class="p-mr-2">
       <label for="searchDistanceInput">
-        Pick searching area distance:
+        Search distance:
         <span style="color:chocolate;">{{ searchDistanceInput }} km</span>
       </label>
 
@@ -67,22 +61,42 @@
       />
     </div>
 
-    <div class="p-mr-2">
+    <div>
       <Button
-          @click="getEvents" class="p-mt-2 p-button-help" style="height: 2rem" type="button"
-      >Reload events
-      </Button
-      >
+          :disabled="!(clickedPosition && createEventEnabled)"
+          @click="showDialog"
+          icon="pi pi-plus"
+          class="p-button-success p-mr-2 p-mb-2 "
+          type="button"
+          label="Create event"
+      />
+      <Button
+          :disabled="!(clickedPosition && createEventEnabled)"
+          @click="setClickedPosition(null)"
+          icon="pi pi-trash"
+          class="p-button-info p-mr-2 p-mb-2"
+          type="button"
+          content="Clear event"
+          label="Clear selected location"
+      />
+      <Button
+          icon="pi pi-refresh"
+          @click="getEvents"
+          class="p-button-help p-mr-2 p-mb-2"
+          type="button"
+          label="Refresh events"
+      />
     </div>
+
 
     <div></div>
   </div>
 
-<!-- Render map if store position and events are se -->
+  <!-- Render map if store position and events are se -->
   <the-map v-if="position"
-    :create-event-enabled="createEventEnabled"
+           :create-event-enabled="createEventEnabled"
   ></the-map>
-  <InlineMessage v-else class="p-message-info" > Your geolocation is not loaded</InlineMessage>
+  <InlineMessage v-else class="p-message-info"> Your geolocation is not loaded</InlineMessage>
 </template>
 
 <script>
@@ -106,7 +120,8 @@ export default {
       'position',
       'profile',
       'clickedPosition',
-      'googleMapsApiKey'
+      'googleMapsApiKey',
+        'createEventEnabled'
     ]),
 
     createEventModeInfo() {
@@ -120,7 +135,6 @@ export default {
   data() {
     return {
       searchDistanceInput: 20,
-      createEventEnabled: false,
       displayDialog: false,
     };
   },
@@ -128,8 +142,10 @@ export default {
     searchDistanceInput(newVal) {
       this.setSearchDistance(newVal);
     },
-    searchDistance(){},
-    events() {},
+    searchDistance() {
+    },
+    events() {
+    },
   },
 
   created() {
@@ -140,12 +156,10 @@ export default {
   methods: {
     ...mapActions([
       'setSearchDistance',
-      'getEvents'
+      'getEvents',
+        'setClickedPosition',
+        'toggleCreateEventEnabled'
     ]),
-
-    toggleCreateEvent() {
-      this.createEventEnabled = !this.createEventEnabled
-    },
     closeDialog() {
       this.displayDialog = false
     },

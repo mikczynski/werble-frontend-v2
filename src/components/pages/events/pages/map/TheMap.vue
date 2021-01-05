@@ -6,7 +6,6 @@
       :mapDidLoad="handleMapDidLoad"
       :search-distance="searchDistance"
       :markers="events"
-      :createEventEnabled="createEventEnabled"
       :draw-markers="drawMarkers"
       :draw-user-position-marker="drawUserPositionMarker"
       :draw-circle="drawCircle"
@@ -25,11 +24,6 @@ export default defineComponent({
     createEventEnabled : Boolean
   },
   setup() {
-    //fetch events when mounted
-    // onMounted(()=>{
-    //   store.dispatch('getGeolocation');
-    //   if(store.getters.position) store.dispatch('getEvents');
-    // })
     const store = useStore();
     const state = reactive({
       searchDistance: store.getters.searchDistance,
@@ -56,6 +50,7 @@ export default defineComponent({
           state.searchDistance = store.getters.searchDistance;
         }
     );
+
 
     const handleMapDidLoad = (themap, googleServices) => {
       state.map = themap;

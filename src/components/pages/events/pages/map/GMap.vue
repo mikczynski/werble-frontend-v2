@@ -23,6 +23,7 @@ export default {
     drawUserPositionMarker: Boolean,
     drawCircle: Boolean,
     searchDistance: Number,
+    createEventEnabled: Boolean
   },
 
   setup(props) {
@@ -115,7 +116,9 @@ export default {
           infoWindow.setContent("You are here!<br> Lat: " + pos.lat.toFixed(7) + ', Lng: ' + pos.lng.toFixed(7));
           infoWindow.open(map.value);
           map.value.panTo(pos);
+
           map.value.setCenter(pos);
+          map.value.setZoom(14);
         }
       });
     }
@@ -232,7 +235,7 @@ export default {
       let infoWindow = new window.google.maps.InfoWindow({});
       // Configure the click listener.
       map.value.addListener("click", (mapsMouseEvent) => {
-        // if (!props.createEventEnabled) return;
+        if (!store.getters.createEventEnabled) return;
         // Close the current InfoWindow.
         infoWindow.close();
         // Create a new InfoWindow.
