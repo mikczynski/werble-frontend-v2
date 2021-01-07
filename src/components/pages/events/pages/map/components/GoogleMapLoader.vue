@@ -37,6 +37,7 @@ export default {
 
     // Initialize map
     this.initMap();
+    this.addMapClickListener();
     if (this.map && this.google) this.setMapLoaded(true);
   },
 
@@ -55,6 +56,24 @@ export default {
 
       // log success
       console.info('Map initialized');
+    }
+    ,
+
+    addMapClickListener () {
+
+      // Configure the click listener.
+      this.map.addListener("click", (mapsMouseEvent) => {
+        if (!this.$store.getters.createEventEnabled) return;
+        // Close the current InfoWindow.
+        // Create a new InfoWindow.
+        const pos = {
+          latitude: mapsMouseEvent.latLng.lat(),
+          longitude: mapsMouseEvent.latLng.lng(),
+        }
+
+        console.log(pos);
+        this.$store.dispatch("setClickedPosition", pos);
+      });
     }
   },
 

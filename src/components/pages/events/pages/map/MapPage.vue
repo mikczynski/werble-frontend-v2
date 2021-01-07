@@ -78,7 +78,6 @@
           icon="pi pi-trash"
           class="p-button-info p-mr-2 p-mb-2"
           type="button"
-          content="Clear event"
           label="Clear selected location"
       />
       <Button

@@ -1,7 +1,7 @@
 <template>
   <Dialog
       header="Create event form"
-      :visible="displayDialog"
+      v-model:visible="displayDialog"
       :contentStyle="{ width: '80vw', overflow: 'visible' }"
       :modal="true"
   >
@@ -35,9 +35,25 @@
             :position="{ lat: Number(marker.latitude), lng: Number(marker.longitude) }">
 
           <img src="https://media1.tenor.com/images/19129351172ab23d7db284bf43c61b2a/tenor.gif?itemid=10549919" style="width:50%"/>
-          <br>dsdfssdfsdfsdfsds
+          <br>
           <Button @click="alertEvent(marker)" class="p-button-sm">Show</Button>
 
+        </Marker>
+
+        <!-- User marker -->
+
+
+        <Marker
+                v-show="Boolean(createEventEnabled && clickedPositionVisible)"
+                :visible="Boolean(createEventEnabled && clickedPositionVisible)"
+                :map="map" :google="google" :position="clickedPositionLatLng"
+                icon="green"
+                :openInfoWindow="true"
+                type="create"
+        >
+          <p v-if="clickedPosition">   "Location chosen for new event.<br>Lat: {{clickedPositionLatLng.lat.toFixed(7)}}, Lng: ' +
+            {{ clickedPositionLatLng.lng.toFixed(7) }}</p>
+          <Button @click="alertEvent(marker)" class="p-button-sm">Create event here!</Button>
         </Marker>
 
       </div>
@@ -53,10 +69,12 @@ import Marker from "@/components/pages/events/pages/map/components/Marker";
 import Circle from "@/components/pages/events/pages/map/components/Circle";
 // import InfoWindow from "@/components/pages/events/pages/map/components/InfoWindow";
 import {mapGetters, mapActions} from 'vuex'
+// import InfoWindow from "@/components/pages/events/pages/map/components/InfoWindow";
 
 export default {
   name: "EventsMap",
   components: {
+    // InfoWindow,
     GoogleMapLoader,
     Marker,
     Circle
@@ -72,10 +90,22 @@ export default {
     ...mapGetters([
       'googleMapsApiKey',
       'position',
+      'clickedPosition',
+      'createEventEnabled',
       'mapLoaded',
       'events',
       'searchDistance'
     ]),
+
+    clickedPositionLatLng(){
+
+      return this.clickedPosition ? { lat: this.clickedPosition.latitude, lng: this.clickedPosition.longitude } : null;
+    },
+
+    clickedPositionVisible(){
+      return !!this.clickedPosition;
+    },
+
 
     markers() {
       return [...this.events];
@@ -100,6 +130,7 @@ export default {
   watch: {
     markers() {
     },
+    clickedPosition(){},
   },
 
   methods: {

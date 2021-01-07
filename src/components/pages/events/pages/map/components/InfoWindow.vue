@@ -1,5 +1,7 @@
 <template>
-  <slot></slot>
+  <div :style="display" ref="div">
+    <slot></slot>
+  </div>
 </template>
 
 <script>
@@ -10,7 +12,6 @@ export default {
       type: Object,
       required: true,
     },
-    label: String,
     google: {
       type: Object,
       required: true
@@ -19,17 +20,35 @@ export default {
       type: Object,
       required: true
     },
-    visible: Boolean
+  },
+
+  methods: {
+
+  },
+
+  computed: {
+    display(){
+      return  {'display' : this.infoWindowOpened ? 'block' : 'none'};
+    },
   },
 
   watch:{
+    position(newVal){
+      // if(newVal === null)
+      // {
+      //   this.infoWindowOpened = false;
+      //
+      // }
 
+      this.infoWindow.close();
+      this.infoWindow.setPosition(newVal);
+      this.infoWindow.open(this.map);
+    }
   },
-  computed: {
 
-  },
   data(){
     return {
+      infoWindowOpened: false,
       infoWindow: null,
     }
   },
@@ -37,16 +56,15 @@ export default {
   mounted() {
     this.infoWindow = new this.google.maps.InfoWindow({
       position:this.position, // this.marker.position,
-      marker: this.marker,
+      // marker: this.marker,
+      visible: this.visible || true,
       map: this.map,
-      content: 'test',
+      content: this.$refs.div,
     });
-    this.infoWindow.open();
+    this.infoWindow.open(this.map);
+    this.infoWindowOpened = true;
   },
 
-  beforeUnmount() {
-    this.infoWindow.close();
-  },
 
   unmounted() {
     this.infoWindow.setMap(null);
