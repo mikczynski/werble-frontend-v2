@@ -39,6 +39,7 @@ export default {
     if(localStorage.getItem('token'))
     {
       this.$store.commit('setToken',JSON.parse(localStorage.getItem('token')));
+      this.$store.dispatch('getProfile');
     }
     else
       this.$router.push('login');

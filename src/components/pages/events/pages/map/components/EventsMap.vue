@@ -5,9 +5,9 @@
       :contentStyle="{ width: '80vw', overflow: 'visible' }"
       :modal="true"
   >
-    <img src="https://thumbs.gfycat.com/GlamorousWideGuanaco-size_restricted.gif"/>
-    <br>
-    <Button @click="displayDialog = false" type="button" style="p-button-danger" >BOOOOOOOOOOOOOOOOOOOOI</Button>
+
+    <CreateEventForm :close-dialog="displayDialog"></CreateEventForm>
+    <Button @click="displayDialog = false" type="button" style="p-button-danger">BOOOOOOOOOOOOOOOOOOOOI</Button>
   </Dialog>
 
   <!--  Google map component-->
@@ -34,26 +34,49 @@
             :event="marker"
             :position="{ lat: Number(marker.latitude), lng: Number(marker.longitude) }">
 
-          <img src="https://media1.tenor.com/images/19129351172ab23d7db284bf43c61b2a/tenor.gif?itemid=10549919" style="width:50%"/>
+          <img src="https://media1.tenor.com/images/19129351172ab23d7db284bf43c61b2a/tenor.gif?itemid=10549919"
+               style="width:50%"/>
           <br>
           <Button @click="alertEvent(marker)" class="p-button-sm">Show</Button>
 
         </Marker>
 
-        <!-- User marker -->
-
-
+        <!--        Create event marker-->
         <Marker
-                v-show="Boolean(createEventEnabled && clickedPositionVisible)"
-                :visible="Boolean(createEventEnabled && clickedPositionVisible)"
-                :map="map" :google="google" :position="clickedPositionLatLng"
-                icon="green"
-                :openInfoWindow="true"
-                type="create"
+            v-show="Boolean(createEventEnabled && clickedPositionVisible)"
+            :visible="Boolean(createEventEnabled && clickedPositionVisible)"
+            :map="map"
+            :google="google"
+            :position="clickedPositionLatLng"
+            :openInfoWindow="true"
+            type="create"
         >
-          <p v-if="clickedPosition">   "Location chosen for new event.<br>Lat: {{clickedPositionLatLng.lat.toFixed(7)}}, Lng: ' +
-            {{ clickedPositionLatLng.lng.toFixed(7) }}</p>
+          <p v-if="clickedPositionLatLng">Location for new event:<br>
+            Lat: {{ clickedPositionLatLng.lat.toFixed(7) }}, Lng: ' +
+            {{ clickedPositionLatLng.lng.toFixed(7) }}
+          </p>
+
+
           <Button @click="alertEvent(marker)" class="p-button-sm">Create event here!</Button>
+
+
+        </Marker>
+
+        <!-- User marker -->
+        <Marker
+            v-show="positionLatLng"
+            :visible="true"
+            :map="map" :google="google"
+            :position="positionLatLng"
+            :openInfoWindow="true"
+            type="user">
+
+          <p v-if="positionLatLng">
+            You are here <br><strong style="color:goldenrod">{{ login ? login : '' }}!</strong>
+            <br><br>
+            <strong>Lat:</strong> {{ positionLatLng.lat.toFixed(7) }}<br><strong>Lng:</strong>
+            {{ positionLatLng.lng.toFixed(7) }}
+          </p>
         </Marker>
 
       </div>
@@ -67,21 +90,22 @@
 import GoogleMapLoader from "@/components/pages/events/pages/map/components/GoogleMapLoader";
 import Marker from "@/components/pages/events/pages/map/components/Marker";
 import Circle from "@/components/pages/events/pages/map/components/Circle";
-// import InfoWindow from "@/components/pages/events/pages/map/components/InfoWindow";
+
 import {mapGetters, mapActions} from 'vuex'
-// import InfoWindow from "@/components/pages/events/pages/map/components/InfoWindow";
+import CreateEventForm from "@/components/pages/events/pages/map/forms/CreateEventForm";
+
 
 export default {
   name: "EventsMap",
   components: {
-    // InfoWindow,
+    CreateEventForm,
     GoogleMapLoader,
     Marker,
     Circle
   },
 
-  data(){
-    return{
+  data() {
+    return {
       displayDialog: false
     }
   },
@@ -91,18 +115,23 @@ export default {
       'googleMapsApiKey',
       'position',
       'clickedPosition',
+      'position',
+      'login',
       'createEventEnabled',
       'mapLoaded',
       'events',
       'searchDistance'
     ]),
 
-    clickedPositionLatLng(){
-
-      return this.clickedPosition ? { lat: this.clickedPosition.latitude, lng: this.clickedPosition.longitude } : null;
+    positionLatLng() {
+      return this.position ? {lat: this.position.latitude, lng: this.position.longitude} : null;
     },
 
-    clickedPositionVisible(){
+    clickedPositionLatLng() {
+      return this.clickedPosition ? {lat: this.clickedPosition.latitude, lng: this.clickedPosition.longitude} : null;
+    },
+
+    clickedPositionVisible() {
       return !!this.clickedPosition;
     },
 
@@ -130,7 +159,8 @@ export default {
   watch: {
     markers() {
     },
-    clickedPosition(){},
+    clickedPosition() {
+    },
   },
 
   methods: {

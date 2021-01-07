@@ -82,7 +82,8 @@ export default {
     ...mapActions([
       'setIsApiSyncActive',
       'setResponseError',
-      'createEvent'
+      'createEvent',
+        'setClickedPosition'
     ]),
 
     async submitForm() {
@@ -106,8 +107,9 @@ export default {
         latitude: this.input['latitude'],
       }
 
-       await this.createEvent(formData)
 
+       await this.createEvent(formData)
+      this.setClickedPosition(null);
     },
 
     resetFormErrors() {

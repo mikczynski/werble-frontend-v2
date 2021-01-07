@@ -42,8 +42,19 @@ export default {
       switch (this.type) {
         case 'create':
           if (this.marker.infoWindow === null && newVal)
-            this.infoWindowOpened();
-          else if(newVal){
+            this.infoWindowOpened = false;
+          else
+            if(newVal){
+            this.marker.infoWindow.open(this.marker.map, this.marker);
+            this.infoWindowOpened = true;
+          }
+          else this.marker.infoWindow.close();
+          break;
+        case 'user':
+          if (this.marker.infoWindow === null && newVal)
+            this.infoWindowOpened = false;
+          else
+          if(newVal){
             this.marker.infoWindow.open(this.marker.map, this.marker);
             this.infoWindowOpened = true;
           }
@@ -71,13 +82,6 @@ export default {
     display() {
       return {'display': this.infoWindowOpened ? 'block' : 'none'};
     },
-    icon(){
-      switch (this.type){
-        case 'create':
-          this.marker.setIcon()
-      }
-      default:
-    }
     createEventModeEnabled() {
       return this.$store.getters.createEventModeEnabled;
     }
@@ -92,6 +96,7 @@ export default {
 
   methods: {
     initInfoWindow() {
+      this.infoWindowOpened = false;
       this.marker.infoWindow = new window.google.maps.InfoWindow({
         // content: this.event.name,
         content: this.$el
@@ -100,15 +105,31 @@ export default {
   },
 
   mounted() {
-    //Initialize marker
-    this.marker = new this.google.maps.Marker({
-      position: this.position, // this.marker.position,
-      marker: this.marker,
-      map: this.map,
-      label: this.label,
-      visible: Boolean(this.visible)
-    });
 
+      let icon;
+      switch (this.type){
+        case 'create':
+          icon = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
+          break;
+        case 'user':
+          icon = 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png';
+          break;
+        default:
+          icon = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
+          break;
+      }
+        const markerConfig = {
+          position: this.position, // this.marker.position,
+          marker: this.marker,
+          map: this.map,
+          icon: icon,
+          label: this.label,
+          visible: Boolean(this.visible)
+        }
+
+
+    //Initialize marker
+    this.marker = new this.google.maps.Marker(markerConfig);
 
     // Create infoWindow for marker
     this.initInfoWindow()
@@ -129,7 +150,6 @@ export default {
 
     if (this.openInfoWindow) {
       this.marker.infoWindow.open(this.marker.map, this.marker);
-      this.infoWindowOpened = true;
     }
 
   },
