@@ -11,7 +11,7 @@ export default {
     },
     createEvent(data){
         return service({requiresAuth:true})
-            .post('/user/events/create',data);
+            .post('user/events/create',data);
     },
 
    updateEvent(data, config){
@@ -22,4 +22,8 @@ export default {
         return  service({requiresAuth:true})
             .delete('/forgotPassword');
     },
+    getEventTypes(){
+        return service({requiresAuth:true})
+            .get('user/types');
+    }
 }

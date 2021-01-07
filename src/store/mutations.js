@@ -1,5 +1,8 @@
 /* Global Store mutations */
 export default {
+    setMapLoaded(state,payload){
+        state.mapLoaded = payload;
+    },
     setResponseError(state,payload){
         state.responseError = payload;
     },
@@ -18,7 +21,8 @@ export default {
     },
     setIsApiSyncActive(state,payload){
         state.isApiSyncActive = payload;
-    }
+    },
+    setReload: (state,payload) => state.reload = payload,
 
 
 }

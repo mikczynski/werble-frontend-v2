@@ -13,12 +13,10 @@ export default {
   data() {
     return {
       pageTitle: 'Events',
-
     }
   },
   created() {
     this.$store.dispatch('getGeolocation');
-    // this.$store.dispatch('getEvents');
   },
 }
 </script>

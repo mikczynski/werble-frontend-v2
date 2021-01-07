@@ -7,6 +7,7 @@ import MapPage from "@/components/pages/events/pages/map/MapPage";
 import AvailableEventsPage from "@/components/pages/events/pages/available/AvailableEventsPage"
 import ProfilePage from "@/components/pages/profile/ProfilePage";
 import ProfileInfo from "@/components/pages/profile/forms/ProfileInfo";
+import CreatedEventsPage from "@/components/pages/events/pages/created/CreatedEventsPage";
 
 export default [
     //Not found placeholder
@@ -32,7 +33,7 @@ export default [
         redirect: {name: 'events-map'},
         children: [
             {path: 'map', component: MapPage, name: 'events-map'},
-            {path: 'created', component: NotFoundPage, name: 'events-created'},
+            {path: 'created', component: CreatedEventsPage, name: 'events-created'},
             {path: 'participating', component: NotFoundPage, name: 'events-participating'},
             {path: 'available', component: AvailableEventsPage, name: 'events-available'},
         ]

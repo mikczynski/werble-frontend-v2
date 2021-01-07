@@ -8,7 +8,7 @@
 <!--  <Button>Participate!</Button>-->
 <!--</li>-->
 <!--</ul>-->
-  <DataTable :value="events" :paginator="true" :rows="10"
+  <DataTable :value="createdEvents" :paginator="true" :rows="10"
              paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
              :rowsPerPageOptions="[10,20,50]"
              currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
@@ -19,9 +19,16 @@
   >
     <template #header >
       <div>
-        <Button @click="getEvents" icon="pi pi-refresh" style="float: left" content="Refresh events"/>
+        <Button @click="getCreatedEvents" icon="pi pi-refresh" style="float: left" content="Refresh events"/>
         <h3>List of Available events in <strong style="color:goldenrod">{{ searchDistance}} km</strong>  radius.</h3>
         <span>In total there are <span style="color:green">{{events ? events.length : 0 }}</span> events.</span>
+      </div>
+      <div class="table-header">
+        List of Customers
+        <span class="p-input-icon-left">
+                <i class="pi pi-search" />
+                <InputText v-model="filters['global']" placeholder="Global Search" />
+            </span>
       </div>
     </template>
 
@@ -33,31 +40,10 @@
       Loading events data. Please wait.
     </template>
 
-<!--    <Column field="event_id" header="id" :sortable="true"></Column>-->
-    <Column field="event_creator_id"  header="Owner" :sortable="true"></Column>
-    <Column field="event_type_id"  header="Event Type" :sortable="true">
-      <template #filter>
-        <Dropdown v-model="filters['status']" :options="statuses" placeholder="Select a Type" class="p-column-filter" :showClear="true">
-          <template #option="slotProps">
-            <span :class="'customer-badge status-' + slotProps.option">{{slotProps.option}}</span>
-          </template>
-        </Dropdown>
-      </template>
-    </Column>
-
-    <Column field="name" header="Name" :sortable="true">
-
-      <template #filter>
-        <InputText type="text" v-model="filters['name']" class="p-column-filter" placeholder="Search by name"/>
-      </template>
-      <template #body="slotProps">
-
-        <span class="p-column-title">Name</span>
-        {{slotProps.data.name}}
-      </template>
-
-    </Column>
+    <Column field="event_id" header="id" :sortable="true"></Column>
+    <Column field="name" header="Name" :sortable="true"></Column>
     <Column field="datetime" header="Date" :sortable="true"></Column>
+    <Column field="description" header="Description" :sortable="true"></Column>
     <Column field="location" header="Location" :sortable="true"></Column>
     <Column field="distance" header="Distance from you" :sortable="true">
       <template #body="slotProps">
@@ -65,11 +51,12 @@
       </template>
     </Column>
 
+    <Column field="event_creator_id"  header="Owner" :sortable="true"></Column>
     <template #footer>
-      In total there are <span style="color:green">{{events ? events.length : 0 }}</span> events.
+      In total there are <span style="color:green">{{createdEvents ? createdEvents.length : 0 }}</span> events.
     </template>
     <template #paginatorLeft>
-      <Button @click="getEvents" icon="pi pi-refresh" style="float: left"  content="Refresh events"/>
+      <Button @click="getCreatedEvents" icon="pi pi-refresh" style="float: left"  content="Refresh events"/>
     </template>
     <template #paginatorRight>
 
@@ -82,7 +69,7 @@
 import { mapActions,mapGetters } from 'vuex';
 export default {
 
-  name: "AvailableEvents",
+  name: "CreatedEventsPage",
   data(){
     return {
           eventsLocal: null,
@@ -91,31 +78,18 @@ export default {
   },
   computed: {
     ...mapGetters([
-        'events',
+        'createdEvents',
         'searchDistance'
     ]),
   },
-    methods: {
+    methods:{
       ...mapActions([
-        'getEvents'
+          'getCreatedEvents'
       ]),
-      methods: {
-        filterDate(value, filter) {
-          if (filter === undefined || filter === null || (typeof filter === 'string' && filter.trim() === '')) {
-            return true;
-          }
-
-          if (value === undefined || value === null) {
-            return false;
-          }
-
-          return value === this.formatDate(filter);
-        }
-      }
     },
   mounted() {
-    this.getEvents();
-    this.eventsLocal = this.events;
+    this.getCreatedEvents();
+    this.eventsLocal = this.createdEvents;
   }
 }
 </script>

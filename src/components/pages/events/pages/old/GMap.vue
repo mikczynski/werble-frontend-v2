@@ -70,6 +70,7 @@ export default {
 
     //removes the map from the markers and empty the array
     const clearMarkers = () => {
+      if(!currentMarkers) return
       currentMarkers.forEach((m) => {
         m.map = null;
       });
@@ -77,10 +78,12 @@ export default {
     };
 
     const clearUserCircle = () => {
+      if(!userCircle) return
       userCircle.map = null;
       userCircle = null;
     }
     const clearUserMarker = () => {
+      if(!userMarker) return
       userMarker.map = null;
       userMarker = null;
     }
@@ -155,27 +158,7 @@ export default {
 
     }
 
-    const createUserCircle = () => {
-      if(userCircle) clearUserCircle();
-      if (!props.drawCircle) return;
 
-      const circleConfig = {
-        strokeColor: '#500084',
-        strokeOpacity: 0.2,
-        strokeWeight: 2,
-        fillColor: "#500084",
-        fillOpacity: 0.05,
-        map: map.value,
-        center: new window.google.maps.LatLng(
-            store.getters.position.latitude,
-            store.getters.position.longitude,
-        ),
-        radius: store.getters.searchDistanceKM,
-        clickable: false
-      }
-
-      userCircle = new window.google.maps.Circle(circleConfig);
-    };
 
 
     //loads map markers
@@ -194,7 +177,7 @@ export default {
             '<strong>Description</strong>: ' + markerInfo.description + "<br>" +
             '<strong>Date: </strong>' + markerInfo.datetime + "<br>" +
             '<strong>Distance: </strong>' + markerInfo.distance + 'km' + '<br>' +
-            '<button onclick="alert(12);">Test</button>'
+            '<button :onclick="alert(12);">Test</button>'
 
 
         // create marker
@@ -209,16 +192,6 @@ export default {
         });
 
         // create info window
-        mapMarker.infoWindow = new window.google.maps.InfoWindow({
-          content: content,
-        });
-
-        //add listener onClick event to marker
-        mapMarker.addListener("click", () => {
-          if (mapMarker.infoWindow !== null) {
-            mapMarker.infoWindow.open(map.value, mapMarker);
-          }
-        });
 
         //add to local markers array
         currentMarkers.push(mapMarker);
@@ -288,15 +261,17 @@ export default {
       });
 
 
+
+      //make sure map fits all the markesr
+
+      //let know the map is loaded and reday
+      props.mapDidLoad && props.mapDidLoad(map, window.google.maps);
+
       addPanButton();
       loadMapMarkers();
       createUserMarker();
       createUserCircle();
       addMapClickListener();
-      //make sure map fits all the markesr
-
-      //let know the map is loaded and reday
-      props.mapDidLoad && props.mapDidLoad(map, window.google.maps);
     };
 
     return {
@@ -307,9 +282,5 @@ export default {
 </script>
 
 <style scoped>
-.map {
-  width: 100%;
-  height: 400px;
-  background-color: azure;
-}
+
 </style>

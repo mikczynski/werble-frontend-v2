@@ -1,6 +1,7 @@
 /* Import Basic App functions */
 import { createApp } from 'vue'
 import App from './App.vue'
+import ToastService from 'primevue/toastservice';
 
 
 /* Import Vue Router & Vuex Store*/
@@ -25,6 +26,8 @@ import DataTable from "primevue/components/datatable/DataTable";
 import Column from "primevue/components/column/Column";
 import ColumnGroup from "primevue/components/columngroup/ColumnGroup";
 import Row from "primevue/components/row/Row";
+import Toast from 'primevue/toast';
+import Dropdown from "primevue/components/dropdown/Dropdown";
 
 /* Make Axios global */
 window.axios = require('axios');
@@ -36,6 +39,7 @@ const app = createApp(App);
 app.use(router);
 app.use(store);
 app.use(PrimeVue);
+app.use(ToastService);
 
 /* Global components */
 app.component('Calendar',Calendar);
@@ -54,6 +58,8 @@ app.component('DataTable',DataTable);
 app.component('Column',Column);
 app.component('ColumnGroup',ColumnGroup);
 app.component('Row',Row);
+app.component('Toast',Toast);
+app.component('Dropdown',Dropdown)
 
 /* Mount Vue App */
 app.mount('#app')

@@ -7,6 +7,8 @@ export default function() {
         isApiSyncActive: false,
         baseApiUrl: "http://192.168.10.10/api/",
         googleMapsApiKey: "AIzaSyBYIzqk9PklDC0cTCssbscSZEITklTBq2g",
+        mapLoaded: false,
+        reload: false
 
     }
 }

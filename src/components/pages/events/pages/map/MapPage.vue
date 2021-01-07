@@ -6,6 +6,7 @@
       :modal="true"
   >
     <CreateEventForm :close-dialog="closeDialog"></CreateEventForm>
+
   </Dialog>
 
   <p v-if="position">
@@ -39,7 +40,7 @@
             createEventModeInfo
           }}</span></label
       >
-      <InputSwitch id="switch"  :modelValue="createEventEnabled" @click="toggleCreateEventEnabled"/>
+      <InputSwitch id="switch" :modelValue="createEventEnabled" @click="toggleCreateEventEnabled"/>
       <br/>
 
     </div>
@@ -57,6 +58,7 @@
           :min="searchDistanceMin"
           :step="searchDistanceStep"
 
+          @slideEnd="alert($event)"
           class="p-mt-2 p-pb-0"
       />
     </div>
@@ -81,7 +83,7 @@
       />
       <Button
           icon="pi pi-refresh"
-          @click="getEvents"
+          @click="getEventsToast"
           class="p-button-help p-mr-2 p-mb-2"
           type="button"
           label="Refresh events"
@@ -92,22 +94,23 @@
     <div></div>
   </div>
 
-  <!-- Render map if store position and events are se -->
-  <the-map v-if="position"
-           :create-event-enabled="createEventEnabled"
-  ></the-map>
+  <events-map v-if="geolocationLoaded"/>
   <InlineMessage v-else class="p-message-info"> Your geolocation is not loaded</InlineMessage>
+
 </template>
 
 <script>
-import TheMap from "./TheMap";
+// import TheMap from "./TheMap";
 import {mapGetters, mapActions} from 'vuex'
-import CreateEventForm from "@/components/pages/events/pages/map/CreateEventForm";
+import CreateEventForm from "@/components/pages/events/pages/map/forms/CreateEventForm";
+import EventsMap from "@/components/pages/events/pages/map/components/EventsMap";
 
 export default {
   components: {
+    EventsMap,
     CreateEventForm,
-    TheMap,
+    // TheMap,
+
   },
   computed: {
     ...mapGetters([
@@ -121,7 +124,9 @@ export default {
       'profile',
       'clickedPosition',
       'googleMapsApiKey',
-        'createEventEnabled'
+      'createEventEnabled',
+      'geolocationLoaded',
+        'isMapLoaded'
     ]),
 
     createEventModeInfo() {
@@ -157,12 +162,24 @@ export default {
     ...mapActions([
       'setSearchDistance',
       'getEvents',
-        'setClickedPosition',
-        'toggleCreateEventEnabled'
+      'setClickedPosition',
+      'toggleCreateEventEnabled',
     ]),
+
+    getEventsToast() {
+      this.getEvents();
+      if (this.events) this.$toast.add({
+        severity: 'success',
+        summary: 'Success Message',
+        detail: 'Events refreshed',
+        life: 3000
+      });
+    },
+
     closeDialog() {
       this.displayDialog = false
     },
+
     showDialog() {
       this.displayDialog = true
     },

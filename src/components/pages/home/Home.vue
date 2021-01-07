@@ -13,7 +13,8 @@ export default {
   computed: {
       ...mapGetters(['fullName','login','profile']),
   },
-  methods: {},
+  methods: {
+  },
   components: {},
   data() {
     return {

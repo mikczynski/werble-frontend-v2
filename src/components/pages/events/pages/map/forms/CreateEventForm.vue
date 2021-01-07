@@ -75,7 +75,7 @@ export default {
   computed:
       {
         ...mapGetters([
-            'newEventPositon'
+            'clickedPosition'
         ])
       },
   methods: {
@@ -95,16 +95,15 @@ export default {
       const input_date = new Date(this.input.datetime);
       const formatted_Date =
           input_date.getFullYear() + "-" + (input_date.getMonth() + 1) + "-" + input_date.getDate()
-          + " " + input_date.getHours() + ":" + input_date.getMinutes() + ":" + input_date.getSeconds()
+          + " " + input_date.getHours() + ":" + input_date.getMinutes() + ":" + "00"
 
-      const storePos = this.$store.getters.newEventPosition;
       const formData = {
         name: this.input.name,
         location: this.input.location,
         datetime: formatted_Date.toString(), //this.input.datetime,
         description: this.input.description,
-        longitude: storePos['lng'],
-        latitude: storePos['lat'],
+        longitude: this.input['longitude'],
+        latitude: this.input['latitude'],
       }
 
        await this.createEvent(formData)

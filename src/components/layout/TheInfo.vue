@@ -1,4 +1,5 @@
 <template>
+  <Toast position="bottom-left" />
   <!--  request errors are shown here -->
   <InlineMessage severity="success" v-if="responseMessage">
     <p v-if="responseMessage">{{ responseMessage }}</p>

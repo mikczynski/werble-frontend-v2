@@ -39,11 +39,14 @@ export default {
     if(localStorage.getItem('token'))
     {
       this.$store.commit('setToken',JSON.parse(localStorage.getItem('token')));
-
     }
     else
       this.$router.push('login');
   },
+  mounted() {
+    this.getEventTypes();
+  },
+
   computed: {
     isApiSyncActive() {
       return this.$store.getters.isApiSyncActive;
@@ -57,7 +60,7 @@ export default {
     },
   }  ,
   methods: {
-    ...mapActions(['getGeolocation','getProfile']),
+    ...mapActions(['getGeolocation','getProfile','getEventTypes']),
   }
 }
 

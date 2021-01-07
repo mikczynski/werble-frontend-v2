@@ -1,6 +1,6 @@
 <template>
-  <div class="p-fluid">
-    <Fieldset class="p-p-2 p-my-2">
+  <div class="p-d-block p-mx-auto">
+    <Fieldset class="p-p-2 p-my-2 p-mx-auto"  style="width:50vw">
       <template #legend>
         Account info
       </template>
@@ -12,12 +12,17 @@
         <label for="email">Email:</label>
         <InputText id="email" v-model="profile.email" disabled type="email"/>
       </div>
+      <div class="p-field">
+        <label for="account_type">Account type:</label>
+        <InputText id="account_type" disabled type="text"  :modelValue="profile.is_admin ? 'Admin' : 'User'" />
+      </div>
+
     </Fieldset>
   </div>
 
-  <div class="p-fluid">
+  <div class="p-fluid p-mx-auto">
     <form @submit.prevent="submitForm">
-      <Fieldset class="p-p-2">
+      <Fieldset class="p-p-2 p-mx-auto"  style="width:50vw ">
         <template #legend>
           Profile info
         </template>
@@ -33,7 +38,18 @@
         </div>
         <div class="p-field">
           <label for="birth_date">Birth date:</label>
-          <InputText id="birth_date" v-model="profile.birth_date" :disabled="!toggleEditSwitch" type="date"/>
+
+
+<!--          <Calendar id="birth_date"-->
+<!--                    v-model="profile.birth_date"-->
+<!--                    dateFormat="yy-mm-dd"-->
+<!--                    placeholder="Birth Date"-->
+<!--                    :disabled="!toggleEditSwitch"-->
+<!--                    :maxDate="maxDate"-->
+<!--                    :yearNavigator="true"-->
+<!--                    :yearRange="yearRange"-->
+<!--        />-->
+          <InputText id="birth_date" v-model="profile.birth_date" :disabled="!toggleEditSwitch" type="date" :max="maxDate"/>
           <InlineMessage v-if="errors.birth_date">{{ errors.birth_date }}</InlineMessage>
         </div>
         <div class="p-field">
@@ -64,6 +80,9 @@ export default {
   components: {},
   data() {
     return {
+      maxDate: null,
+      minYear: null,
+      maxYear: null,
       requestErrors: null,
       isLoading: false,
       profile: {
@@ -73,6 +92,7 @@ export default {
         last_name: '',
         description: '',
         birth_date: '',
+        is_admin: null,
       },
       errors: {
         first_name: '',
@@ -90,6 +110,20 @@ export default {
       'editProfile'
     ]),
 
+    formatDate(date) {
+      let month = date.getMonth() + 1;
+      let day = date.getDate();
+
+      if (month < 10) {
+        month = '0' + month;
+      }
+
+      if (day < 10) {
+        day = '0' + day;
+      }
+      return date.getFullYear() + '-' + month + '-' + day;
+    },
+
     async submitForm() {
       if (!this.toggleEditSwitch) return;
       this.checkForm();
@@ -99,11 +133,12 @@ export default {
         first_name: this.profile.first_name,
         last_name: this.profile.last_name,
         description: this.profile.description,
-        birth_date: (this.profile.birth_date).toString(),
+        birth_date: this.profile.birth_date,
       };
 
       console.log(formData.birth_date);
-      this.editProfile(formData);
+      await this.editProfile(formData);
+      if(this.$store.getters.profile) this.$toast.add({severity:'success', summary: 'Success Message', detail:'Profile updated', life: 3000});
     },
     resetFormErrors() {
       this.errors.any = false;
@@ -130,8 +165,12 @@ export default {
         this.errors.description = 'Description field is required. ';
       }
 
+      if (this.profile.birth_date === '') {
+        this.errors.birth_date = 'Birth date field is required. ';
+      }
+
       if (this.errors.first_name !== '' || this.errors.last_name !== ''
-          || this.errors.description !== '')
+          || this.errors.description !== '' || this.errors.birth_date )
         this.errors.any = true;
     },
 
@@ -141,6 +180,7 @@ export default {
 
     setProfile() {
       this.profile = this.$store.getters.profile;
+      console.log(this.$store.getters.profile);
     },
 
     async setupProfile() {
@@ -150,39 +190,47 @@ export default {
   }
   ,
   computed: {
+    yearRange(){
+      return this.minYear +':' +this.maxYear
+    }
+
   },
   created() {
     this.setupProfile();
+    let today = new Date();
+    this.maxYear = today.getFullYear();
+    this.minYear = today.maxYear - 100;
+    this.maxDate = this.formatDate(today);
   }
 };
 </script>
 
 <style scoped>
-label {
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-  display: block;
-}
+/*label {*/
+/*  font-weight: bold;*/
+/*  margin-bottom: 0.5rem;*/
+/*  display: block;*/
+/*}*/
 
-input,
-textarea {
-  display: block;
-  width: 100%;
-  font: inherit;
-  border: 1px solid #ccc;
-  padding: 0.15rem;
-}
+/*input,*/
+/*textarea {*/
+/*  display: block;*/
+/*  width: 100%;*/
+/*  font: inherit;*/
+/*  border: 1px solid #ccc;*/
+/*  padding: 0.15rem;*/
+/*}*/
 
-textarea:disabled,
-input:disabled {
-  opacity: 0.6;
-  color: #3d008d;
-}
+/*textarea:disabled,*/
+/*input:disabled {*/
+/*  opacity: 0.6;*/
+/*  color: #3d008d;*/
+/*}*/
 
-input:focus,
-textarea:focus {
-  border-color: #3d008d;
-  background-color: #faf6ff;
-  outline: none;
-}
+/*input:focus,*/
+/*textarea:focus {*/
+/*  border-color: #3d008d;*/
+/*  background-color: #faf6ff;*/
+/*  outline: none;*/
+/*}*/
 </style>
