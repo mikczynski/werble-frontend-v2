@@ -59,7 +59,7 @@ app.component('Column',Column);
 app.component('ColumnGroup',ColumnGroup);
 app.component('Row',Row);
 app.component('Toast',Toast);
-app.component('Dropdown',Dropdown)
+app.component('Dropdown',Dropdown);
 
 /* Mount Vue App */
 app.mount('#app')

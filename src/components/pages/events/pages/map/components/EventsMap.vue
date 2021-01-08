@@ -2,12 +2,12 @@
   <Dialog
       header="Create event form"
       v-model:visible="displayDialog"
-      :contentStyle="{ width: '80vw', overflow: 'visible' }"
+      :contentStyle="{ width: '60vw', overflow: 'visible' }"
       :modal="true"
-  >
+    >
 
-    <CreateEventForm :close-dialog="displayDialog"></CreateEventForm>
-    <Button @click="displayDialog = false" type="button" style="p-button-danger">BOOOOOOOOOOOOOOOOOOOOI</Button>
+    <CreateEventForm :close-dialog="closeDialog"></CreateEventForm>
+
   </Dialog>
 
   <!--  Google map component-->
@@ -28,13 +28,13 @@
         <Marker
             v-for="marker in markers"
             :map="map"
-            :visible="marker.distance < searchDistance"
+            :visible="eventsFilter(marker)"
             :google="google"
             :key="marker.event_id"
             :event="marker"
             :position="{ lat: Number(marker.latitude), lng: Number(marker.longitude) }">
 
-          <img src="https://media1.tenor.com/images/19129351172ab23d7db284bf43c61b2a/tenor.gif?itemid=10549919"
+          <img src="https://i2.wp.com/media3.giphy.com/media/ISOckXUybVfQ4/giphy.gif?resize=500%2C338&ssl=1"
                style="width:50%"/>
           <br>
           <Button @click="alertEvent(marker)" class="p-button-sm">Show</Button>
@@ -51,14 +51,21 @@
             :openInfoWindow="true"
             type="create"
         >
-          <p v-if="clickedPositionLatLng">Location for new event:<br>
-            Lat: {{ clickedPositionLatLng.lat.toFixed(7) }}, Lng: ' +
+          <p v-if="clickedPositionLatLng">Location for new event:
+            <br><br>
+            <strong>Lat:</strong> {{ clickedPositionLatLng.lat.toFixed(7) }}<br><strong>Lng:</strong>
             {{ clickedPositionLatLng.lng.toFixed(7) }}
           </p>
 
 
-          <Button @click="alertEvent(marker)" class="p-button-sm">Create event here!</Button>
-
+          <Button
+              :disabled="!(clickedPosition && createEventEnabled)"
+              @click="showDialog"
+              icon="pi pi-plus"
+              class="p-button-success p-button-sm"
+              type="button"
+              label="Create event"
+          />
 
         </Marker>
 
@@ -79,6 +86,9 @@
           </p>
         </Marker>
 
+        <PanButton :map="map" :google="google"></PanButton>
+        <change-bounds-button :map="map" :google="google" :markers="markersFiltered"></change-bounds-button>
+
       </div>
 
     </template>
@@ -93,11 +103,15 @@ import Circle from "@/components/pages/events/pages/map/components/Circle";
 
 import {mapGetters, mapActions} from 'vuex'
 import CreateEventForm from "@/components/pages/events/pages/map/forms/CreateEventForm";
+import PanButton from "@/components/pages/events/pages/map/components/PanButton";
+import ChangeBoundsButton from "@/components/pages/events/pages/map/components/ChangeBoundsButton";
 
 
 export default {
   name: "EventsMap",
   components: {
+    ChangeBoundsButton,
+    PanButton,
     CreateEventForm,
     GoogleMapLoader,
     Marker,
@@ -135,9 +149,11 @@ export default {
       return !!this.clickedPosition;
     },
 
-
     markers() {
       return [...this.events];
+    },
+    markersFiltered(){
+      return this.markers.filter(this.eventsFilter);
     },
 
     mapConfig() {
@@ -159,20 +175,30 @@ export default {
   watch: {
     markers() {
     },
+    markersFiltered() {
+    },
     clickedPosition() {
     },
+    displayDialog(newVal){
+      if(!newVal) this.setClickedPosition(null);
+    }
   },
 
   methods: {
-    ...mapActions(['getGeolocation']),
-    alertEvent() {
-      // alert(
-      //     'event_id: ' + event.event_id +
-      //     '\nevent_name: ' + event.event_name
-      //
-      // );
-      this.displayDialog = true;
-    }
+    ...mapActions(['getGeolocation','setClickedPosition']),
+    alertEvent() {},
+
+    closeDialog() {
+      this.displayDialog = false
+    },
+
+    showDialog() {
+      this.displayDialog = true
+    },
+    eventsFilter(event){
+      return event.distance < this.searchDistance
+    },
+
   },
 }
 </script>

@@ -2,7 +2,7 @@
   <Dialog
       header="Create event form"
       v-model:visible="displayDialog"
-      :contentStyle="{ width: '80vw', overflow: 'visible' }"
+      :contentStyle="{ width: '60vw', overflow: 'visible' }"
       :modal="true"
   >
     <CreateEventForm :close-dialog="closeDialog"></CreateEventForm>
@@ -150,6 +150,9 @@ export default {
     },
     events() {
     },
+    displayDialog(newVal){
+      if(!newVal) this.setClickedPosition(null);
+    }
   },
 
   created() {

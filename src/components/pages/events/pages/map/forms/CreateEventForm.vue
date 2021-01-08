@@ -1,44 +1,112 @@
 <template>
-  <h2>Create event</h2>
+  <h2>Create Event</h2>
   <form @submit.prevent="submitForm">
     <div class="p-fluid">
+
+      <!--      Name field-->
       <div class="p-field">
-        <label for="name">Name:</label>
+        <label for="name"><strong class="red">*</strong>Name:</label>
         <InputText id="name" v-model="input.name" type="text"/>
         <InlineMessage v-if="errors.name">{{ errors.name }}</InlineMessage>
       </div>
-      <div class="p-field">
-        <label for="location">Location:</label>
-        <InputText id="location" v-model="input.location" type="text"/>
-        <InlineMessage v-if="errors.location">{{ errors.location }}</InlineMessage>
-      </div>
+
+      <!--      Description-->
       <div class="p-field">
         <label for="description">Description:</label>
         <Textarea id="description" v-model="input.description"/>
         <InlineMessage v-if="errors.description">{{ errors.description }}</InlineMessage>
       </div>
-      <div class="p-field">
-        <div class="p-field p-col-12 p-md-4">
-          <label for="latitude">Latitude:</label>
-          <InputText id="latitude" v-model="input.latitude" type="text" disabled/>
-          <label for="longitude">Longitude:</label>
-          <InputText id="longitude" v-model="input.longitude" type="text" disabled/>
-          <label for="datetime">Date and time:</label>
-          <Calendar id="datetime" v-model="input.datetime" :showSeconds="false" :showTime="true" dateFormat="yy-mm-dd"/>
+
+
+      <div class="p-fluid p-grid">
+        <!--          Event Type-->
+        <div class="p-col">
+          <label for="event_type"><strong class="red">*</strong>Event type:</label>
+          <Dropdown id="event_type" v-model="input.event_type_id" :options="eventTypes" optionValue="event_type_id"
+                    optionLabel="event_type_name" placeholder="Select event type"></Dropdown>
+          <InlineMessage v-if="errors.event_type">{{ errors.event_type }}</InlineMessage>
         </div>
-        <InlineMessage v-if="errors.datetime">{{ errors.datetime }}</InlineMessage>
-        <div class="p-field p-grid">
-          <div class="p-col">
-            <Button label="Create event" type="submit"/>
+        <div class="p-col">
+          <!--         Date and time -->
+          <label for="datetime"><strong class="red">*</strong>Date and time:</label>
+          <Calendar id="datetime" :minDate="minDate" v-model="input.datetime" :showSeconds="false" :showTime="true"
+                    dateFormat="yy-mm-dd"/>
+          <InlineMessage v-if="errors.datetime">{{ errors.datetime }}</InlineMessage>
+        </div>
+      </div>
+
+
+      <div class="p-fluid p-grid">
+        <!--         Location-->
+        <div class="p-col">
+          <div class="p-field">
+            <label for="location">Location:</label>
+            <InputText id="location" v-model="input.location" type="text"/>
+            <InlineMessage v-if="errors.location">{{ errors.location }}</InlineMessage>
           </div>
-          <div class="p-col">
+          <!--            Street-->
+          <div class="p-field">
+            <label for="address">Street:</label>
+            <InputText id="address" v-model="input.location" type="text"/>
+            <InlineMessage v-if="errors.location">{{ errors.location }}</InlineMessage>
+          </div>
+
+          <div class="p-grid">
+            <!--            House number-->
+            <div class="p-col">
+              <label for="housenumber">House number:</label>
+              <InputText id="housenumber" v-model="input.location" type="text"/>
+              <InlineMessage v-if="errors.location">{{ errors.location }}</InlineMessage>
+            </div>
+
+            <div class="p-col">
+              <!--            Zip Code-->
+              <label for="zipcode">ZipCode:</label>
+              <InputText id="zipcode" v-model="input.location" type="text"/>
+              <InlineMessage v-if="errors.location">{{ errors.location }}</InlineMessage>
+            </div>
+          </div>
+        </div>
+
+        <!---->
+        <div class="p-col">
+
+          <div class="p-field">
+            <label for="latitude">Latitude:</label>
+            <InputText id="latitude" v-model="input.latitude" type="text" disabled/>
+          </div>
+
+          <div class="p-field">
+            <label for="longitude">Longitude:</label>
+            <InputText id="longitude" v-model="input.longitude" type="text" disabled/>
+          </div>
+
+          <div class="p-field">
+            <label style="color:darkgoldenrod">Cancel and close form</label>
             <Button
-                class="p-button-info p-button-text"
-                label="Close"
+                style="height: 100%"
+                class="p-button-warning p-button"
+                label="Cancel creating event"
                 type="reset"
                 @click="closeDialog"
             />
           </div>
+
+
+        </div>
+      </div>
+
+      <div>
+
+        <div class="p-field p-grid">
+
+          <div class="p-col">
+            <Button class="p-button-success p-button-raised" label="Create event" type="submit"/>
+          </div>
+
+        </div>
+        <div class="p-field">
+          <p><strong class="red">* - required fields </strong></p>
         </div>
       </div>
     </div>
@@ -46,18 +114,20 @@
 </template>
 
 <script>
-import {mapActions,mapGetters} from "vuex";
+import {mapActions, mapGetters} from "vuex";
 
 export default {
   name: "CreateEventForm",
   props: ['longitude', 'latitude', 'closeDialog'],
   data() {
     return {
+      minDate: null,
       input: {
         name: '',
         location: '',
         description: '',
         datetime: null,
+        selectedEventType: null,
         latitude: this.$store.getters.clickedPosition['latitude'].toFixed(7),
         longitude: this.$store.getters.clickedPosition['longitude'].toFixed(7),
       },
@@ -72,10 +142,16 @@ export default {
 
     }
   },
+  mounted() {
+    this.getEventTypes();
+    this.minDate = new Date();
+  },
+
   computed:
       {
         ...mapGetters([
-            'clickedPosition'
+          'clickedPosition',
+          'eventTypes'
         ])
       },
   methods: {
@@ -83,8 +159,10 @@ export default {
       'setIsApiSyncActive',
       'setResponseError',
       'createEvent',
-        'setClickedPosition'
+      'setClickedPosition',
+      'getEventTypes'
     ]),
+
 
     async submitForm() {
       this.setResponseError('');
@@ -108,7 +186,7 @@ export default {
       }
 
 
-       await this.createEvent(formData)
+      await this.createEvent(formData)
       this.setClickedPosition(null);
     },
 
@@ -131,8 +209,8 @@ export default {
       if (this.input.location === '')
         this.errors.location += 'Location field is required.';
 
-      if (this.input.description === '')
-        this.errors.description += 'Description field is required.';
+      // if (this.input.description === '')
+      //   this.errors.description += 'Description field is required.';
 
       //password
       if (this.input.datetime === null)
@@ -167,6 +245,16 @@ label {
   font-weight: bold;
   margin-bottom: 0.5rem;
   display: block;
+}
+
+#latitude, #longitude {
+  color: red;
+  text-align: center;
+  opacity: 0.8;
+}
+
+.red {
+  color: red;
 }
 
 input,

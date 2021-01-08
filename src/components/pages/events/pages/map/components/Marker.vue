@@ -28,7 +28,6 @@ export default {
     },
 
     'marker.map': function (newVal) {
-      console.log(newVal);
       if (!newVal) this.marker.setVisible(newVal);
     },
 

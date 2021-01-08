@@ -3,6 +3,7 @@ import api from '@/api'
 export default {
     state() {
         return {
+            event: null,
             events: [],
             createdEvents: [],
             eventTypes: [],
@@ -16,6 +17,9 @@ export default {
         }
     },
     getters: {
+        event(state) {
+            return state.event;
+        },
         events(state) {
             return state.events;
         },
@@ -56,6 +60,9 @@ export default {
         },
         setEvents(state, payload) {
             state.events = payload;
+        },
+        setEvent(state, payload) {
+            state.event = payload;
         },
         setCreatedEvents(state, payload) {
             state.createdEvents = payload;
@@ -142,6 +149,23 @@ export default {
                 console.log(response)
                 context.commit('setResponseMessage', response.data.message);
 
+            } catch (error) {
+                const handledError = api.handleResponseError(error);
+                context.commit('setResponseError', handledError);
+            }
+            context.commit('setIsApiSyncActive', false);
+        },
+
+        async getEvent(context,id) {
+            context.commit('setResponseError', '');
+            context.commit('setIsApiSyncActive', true);
+            try {
+                const response = await api.events.getEvent(id,{
+                    params: {wrap: true},
+                });
+                const data = response.data.data;
+                context.commit('setEvent', data);
+                console.log(data);
             } catch (error) {
                 const handledError = api.handleResponseError(error);
                 context.commit('setResponseError', handledError);

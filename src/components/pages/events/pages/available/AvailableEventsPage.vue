@@ -1,13 +1,5 @@
 <template>
-<!--<ul  >-->
-<!--<li v-for="event in eventList" :key="event" >-->
-<!--  <p><strong>Name: </strong> {{event.name}}</p>-->
-<!--  <p><strong>Description: </strong> {{event.description}}</p>-->
-<!--  <p><strong>Date: </strong> {{event.datetime}}</p>-->
-<!--  <p><strong>Distance: </strong> {{event.distance}} km</p>-->
-<!--  <Button>Participate!</Button>-->
-<!--</li>-->
-<!--</ul>-->
+
   <DataTable :value="events" :paginator="true" :rows="10"
              paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
              :rowsPerPageOptions="[10,20,50]"
@@ -16,12 +8,15 @@
              sortField="distance" :sortOrder="1"
              removableSort
              dataKey="event_id"
+             :filters="filters"
+             :loading="isApiSyncActive"
   >
-    <template #header >
+
+    <template #header>
       <div>
         <Button @click="getEvents" icon="pi pi-refresh" style="float: left" content="Refresh events"/>
-        <h3>List of Available events in <strong style="color:goldenrod">{{ searchDistance}} km</strong>  radius.</h3>
-        <span>In total there are <span style="color:green">{{events ? events.length : 0 }}</span> events.</span>
+        <h3>List of Available events in <strong style="color:goldenrod">{{ searchDistance }} km</strong> radius.</h3>
+        <span>In total there are <span style="color:green">{{ events ? events.length : 0 }}</span> events.</span>
       </div>
     </template>
 
@@ -33,43 +28,84 @@
       Loading events data. Please wait.
     </template>
 
-<!--    <Column field="event_id" header="id" :sortable="true"></Column>-->
-    <Column field="event_creator_id"  header="Owner" :sortable="true"></Column>
-    <Column field="event_type_id"  header="Event Type" :sortable="true">
+    <!--    <Column field="event_id" header="id" :sortable="true"></Column>-->
+    <Column field="event_creator_id" header="Owner" :sortable="true">
+
+
+    </Column>
+
+    <Column field="event_type_id" header="Event Type" filterMatchMode="equals">
+
       <template #filter>
-        <Dropdown v-model="filters['status']" :options="statuses" placeholder="Select a Type" class="p-column-filter" :showClear="true">
+        <Dropdown v-model="filters['event_type_id']"
+                  :options="eventTypes"
+                  optionValue="event_type_id"
+                  optionLabel="event_type_name"
+                  placeholder="Select event type"
+                  :showClear="true"
+                  class="p-dropdown-filter">
+
           <template #option="slotProps">
-            <span :class="'customer-badge status-' + slotProps.option">{{slotProps.option}}</span>
+            <span>{{ slotProps.option.event_type_name }}</span>
           </template>
+
         </Dropdown>
+      </template>
+
+      <template #body="slotProps">
+        {{ replaceIdWithName(slotProps.data.event_type_id) }}
       </template>
     </Column>
 
-    <Column field="name" header="Name" :sortable="true">
+    <Column filterField="name" header="Name" :sortable="true">
+      <template #body="slotProps">
+        {{ slotProps.data.name }}
+      </template>
 
       <template #filter>
         <InputText type="text" v-model="filters['name']" class="p-column-filter" placeholder="Search by name"/>
       </template>
-      <template #body="slotProps">
-
-        <span class="p-column-title">Name</span>
-        {{slotProps.data.name}}
-      </template>
 
     </Column>
-    <Column field="datetime" header="Date" :sortable="true"></Column>
+
+    <Column field="datetime" header="Date"  filterMatchMode="custom" :filterFunction="filterDate" :sortable="true">
+      <template #body="slotProps">
+        {{ slotProps.data.datetime }}
+      </template>
+
+<!--      <template #filter>-->
+<!--        <Calendar v-model="filters['date']" dateFormat="yy-mm-dd" class="p-column-filter" placeholder="Date"/>-->
+<!--      </template>-->
+
+    </Column>
     <Column field="location" header="Location" :sortable="true"></Column>
     <Column field="distance" header="Distance from you" :sortable="true">
       <template #body="slotProps">
-        {{slotProps.data.distance}} km
+        {{ slotProps.data.distance }} km
       </template>
     </Column>
 
+    <Column header="Actions">
+      <template #body="slotProps">
+        <!--        slotProps.data.event_id-->
+        <Button class="p-mx-1 p-my-1 p-button-info p-button-sm">Show</Button>
+        <Button v-if="isCreator(slotProps.data.event_creator_id)" class="p-mx-1 p-my-1 p-button-warning p-button-sm">
+          Edit
+        </Button>
+        <Button v-if="isCreator(slotProps.data.event_creator_id)" class="p-mx-1 p-my-1 p-button-danger p-button-sm">
+          Delete
+        </Button>
+
+        <!--        <Button class="p-mx-1 p-my-1 p-button-help p-button-sm">Join</Button>-->
+      </template>
+    </Column>
+
+
     <template #footer>
-      In total there are <span style="color:green">{{events ? events.length : 0 }}</span> events.
+      In total there are <span style="color:green">{{ events ? events.length : 0 }}</span> events.
     </template>
     <template #paginatorLeft>
-      <Button @click="getEvents" icon="pi pi-refresh" style="float: left"  content="Refresh events"/>
+      <Button @click="getEvents" icon="pi pi-refresh" style="float: left" content="Refresh events"/>
     </template>
     <template #paginatorRight>
 
@@ -79,54 +115,101 @@
 </template>
 
 <script>
-import { mapActions,mapGetters } from 'vuex';
+import {mapActions, mapGetters} from 'vuex';
+
 export default {
 
   name: "AvailableEvents",
-  data(){
+  mounted() {
+    this.getProfile();
+    this.getEvents();
+    this.eventsLocal = this.events;
+
+  },
+  watch: {
+    events() {
+      this.eventsLocal = this.events;
+    }
+  },
+  data() {
     return {
-          eventsLocal: null,
-          filters: {},
+      eventsLocal: null,
+      filters: {},
     }
   },
   computed: {
     ...mapGetters([
-        'events',
-        'searchDistance'
+      'events',
+      'searchDistance',
+      'user_id',
+      'eventTypes',
+      'isApiSyncActive'
     ]),
+
   },
-    methods: {
-      ...mapActions([
-        'getEvents'
-      ]),
-      methods: {
-        filterDate(value, filter) {
-          if (filter === undefined || filter === null || (typeof filter === 'string' && filter.trim() === '')) {
-            return true;
-          }
-
-          if (value === undefined || value === null) {
-            return false;
-          }
-
-          return value === this.formatDate(filter);
-        }
+  methods: {
+    ...mapActions([
+      'getEvents',
+      'getProfile'
+    ]),
+    replaceIdWithName(id) {
+      for (const el of this.eventTypes) {
+        if (el.event_type_id === id) return el.event_type_name;
       }
+      return id;
     },
-  mounted() {
-    this.getEvents();
-    this.eventsLocal = this.events;
-  }
+
+    filterDate(value, filter) {
+      const date = value.slice(0,10);
+      console.log(date);
+
+      if (filter === undefined || filter === null || (typeof filter === 'string' && filter.trim() === '')) {
+        return true;
+      }
+
+      if (value === undefined || value === null) {
+        return false;
+      }
+
+
+      return  value === this.formatDate(filter);
+    },
+
+    formatDate(date) {
+      console.log(date);
+      let month = date.getMonth() + 1;
+      let day = date.getDate();
+      // let hour = date.getHours();
+      // let minutes = date.getMinutes();
+
+
+      if (month < 10) {
+        month = '0' + month;
+      }
+
+      if (day < 10) {
+        day = '0' + day;
+      }
+
+      return date.getFullYear() + '-' + month + '-' + day;
+    },
+
+    isCreator(creator_id) {
+      return this.user_id === creator_id;
+    },
+  },
+
+
 }
 </script>
 
 <style scoped>
-ul{
+ul {
   list-style: none;
 }
 
 li {
-  display:block;
+  display: block;
   border-top: 1px solid red;
   border-bottom: 1px solid red;
 }

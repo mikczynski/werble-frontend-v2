@@ -25,5 +25,9 @@ export default {
     getEventTypes(){
         return service({requiresAuth:true})
             .get('user/types');
+    },
+    getEvent(id,params){
+        return service({requiresAuth:true})
+            .get('user/events/' + id + '/wrapped',params);
     }
 }

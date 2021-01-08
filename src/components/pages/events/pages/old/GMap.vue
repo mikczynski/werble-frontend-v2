@@ -90,41 +90,9 @@ export default {
 
 
     //calculates map bounds based on markers
-    const calcMapBounds = () => {
-      if (!props.markers.length) return;
-      const bounds = new window.google.maps.LatLngBounds();
-      props.markers.forEach((marker) => {
-        bounds.extend(new window.google.maps.LatLng(marker.latitude, marker.longitude));
-      });
-      map.value.fitBounds(bounds);
-    };
 
 
-    const addPanButton = () => {
-      //create button element
-      const panButton = document.createElement("button");
-      panButton.classList.add('p-button');
-      panButton.textContent = "Pan to your current location";
-      const infoWindow = new window.google.maps.InfoWindow();
-      map.value.controls[window.google.maps.ControlPosition.BOTTOM_CENTER].push(panButton);
 
-      panButton.addEventListener("click", () => {
-        if (store.getters.position) {
-          const pos = {
-            lat: store.getters.position.latitude,
-            lng: store.getters.position.longitude,
-          };
-
-          infoWindow.setPosition(pos);
-          infoWindow.setContent("You are here!<br> Lat: " + pos.lat.toFixed(7) + ', Lng: ' + pos.lng.toFixed(7));
-          infoWindow.open(map.value);
-          map.value.panTo(pos);
-
-          map.value.setCenter(pos);
-          map.value.setZoom(14);
-        }
-      });
-    }
 
 
     const createUserMarker = () => {

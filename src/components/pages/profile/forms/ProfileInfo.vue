@@ -57,10 +57,20 @@
           <Textarea id="description" v-model="profile.description" :disabled="!toggleEditSwitch"/>
           <InlineMessage v-if="errors.description">{{ errors.description }}</InlineMessage>
         </div>
-        <div class="p-field p-mx-auto" style="max-width: 10rem">
-          <Button :disabled="!toggleEditSwitch" class="p-d-block p-mx-auto" type="submit">
-            {{ toggleEditSwitch ? "Save profile" : "Edit profile" }}
-          </Button>
+
+        <div class="p-field p-grid p-mx-auto p-ac-center">
+          <div class="p-col-1">
+            <Button @click="refreshProfile"  class="p-button-outlined" icon="pi pi-refresh"  content="Refresh events"/>
+          </div>
+          <div class="p-col">
+            <Button :disabled="!toggleEditSwitch" class="p-d-block p-mx-auto" type="submit">
+              {{ toggleEditSwitch ? "Save profile" : "Edit profile" }}
+            </Button>
+          </div>
+
+
+
+
         </div>
         <div class="p-field">
           <label for="toggleEdit">Editing profile: </label>
@@ -107,7 +117,7 @@ export default {
   methods: {
     ...mapActions([
       'getProfile',
-      'editProfile'
+      'editProfile',
     ]),
 
     formatDate(date) {
@@ -124,6 +134,14 @@ export default {
       return date.getFullYear() + '-' + month + '-' + day;
     },
 
+    refreshProfile(){
+        this.getProfile();
+      if(this.$store.getters.profile)
+        this.$toast.add(
+            {severity:'info', summary: 'Info Message', detail:'Profile refreshed', life: 3000}
+        );
+    },
+
     async submitForm() {
       if (!this.toggleEditSwitch) return;
       this.checkForm();
@@ -138,7 +156,10 @@ export default {
 
       console.log(formData.birth_date);
       await this.editProfile(formData);
-      if(this.$store.getters.profile) this.$toast.add({severity:'success', summary: 'Success Message', detail:'Profile updated', life: 3000});
+      if(this.$store.getters.profile)
+        this.$toast.add(
+            {severity:'success', summary: 'Success Message', detail:'Profile updated', life: 3000}
+            );
     },
     resetFormErrors() {
       this.errors.any = false;
