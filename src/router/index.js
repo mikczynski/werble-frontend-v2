@@ -19,8 +19,12 @@ const router = createRouter(routerConfig);
 
 router.beforeEach((to, _, next) => {
 
-    Store.dispatch('clearResponseError');
-    Store.dispatch('setResponseMessage','');
+    if(Store.getters.responseMessage)
+        Store.dispatch('setResponseMessage','');
+
+    if(Store.getters.responseError)
+        Store.dispatch('clearResponseError');
+
 
     if (to.meta.requiresAuth && !Store.getters.isAuthenticated) {
         next('/login');

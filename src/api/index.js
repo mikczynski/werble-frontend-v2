@@ -2,6 +2,7 @@ import auth from "@/api/auth";
 import user from "@/api/user";
 import events from "@/api/events";
 import Store from "@/store"
+import Router from "@/router"
 
 export default {
     auth,
@@ -16,7 +17,13 @@ export default {
             console.log(error.response.data);
             console.log(error.response.status);
             console.log(error.response.headers);
-            if(error.response.status === 401) Store.commit('clearToken');
+            if(error.response.status === 401)
+            {
+
+                Store.commit('clearToken');
+
+                Router.push('/login');
+            }
             return error.response;
 
         } else if (error.request) {

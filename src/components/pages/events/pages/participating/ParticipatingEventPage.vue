@@ -1,13 +1,6 @@
 <template>
 <!--<ul  >-->
-<!--<li v-for="event in eventList" :key="event" >-->
-<!--  <p><strong>Name: </strong> {{event.name}}</p>-->
-<!--  <p><strong>Description: </strong> {{event.description}}</p>-->
-<!--  <p><strong>Date: </strong> {{event.datetime}}</p>-->
-<!--  <p><strong>Distance: </strong> {{event.distance}} km</p>-->
-<!--  <Button>Participate!</Button>-->
-<!--</li>-->
-<!--</ul>-->
+
   <DataTable :value="createdEvents" :paginator="true" :rows="10"
              paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
              :rowsPerPageOptions="[10,20,50]"

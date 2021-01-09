@@ -99,7 +99,8 @@ export default {
             try {
                 await api.auth.logout();
                 context.commit('clearToken');
-                await router.push('logout');
+                await router.push('/logout');
+
             } catch (error) {
                 const handledError = api.handleResponseError(error);
                 context.commit('setResponseError', handledError);

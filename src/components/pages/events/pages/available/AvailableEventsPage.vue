@@ -1,5 +1,18 @@
 <template>
 
+  <Dialog
+      header="Event info"
+      v-show="selectedEvent"
+      v-model:visible="displayDialog"
+      :contentStyle="{ width: '60vw', overflow: 'visible' }"
+      :modal="true"
+  >
+    <ShowEvent v-if="action === 'show'" :selectedEvent="selectedEvent" :closeDialog="closeDialog"></ShowEvent>
+<!--    <ShowEvent v-if="action === 'edit'" :selectedEvent="selectedEvent"></ShowEvent>-->
+<!--    <ShowEvent v-if="action === 'delete'" :selectedEvent="selectedEvent"></ShowEvent>-->
+  </Dialog>
+
+
   <DataTable :value="events" :paginator="true" :rows="10"
              paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
              :rowsPerPageOptions="[10,20,50]"
@@ -68,14 +81,14 @@
 
     </Column>
 
-    <Column field="datetime" header="Date"  filterMatchMode="custom" :filterFunction="filterDate" :sortable="true">
+    <Column field="datetime" header="Date" filterMatchMode="custom" :filterFunction="filterDate" :sortable="true">
       <template #body="slotProps">
         {{ slotProps.data.datetime }}
       </template>
 
-<!--      <template #filter>-->
-<!--        <Calendar v-model="filters['date']" dateFormat="yy-mm-dd" class="p-column-filter" placeholder="Date"/>-->
-<!--      </template>-->
+      <!--      <template #filter>-->
+      <!--        <Calendar v-model="filters['date']" dateFormat="yy-mm-dd" class="p-column-filter" placeholder="Date"/>-->
+      <!--      </template>-->
 
     </Column>
     <Column field="location" header="Location" :sortable="true"></Column>
@@ -87,12 +100,23 @@
 
     <Column header="Actions">
       <template #body="slotProps">
-        <!--        slotProps.data.event_id-->
-        <Button class="p-mx-1 p-my-1 p-button-info p-button-sm">Show</Button>
-        <Button v-if="isCreator(slotProps.data.event_creator_id)" class="p-mx-1 p-my-1 p-button-warning p-button-sm">
+        {{ slotProps.data.event_id }}
+
+          <Button
+              class="p-mx-1 p-my-1 p-button-info p-button-sm"
+              @click="showEvent(slotProps.data.event_id)"
+              label="Show info"
+
+          />
+
+        <Button v-if="isCreator(slotProps.data.event_creator_id)"
+                class="p-mx-1 p-my-1 p-button-warning p-button-sm">
+
           Edit
         </Button>
-        <Button v-if="isCreator(slotProps.data.event_creator_id)" class="p-mx-1 p-my-1 p-button-danger p-button-sm">
+
+        <Button v-if="isCreator(slotProps.data.event_creator_id)"
+                class="p-mx-1 p-my-1 p-button-danger p-button-sm">
           Delete
         </Button>
 
@@ -116,13 +140,16 @@
 
 <script>
 import {mapActions, mapGetters} from 'vuex';
+import ShowEvent from "@/components/pages/events/pages/map/components/ShowEvent";
 
 export default {
 
   name: "AvailableEvents",
+  components: {ShowEvent},
   mounted() {
     this.getProfile();
     this.getEvents();
+    this.getEventTypes();
     this.eventsLocal = this.events;
 
   },
@@ -133,7 +160,10 @@ export default {
   },
   data() {
     return {
+      action: null,
+      selectedEvent: null,
       eventsLocal: null,
+      displayDialog: false,
       filters: {},
     }
   },
@@ -143,14 +173,23 @@ export default {
       'searchDistance',
       'user_id',
       'eventTypes',
-      'isApiSyncActive'
+      'isApiSyncActive',
+
     ]),
+    actions() {
+      return {
+        show: 'show',
+        edit: 'edit',
+        delete: 'delete'
+      }
+    }
 
   },
   methods: {
     ...mapActions([
       'getEvents',
-      'getProfile'
+      'getProfile',
+        'getEventTypes'
     ]),
     replaceIdWithName(id) {
       for (const el of this.eventTypes) {
@@ -160,7 +199,7 @@ export default {
     },
 
     filterDate(value, filter) {
-      const date = value.slice(0,10);
+      const date = value.slice(0, 10);
       console.log(date);
 
       if (filter === undefined || filter === null || (typeof filter === 'string' && filter.trim() === '')) {
@@ -171,25 +210,35 @@ export default {
         return false;
       }
 
+      return value === this.formatDate(filter);
+    },
 
-      return  value === this.formatDate(filter);
+    closeDialog() {
+      this.selectedEvent = null;
+      this.action = null;
+      this.displayDialog = false
+    },
+
+    showEvent(id) {
+      console.log('showevent')
+      this.selectedEvent = id;
+      this.action = 'show';
+      console.log(this.selectedEvent)
+      console.log('action:' + this.action)
+      this.showDialog();
+    },
+
+    showDialog() {
+      this.displayDialog = true
     },
 
     formatDate(date) {
       console.log(date);
       let month = date.getMonth() + 1;
       let day = date.getDate();
-      // let hour = date.getHours();
-      // let minutes = date.getMinutes();
 
-
-      if (month < 10) {
-        month = '0' + month;
-      }
-
-      if (day < 10) {
-        day = '0' + day;
-      }
+      month = month < 10 ? '0' + month : month;
+      day = day < 10 ? '0' + day : day;
 
       return date.getFullYear() + '-' + month + '-' + day;
     },
