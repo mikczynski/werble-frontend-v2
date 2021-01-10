@@ -1,11 +1,18 @@
 <template>
-  <div v-if="event" class="p-flex">
-    <Button class="p-button">Event Info</Button>
-    <Button class="p-button">Participants</Button>
-    <Button class="p-button">Reviews</Button>
+  <div v-if="event" class="p-flex p-ac-between">
+    <!--    <div v-if="isCreator(event.event_creator_id)" class="p-field">-->
+    <!--      <label for="toggleEdit">Editing profile: </label>-->
+    <!--      <InputSwitch id="toggleEdit" v-model="toggleEditSwitch" class="p-mx-auto" @click="toggleEdit"/>-->
+  </div>
+  <Button class="p-button p-mx-1">Event Info</Button>
+  <Button class="p-button p-mx-1">Participants</Button>
+  <Button class="p-button p-mx-1">Reviews</Button>
+  <div>
+
   </div>
 
-  <form  v-if="eventLocal" @submit.prevent>
+
+  <form v-if="eventLocal" @submit.prevent>
     <div class="p-fluid">
 
       <div class="p-field">
@@ -79,16 +86,6 @@
           </div>
         </div>
       </div>
-      <div class="p-field">
-        <Button
-            style="height: 100%"
-            class="p-button-warning p-button"
-            label="Close"
-            type="reset"
-            @click="closeDialog"
-        />
-
-      </div>
 
 
       <div>
@@ -96,39 +93,57 @@
     </div>
   </form>
 
+<!--  <div class="p-justify-start">
+      <div class="p-just">
+          <h2>Name: {{ event.name}}</h2>
+          <h3>Date: {{ event.datetime}}</h3>
+      </div>-->
 
-<!--  <Button class="p-mx-1 p-my-1 p-button-info p-button-sm">Show</Button>-->
-<!--  <Button v-if="isCreator(slotProps.data.event_creator_id)" class="p-mx-1 p-my-1 p-button-warning p-button-sm">Edit</Button>-->
-<!--  <Button v-if="isCreator(slotProps.data.event_creator_id)" class="p-mx-1 p-my-1 p-button-danger p-button-sm">Delete</Button>-->
+  
+  <div class="p-field">
+    <Button
+        style="height: 100%"
+        class="p-button-warning p-button"
+        label="Close"
+        type="reset"
+        @click="closeDialog"
+    />
+
+  </div>
+
+
+  <!--  <Button class="p-mx-1 p-my-1 p-button-info p-button-sm">Show</Button>-->
+  <!--  <Button v-if="isCreator(slotProps.data.event_creator_id)" class="p-mx-1 p-my-1 p-button-warning p-button-sm">Edit</Button>-->
+  <!--  <Button v-if="isCreator(slotProps.data.event_creator_id)" class="p-mx-1 p-my-1 p-button-danger p-button-sm">Delete</Button>-->
 </template>
 
 <script>
-import {mapGetters,mapActions} from 'vuex'
+import {mapGetters, mapActions} from 'vuex'
 
 export default {
-name: "ShowEvent",
-props: ['selectedEvent','closeDialog'],
-  methods:{
-  ...mapActions(['getEvent']),
+  name: "ShowEvent",
+
+  methods: {
+    ...mapActions(['getEvent', 'closeDialog']),
   },
 
-  computed:{
-  ...mapGetters(['event']),
+  computed: {
+    ...mapGetters(['event']),
   },
 
   mounted() {
-    this.getEvent(this.selectedEvent);
+    this.eventLocal = this.event;
     console.log(this.event)
   },
 
-  data(){
+  data() {
     return {
-      eventLocal: null,
+      eventLocal: this.event,
     }
   },
 
-  watch:{
-    event(){
+  watch: {
+    event() {
       this.eventLocal = this.event;
     }
   }
@@ -137,7 +152,6 @@ props: ['selectedEvent','closeDialog'],
 </script>
 
 <style scoped>
-
 
 
 </style>

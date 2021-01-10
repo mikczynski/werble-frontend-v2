@@ -1,14 +1,4 @@
 <template>
-  <Dialog
-      header="Create event form"
-      v-model:visible="displayDialog"
-      :contentStyle="{ width: '60vw', overflow: 'visible' }"
-      :modal="true"
-  >
-    <CreateEventForm :close-dialog="closeDialog"></CreateEventForm>
-
-  </Dialog>
-
   <p v-if="position">
     Your position:
     <strong
@@ -66,7 +56,7 @@
     <div>
       <Button
           :disabled="!(clickedPosition && createEventEnabled)"
-          @click="showDialog"
+          @click="showEventCreate"
           icon="pi pi-plus"
           class="p-button-success p-mr-2 p-mb-2 "
           type="button"
@@ -101,18 +91,21 @@
 <script>
 // import TheMap from "./TheMap";
 import {mapGetters, mapActions} from 'vuex'
-import CreateEventForm from "@/components/pages/events/pages/map/forms/CreateEventForm";
 import EventsMap from "@/components/pages/events/pages/map/components/EventsMap";
 
 export default {
   components: {
     EventsMap,
-    CreateEventForm,
-    // TheMap,
 
   },
   computed: {
     ...mapGetters([
+      // dialog
+        'displayDialog',
+        'dialogChosenAction',
+        'dialogAction',
+
+
       'searchDistance',
       'searchDistanceMin',
       'searchDistanceMax',
@@ -125,7 +118,7 @@ export default {
       'googleMapsApiKey',
       'createEventEnabled',
       'geolocationLoaded',
-        'isMapLoaded'
+      'isMapLoaded'
     ]),
 
     createEventModeInfo() {
@@ -139,7 +132,6 @@ export default {
   data() {
     return {
       searchDistanceInput: 20,
-      displayDialog: false,
     };
   },
   watch: {
@@ -150,22 +142,27 @@ export default {
     },
     events() {
     },
-    displayDialog(newVal){
-      if(!newVal) this.setClickedPosition(null);
+    displayDialog(newVal) {
+      if (!newVal) this.setClickedPosition(null);
     }
   },
 
   created() {
     this.searchDistanceInput = this.searchDistance;
     this.getEvents();
+    this.getEventTypes();
   },
 
   methods: {
     ...mapActions([
+      'getEventTypes',
       'setSearchDistance',
       'getEvents',
       'setClickedPosition',
       'toggleCreateEventEnabled',
+      'showEventCreate',
+        //dialog
+      'closeDialog'
     ]),
 
     getEventsToast() {
@@ -176,14 +173,6 @@ export default {
         detail: 'Events refreshed',
         life: 3000
       });
-    },
-
-    closeDialog() {
-      this.displayDialog = false
-    },
-
-    showDialog() {
-      this.displayDialog = true
     },
   },
 };

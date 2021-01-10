@@ -1,14 +1,4 @@
 <template>
-  <Dialog
-      header="Create event form"
-      v-model:visible="displayDialog"
-      :contentStyle="{ width: '60vw', overflow: 'visible' }"
-      :modal="true"
-    >
-
-    <CreateEventForm :close-dialog="closeDialog"></CreateEventForm>
-
-  </Dialog>
 
   <!--  Google map component-->
   <GoogleMapLoader
@@ -34,10 +24,7 @@
             :event="marker"
             :position="{ lat: Number(marker.latitude), lng: Number(marker.longitude) }">
 
-          <img src="https://i2.wp.com/media3.giphy.com/media/ISOckXUybVfQ4/giphy.gif?resize=500%2C338&ssl=1"
-               style="width:50%"/>
-          <br>
-          <Button @click="alertEvent(marker)" class="p-button-sm">Show</Button>
+          <EventMarkerInfo :event="marker"/>
 
         </Marker>
 
@@ -51,6 +38,8 @@
             :openInfoWindow="true"
             type="create"
         >
+
+
           <p v-if="clickedPositionLatLng">Location for new event:
             <br><br>
             <strong>Lat:</strong> {{ clickedPositionLatLng.lat.toFixed(7) }}<br><strong>Lng:</strong>
@@ -60,7 +49,7 @@
 
           <Button
               :disabled="!(clickedPosition && createEventEnabled)"
-              @click="showDialog"
+              @click="showEventCreate"
               icon="pi pi-plus"
               class="p-button-success p-button-sm"
               type="button"
@@ -98,30 +87,24 @@
 
 <script>
 import GoogleMapLoader from "@/components/pages/events/pages/map/components/GoogleMapLoader";
-import Marker from "@/components/pages/events/pages/map/components/Marker";
+import Marker from "@/components/pages/events/pages/map/components/marker/Marker";
 import Circle from "@/components/pages/events/pages/map/components/Circle";
 
 import {mapGetters, mapActions} from 'vuex'
-import CreateEventForm from "@/components/pages/events/pages/map/forms/CreateEventForm";
-import PanButton from "@/components/pages/events/pages/map/components/PanButton";
-import ChangeBoundsButton from "@/components/pages/events/pages/map/components/ChangeBoundsButton";
+import PanButton from "@/components/pages/events/pages/map/components/map_buttons/PanButton";
+import ChangeBoundsButton from "@/components/pages/events/pages/map/components/map_buttons/ChangeBoundsButton";
+import EventMarkerInfo from "@/components/pages/events/pages/map/components/marker/EventInfo";
 
 
 export default {
   name: "EventsMap",
   components: {
+    EventMarkerInfo,
     ChangeBoundsButton,
     PanButton,
-    CreateEventForm,
     GoogleMapLoader,
     Marker,
     Circle
-  },
-
-  data() {
-    return {
-      displayDialog: false
-    }
   },
 
   computed: {
@@ -185,16 +168,8 @@ export default {
   },
 
   methods: {
-    ...mapActions(['getGeolocation','setClickedPosition']),
+    ...mapActions(['getGeolocation','setClickedPosition','showEventCreate']),
     alertEvent() {},
-
-    closeDialog() {
-      this.displayDialog = false
-    },
-
-    showDialog() {
-      this.displayDialog = true
-    },
     eventsFilter(event){
       return event.distance < this.searchDistance
     },

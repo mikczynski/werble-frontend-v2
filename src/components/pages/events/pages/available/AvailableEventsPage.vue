@@ -1,18 +1,5 @@
 <template>
 
-  <Dialog
-      header="Event info"
-      v-show="selectedEvent"
-      v-model:visible="displayDialog"
-      :contentStyle="{ width: '60vw', overflow: 'visible' }"
-      :modal="true"
-  >
-    <ShowEvent v-if="action === 'show'" :selectedEvent="selectedEvent" :closeDialog="closeDialog"></ShowEvent>
-<!--    <ShowEvent v-if="action === 'edit'" :selectedEvent="selectedEvent"></ShowEvent>-->
-<!--    <ShowEvent v-if="action === 'delete'" :selectedEvent="selectedEvent"></ShowEvent>-->
-  </Dialog>
-
-
   <DataTable :value="events" :paginator="true" :rows="10"
              paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
              :rowsPerPageOptions="[10,20,50]"
@@ -42,8 +29,17 @@
     </template>
 
     <!--    <Column field="event_id" header="id" :sortable="true"></Column>-->
-    <Column field="event_creator_id" header="Owner" :sortable="true">
 
+
+
+    <Column filterField="name" header="Name" :sortable="true">
+      <template #body="slotProps">
+        {{ slotProps.data.name }}
+      </template>
+
+      <template #filter>
+        <InputText type="text" v-model="filters['name']" class="p-column-filter" placeholder="Search by name"/>
+      </template>
 
     </Column>
 
@@ -70,16 +66,7 @@
       </template>
     </Column>
 
-    <Column filterField="name" header="Name" :sortable="true">
-      <template #body="slotProps">
-        {{ slotProps.data.name }}
-      </template>
 
-      <template #filter>
-        <InputText type="text" v-model="filters['name']" class="p-column-filter" placeholder="Search by name"/>
-      </template>
-
-    </Column>
 
     <Column field="datetime" header="Date" filterMatchMode="custom" :filterFunction="filterDate" :sortable="true">
       <template #body="slotProps">
@@ -92,6 +79,9 @@
 
     </Column>
     <Column field="location" header="Location" :sortable="true"></Column>
+
+    <Column field="event_creator_id" header="Owner" :sortable="true">
+    </Column>
     <Column field="distance" header="Distance from you" :sortable="true">
       <template #body="slotProps">
         {{ slotProps.data.distance }} km
@@ -104,9 +94,8 @@
 
           <Button
               class="p-mx-1 p-my-1 p-button-info p-button-sm"
-              @click="showEvent(slotProps.data.event_id)"
+              @click="showEventInfo(slotProps.data.event_id)"
               label="Show info"
-
           />
 
         <Button v-if="isCreator(slotProps.data.event_creator_id)"
@@ -140,12 +129,11 @@
 
 <script>
 import {mapActions, mapGetters} from 'vuex';
-import ShowEvent from "@/components/pages/events/pages/map/components/ShowEvent";
 
 export default {
 
   name: "AvailableEvents",
-  components: {ShowEvent},
+  components: {},
   mounted() {
     this.getProfile();
     this.getEvents();
@@ -189,7 +177,8 @@ export default {
     ...mapActions([
       'getEvents',
       'getProfile',
-        'getEventTypes'
+        'getEventTypes',
+        'showEventInfo'
     ]),
     replaceIdWithName(id) {
       for (const el of this.eventTypes) {
@@ -211,25 +200,6 @@ export default {
       }
 
       return value === this.formatDate(filter);
-    },
-
-    closeDialog() {
-      this.selectedEvent = null;
-      this.action = null;
-      this.displayDialog = false
-    },
-
-    showEvent(id) {
-      console.log('showevent')
-      this.selectedEvent = id;
-      this.action = 'show';
-      console.log(this.selectedEvent)
-      console.log('action:' + this.action)
-      this.showDialog();
-    },
-
-    showDialog() {
-      this.displayDialog = true
     },
 
     formatDate(date) {

@@ -118,7 +118,7 @@ import {mapActions, mapGetters} from "vuex";
 
 export default {
   name: "CreateEventForm",
-  props: ['longitude', 'latitude', 'closeDialog'],
+  props: ['longitude', 'latitude'],
   data() {
     return {
       minDate: null,
@@ -160,7 +160,8 @@ export default {
       'setResponseError',
       'createEvent',
       'setClickedPosition',
-      'getEventTypes'
+      'getEventTypes',
+        'closeDialog'
     ]),
 
 
@@ -185,9 +186,12 @@ export default {
         latitude: this.input['latitude'],
       }
 
-
       await this.createEvent(formData)
       this.setClickedPosition(null);
+      this.closeDialog();
+      this.$toast.add(
+          {severity:'success', summary: 'Success Message', detail:'Event created', life: 3000}
+      );
     },
 
     resetFormErrors() {
