@@ -149,7 +149,7 @@ export default {
 
   created() {
     this.searchDistanceInput = this.searchDistance;
-    this.getEvents();
+    this.getEventsToast();
     this.getEventTypes();
   },
 
@@ -166,7 +166,8 @@ export default {
     ]),
 
     getEventsToast() {
-      this.getEvents();
+      this.getEvents({with_participants: true});
+      console.log(this.events);
       if (this.events) this.$toast.add({
         severity: 'success',
         summary: 'Success Message',

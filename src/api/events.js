@@ -5,6 +5,10 @@ export default {
         return service({requiresAuth:true})
             .get('user/events/local',params);
     },
+    getEventsWrapped(params){
+        return service({requiresAuth:true})
+            .get('user/events/local/wrapped',params);
+    },
     getCreatedEvents(params){
         return service({requiresAuth:true})
             .get('user/events',params);
@@ -29,5 +33,13 @@ export default {
     getEvent(id,params){
         return service({requiresAuth:true})
             .get('user/events/' + id + '/wrapped',params);
-    }
+    },
+    joinEvent(id,params){
+        return service({requiresAuth:true})
+            .post('user/events/' + id + '/join',params);
+    },
+    leaveEvent(id,params){
+        return service({requiresAuth:true})
+            .delete('user/events/' + id + '/leave',params);
+    },
 }

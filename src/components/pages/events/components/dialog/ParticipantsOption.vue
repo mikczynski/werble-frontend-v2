@@ -1,6 +1,5 @@
 <template>
-
-  <DataTable :value="events" :paginator="true" :rows="10"
+  <DataTable :value="event.participants" :paginator="true" :rows="10"
              paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
              :rowsPerPageOptions="[10,20,50]"
              currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
@@ -92,11 +91,11 @@
       <template #body="slotProps">
         {{ slotProps.data.event_id }}
 
-          <Button
-              class="p-mx-1 p-my-1 p-button-info p-button-sm"
-              @click="showEventInfo(slotProps.data.event_id)"
-              label="Show info"
-          />
+        <Button
+            class="p-mx-1 p-my-1 p-button-info p-button-sm"
+            @click="showEventInfo(slotProps.data.event_id)"
+            label="Show info"
+        />
 
         <Button v-if="checkIfOwner(slotProps.data.event_creator_id)"
                 class="p-mx-1 p-my-1 p-button-warning p-button-sm">
@@ -124,139 +123,21 @@
 
     </template>
   </DataTable>
-
 </template>
 
 <script>
-import {mapActions, mapGetters} from 'vuex';
-
 export default {
-
-  name: "AvailableEvents",
-  components: {},
-  mounted() {
-    this.getProfile();
-    this.getEvents();
-    this.getEventTypes();
-    this.eventsLocal = this.events;
-
-  },
-  watch: {
-    events() {
-      this.eventsLocal = this.events;
+  name: "ParticipantsOption",
+  props: ['event'],
+  data(){
+    return{
+      eventLocal: this.event,
+      filters:{},
     }
-  },
-  data() {
-    return {
-      action: null,
-      selectedEvent: null,
-      eventsLocal: null,
-      displayDialog: false,
-      filters: {},
-    }
-  },
-  computed: {
-    ...mapGetters([
-      'events',
-      'searchDistance',
-      'user_id',
-      'eventTypes',
-      'isApiSyncActive',
-
-    ]),
-    actions() {
-      return {
-        show: 'show',
-        edit: 'edit',
-        delete: 'delete'
-      }
-    }
-
-  },
-  methods: {
-    ...mapActions([
-      'getEvents',
-      'getProfile',
-        'getEventTypes',
-        'showEventInfo'
-    ]),
-    replaceIdWithName(id) {
-      for (const el of this.eventTypes) {
-        if (el.event_type_id === id) return el.event_type_name;
-      }
-      return id;
-    },
-
-    filterDate(value, filter) {
-      const date = value.slice(0, 10);
-      console.log(date);
-
-      if (filter === undefined || filter === null || (typeof filter === 'string' && filter.trim() === '')) {
-        return true;
-      }
-
-      if (value === undefined || value === null) {
-        return false;
-      }
-
-      return value === this.formatDate(filter);
-    },
-
-    formatDate(date) {
-      console.log(date);
-      let month = date.getMonth() + 1;
-      let day = date.getDate();
-
-      month = month < 10 ? '0' + month : month;
-      day = day < 10 ? '0' + day : day;
-
-      return date.getFullYear() + '-' + month + '-' + day;
-    },
-
-
-
-    async joinButtonAction(event) {
-      if(!this.eventActive(event.is_active)) return null;
-
-      if (this.checkIfOwner(event.event_creator_id)
-          && this.checkIfParticipating(event.participants))
-        return alert('EDIT');
-
-      else if (this.checkIfParticipating(event.participants))
-        return await this.leaveEvent(event.event_id) | await this.getEvents({with_participants:true});
-      else
-        return await this.joinEvent(event.event_id) |  await this.getEvents({with_participants:true});
-    },
-
-    checkIfOwner(creator_id) {
-      return this.user_id === creator_id;
-    },
-
-    checkIfParticipating(participants) {
-      for (const participant of participants)
-        if (this.user_id === participant.user_id) return true;
-      return false;
-    },
-
-    eventActive(active){
-      return !!active;
-    }
-
-  },
-
-
+  }
 }
 </script>
 
 <style scoped>
-ul {
-  list-style: none;
-}
-
-li {
-  display: block;
-  border-top: 1px solid red;
-  border-bottom: 1px solid red;
-}
 
 </style>

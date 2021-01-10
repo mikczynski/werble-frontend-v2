@@ -106,13 +106,22 @@ export default {
 
         },
 
-        async getEvents(context) {
+        async getEvents(context,with_participants) {
             context.commit('setResponseError', '');
             context.commit('setIsApiSyncActive', true);
             try {
-                const response = await api.events.getEvents({
-                    params: {distance: context.getters.searchDistance},
-                });
+                // create request params object
+                const params = {}
+
+                // add params to object if they exist
+                if(context.getters.searchDistance)
+                    params.distance= context.getters.searchDistance
+                if(with_participants)
+                    params.with_participants = with_participants;
+
+                console.log(params)
+                const response = await api.events.getEvents({params : params});
+
                 const data = response.data.data;
                 context.commit('setEvents', data);
                 console.log(data);
@@ -172,5 +181,33 @@ export default {
             }
             context.commit('setIsApiSyncActive', false);
         },
+
+        async joinEvent(context,id){
+            context.commit('setResponseError', '');
+            context.commit('setIsApiSyncActive', true);
+            try {
+                const response = await api.events.joinEvent(id);
+                const data = response.data.data;
+                console.log(data);
+            } catch (error) {
+                const handledError = api.handleResponseError(error);
+                context.commit('setResponseError', handledError);
+            }
+            context.commit('setIsApiSyncActive', false);
+        },
+
+        async leaveEvent(context,id){
+            context.commit('setResponseError', '');
+            context.commit('setIsApiSyncActive', true);
+            try {
+                const response = await api.events.leaveEvent(id);
+                const data = response.data.data;
+                console.log(data);
+            } catch (error) {
+                const handledError = api.handleResponseError(error);
+                context.commit('setResponseError', handledError);
+            }
+            context.commit('setIsApiSyncActive', false);
+        }
     },
 }
