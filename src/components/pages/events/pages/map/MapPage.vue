@@ -157,6 +157,7 @@ export default {
       'closeDialog'
     ]),
     getEventsToast() {
+
       this.getEvents({with_participants: true});
       console.log(this.events);
       if (this.events) this.$toast.add({

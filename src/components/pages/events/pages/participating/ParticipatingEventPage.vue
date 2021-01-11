@@ -140,11 +140,11 @@ export default {
 
   name: "LocalEvents",
   components: {},
-  mounted() {
-    this.getProfile();
-    this.getEventTypes();
+  async mounted() {
+    await this.getEvents();
+    await this.getProfile();
+    await this.getEventTypes();
     this.eventsLocal = this.events;
-
   },
   watch: {
     events() {

@@ -1,5 +1,5 @@
 <template>
-  <DataTable :value="eventsLocal" :paginator="true" :rows="10"
+  <DataTable :value="events" :paginator="true" :rows="10"
              paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
              :rowsPerPageOptions="[10,20,50]"
              currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
@@ -140,9 +140,10 @@ export default {
 
   name: "LocalEvents",
   components: {},
-  mounted() {
-    this.getProfile();
-    this.getEventTypes();
+  async mounted() {
+    await this.getEvents();
+    await this.getProfile();
+    await this.getEventTypes();
     this.eventsLocal = this.events;
 
   },
