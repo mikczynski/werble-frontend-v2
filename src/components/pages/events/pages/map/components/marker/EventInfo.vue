@@ -3,14 +3,17 @@
     event_id: {{ event.event_id }}
     <div><strong>Name: </strong>{{ event.name }}<br></div>
     <div><strong>Type: </strong>{{ replaceId(event.event_type_id) }}<br></div>
-    <div><strong>Date: </strong>{{ event.datetime }}<br></div>
+    <div><strong>Start date: </strong>{{ event.start_datetime }}<br></div>
+    <div><strong>End date: </strong>{{ event.end_datetime }}<br></div>
     <div><strong>Owner: </strong>{{ event.event_creator_id }}</div>
     <div><strong>Distance from you: </strong>{{ event.distance }} km<br></div>
-    <div><strong>Is active?:</strong>   <span :style="{'color': event.is_active ? 'green' : 'red' }">{{ event.is_active ? 'Yes' : 'No'}}</span></div>
+    <div><strong>Status:</strong> <span :style="{'color': color }">{{ status() }}</span>
+    </div>
+    <br>
     <Button
         class=" p-d-inline p-mx-1 p-my-1 p-button-info p-button-sm"
         @click="showEventInfo(event.event_id)"
-        :disable="eventActive"
+        :disable="Boolean(this.event.status)"
         label="Show info"
     />
 
@@ -33,8 +36,23 @@ export default {
   components: {},
   computed: {
     ...mapGetters(['eventTypes', ['user_id']]),
+    color() {
+      let color = 'black';
+      switch (this.event.status) {
+        case 0:
+          color = 'red';
+          break;
+        case 1:
+          color = 'goldenrod';
+          break;
+        case 2:
+          color = 'green';
+          break;
+      }
+      return color;
+    },
     joinButtonText() {
-      if(!this.eventActive()) return 'Event ended'
+      if (!this.status()) return 'Event ended'
 
       if (this.checkIfOwner() && this.checkIfParticipating())
         return 'Edit'
@@ -54,7 +72,7 @@ export default {
     event: {type: Object, required: true},
   },
   methods: {
-    ...mapActions(['showEventInfo', 'joinEvent', 'leaveEvent','getEvents']),
+    ...mapActions(['showEventInfo', 'joinEvent', 'leaveEvent', 'getEvents']),
 
     replaceId(id) {
       for (const el of this.eventTypes) {
@@ -64,16 +82,13 @@ export default {
     },
 
 
-
-
-
     async joinButtonAction() {
       if (this.checkIfOwner() && this.checkIfParticipating())
         return alert('EDIT');
       else if (this.checkIfParticipating())
-        return await this.leaveEvent(this.event.event_id) | await this.getEvents({with_participants:true});
+        return await this.leaveEvent(this.event.event_id) | await this.getEvents({with_participants: true});
       else
-        return await this.joinEvent(this.event.event_id) |  await this.getEvents({with_participants:true});
+        return await this.joinEvent(this.event.event_id) | await this.getEvents({with_participants: true});
     },
 
     checkIfOwner() {
@@ -87,8 +102,21 @@ export default {
       return false;
     },
 
-    eventActive(){
-      return !!this.event.is_active;
+    status() {
+      let status;
+      switch (this.event.status) {
+        case 0:
+          status = 'Ended';
+          break;
+        case 1:
+          status = 'Started';
+          break;
+        case 2:
+          status = 'Not started yet';
+          break;
+      }
+
+      return status;
     }
   }
 

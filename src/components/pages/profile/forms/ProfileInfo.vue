@@ -38,17 +38,6 @@
         </div>
         <div class="p-field">
           <label for="birth_date">Birth date:</label>
-
-
-<!--          <Calendar id="birth_date"-->
-<!--                    v-model="profile.birth_date"-->
-<!--                    dateFormat="yy-mm-dd"-->
-<!--                    placeholder="Birth Date"-->
-<!--                    :disabled="!toggleEditSwitch"-->
-<!--                    :maxDate="maxDate"-->
-<!--                    :yearNavigator="true"-->
-<!--                    :yearRange="yearRange"-->
-<!--        />-->
           <InputText id="birth_date" v-model="profile.birth_date" :disabled="!toggleEditSwitch" type="date" :max="maxDate"/>
           <InlineMessage v-if="errors.birth_date">{{ errors.birth_date }}</InlineMessage>
         </div>

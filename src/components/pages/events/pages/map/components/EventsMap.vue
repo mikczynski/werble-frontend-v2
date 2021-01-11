@@ -15,8 +15,9 @@
         <Circle :map="map" :google="google" :radius="searchDistance"></Circle>
 
         <!-- Creates event markers from array -->
+
         <Marker
-            v-for="marker in markers"
+            v-for="marker in events"
             :map="map"
             :visible="eventsFilter(marker)"
             :google="google"
@@ -168,13 +169,30 @@ export default {
   },
 
   methods: {
-    ...mapActions(['getGeolocation','setClickedPosition','showEventCreate']),
+    ...mapActions(['getGeolocation','setClickedPosition','showEventCreate','getEvents','getEventTypes']),
     alertEvent() {},
     eventsFilter(event){
       return event.distance < this.searchDistance
     },
+    getEventsToast() {
+      this.getEvents({with_participants: true});
+      console.log(this.events);
+      if (this.events) this.$toast.add({
+        severity: 'success',
+        summary: 'Success Message',
+        detail: 'Events refreshed',
+        life: 1500
+      });
+    },
 
   },
+  async mounted() {
+    this.searchDistanceInput = this.searchDistance;
+    await this.getEventTypes();
+    await this.getEventsToast();
+  },
+
+
 }
 </script>
 

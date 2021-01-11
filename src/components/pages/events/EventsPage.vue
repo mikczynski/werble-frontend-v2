@@ -11,8 +11,8 @@
       :modal="true"
   >
     <show-event v-if="event && show"></show-event>
-    <create-event-form v-if="clickedPosition && create"></create-event-form>
-
+<!--    <create-event-form v-if="clickedPosition && create"></create-event-form>-->
+    <CreateEvent2 v-if="clickedPosition && create"></CreateEvent2>
   </Dialog>
 
 </template>
@@ -22,10 +22,13 @@
 import EventsNav from "@/components/pages/events/components/EventsNav";
 import {mapActions, mapGetters} from "vuex";
 import ShowEvent from "@/components/pages/events/components/dialog/ShowEvent";
-import CreateEventForm from "@/components/pages/events/components/dialog/CreateEvent";
+// import CreateEventForm from "@/components/pages/events/components/dialog/CreateEvent";
+import CreateEvent2 from "@/components/pages/events/components/dialog/CreateEvent2";
 
 export default {
-  components: {CreateEventForm, ShowEvent,  EventsNav},
+  components: {CreateEvent2,
+    // CreateEventForm,
+    ShowEvent,  EventsNav},
   data() {
     return {
       display:false,

@@ -47,9 +47,8 @@
           :max="searchDistanceMax"
           :min="searchDistanceMin"
           :step="searchDistanceStep"
-
-          @slideEnd="alert($event)"
           class="p-mt-2 p-pb-0"
+          @slideend="getEventsToast"
       />
     </div>
 
@@ -111,7 +110,6 @@ export default {
       'searchDistanceMax',
       'searchDistanceStep',
       'searchDistanceKM',
-      'events',
       'position',
       'profile',
       'clickedPosition',
@@ -147,24 +145,17 @@ export default {
     }
   },
 
-  created() {
-    this.searchDistanceInput = this.searchDistance;
-    this.getEventsToast();
-    this.getEventTypes();
-  },
+
 
   methods: {
     ...mapActions([
-      'getEventTypes',
       'setSearchDistance',
-      'getEvents',
       'setClickedPosition',
       'toggleCreateEventEnabled',
       'showEventCreate',
-        //dialog
+      'getEvents',
       'closeDialog'
     ]),
-
     getEventsToast() {
       this.getEvents({with_participants: true});
       console.log(this.events);
@@ -172,9 +163,11 @@ export default {
         severity: 'success',
         summary: 'Success Message',
         detail: 'Events refreshed',
-        life: 3000
+        life: 1500
       });
     },
+
+
   },
 };
 </script>

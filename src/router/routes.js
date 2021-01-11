@@ -4,7 +4,7 @@ import LogoutPage from "@/components/pages/auth/LogoutPage";
 import Home from "@/components/pages/home/Home";
 import EventsPage from "@/components/pages/events/EventsPage";
 import MapPage from "@/components/pages/events/pages/map/MapPage";
-import AvailableEventsPage from "@/components/pages/events/pages/available/AvailableEventsPage"
+import AvailableEventsPage from "@/components/pages/events/pages/local/LocalEventsPage"
 import ProfilePage from "@/components/pages/profile/ProfilePage";
 import ProfileInfo from "@/components/pages/profile/forms/ProfileInfo";
 import CreatedEventsPage from "@/components/pages/events/pages/created/CreatedEventsPage";
@@ -33,9 +33,9 @@ export default [
         redirect: {name: 'events-map'},
         children: [
             {path: 'map', component: MapPage, name: 'events-map'},
-            {path: 'created', component: CreatedEventsPage, name: 'events-created'},
+            {path: 'owned', component: CreatedEventsPage, name: 'events-owned'},
             {path: 'participating', component: NotFoundPage, name: 'events-participating'},
-            {path: 'available', component: AvailableEventsPage, name: 'events-available'},
+            {path: 'local', component: AvailableEventsPage, name: 'events-local'},
         ]
     },
     {

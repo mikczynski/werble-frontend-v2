@@ -154,6 +154,8 @@ export default {
   },
 
   unmounted() {
+    this.marker.infoWindow.setMap(null);
+    this.marker.infoWindow = null;
     this.marker.setMap(null);
     this.marker = null;
   }

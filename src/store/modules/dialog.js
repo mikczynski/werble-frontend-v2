@@ -27,6 +27,7 @@ export default {
             state.displayDialog = true;
         }
     },
+
     actions: {
         setDisplayDialog: (context, payload) => {
             context.commit("setDisplayDialog", payload)

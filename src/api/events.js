@@ -42,4 +42,17 @@ export default {
         return service({requiresAuth:true})
             .delete('user/events/' + id + '/leave',params);
     },
+
+    createReview(data){
+        return service({requiresAuth:true})
+            .post('user/events/review/create',data);
+    },
+    editReview(id,data){
+        return service({requiresAuth:true})
+            .put('user/events/'+ id + '/review/edit',data);
+    },
+    deleteReview(id){
+        return service({requiresAuth:true})
+            .delete('user/events/review/' + id + '/softdelete');
+    },
 }

@@ -1,6 +1,5 @@
 <template>
-
-  <DataTable :value="events" :paginator="true" :rows="10"
+  <DataTable :value="eventsLocal" :paginator="true" :rows="10"
              paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
              :rowsPerPageOptions="[10,20,50]"
              currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
@@ -15,7 +14,7 @@
     <template #header>
       <div>
         <Button @click="getEvents" icon="pi pi-refresh" style="float: left" content="Refresh events"/>
-        <h3>List of Available events in <strong style="color:goldenrod">{{ searchDistance }} km</strong> radius.</h3>
+        <h3>List of Local events in <strong style="color:goldenrod">{{ searchDistance }} km</strong> radius.</h3>
         <span>In total there are <span style="color:green">{{ events ? events.length : 0 }}</span> events.</span>
       </div>
     </template>
@@ -28,11 +27,8 @@
       Loading events data. Please wait.
     </template>
 
-    <!--    <Column field="event_id" header="id" :sortable="true"></Column>-->
 
-
-
-    <Column filterField="name" header="Name" :sortable="true">
+    <Column filterField="name" header="Event name" :sortable="true">
       <template #body="slotProps">
         {{ slotProps.data.name }}
       </template>
@@ -43,7 +39,7 @@
 
     </Column>
 
-    <Column field="event_type_id" header="Event Type" filterMatchMode="equals">
+    <Column field="event_type_id" header="Event type" filterMatchMode="equals">
 
       <template #filter>
         <Dropdown v-model="filters['event_type_id']"
@@ -67,21 +63,25 @@
     </Column>
 
 
-
-    <Column field="datetime" header="Date" filterMatchMode="custom" :filterFunction="filterDate" :sortable="true">
+    <Column field="start_datetime" header="Start date">
       <template #body="slotProps">
-        {{ slotProps.data.datetime }}
+        {{ slotProps.data.start_datetime }}
       </template>
 
-      <!--      <template #filter>-->
-      <!--        <Calendar v-model="filters['date']" dateFormat="yy-mm-dd" class="p-column-filter" placeholder="Date"/>-->
-      <!--      </template>-->
+    </Column>
+
+    <Column field="end_datetime" header="End date">
+      <template #body="slotProps">
+        {{ slotProps.data.end_datetime }}
+      </template>
 
     </Column>
+
+
     <Column field="location" header="Location" :sortable="true"></Column>
 
-    <Column field="event_creator_id" header="Owner" :sortable="true">
-    </Column>
+    <!--    <Column field="event_creator_id" header="Owner" :sortable="true"></Column>-->
+
     <Column field="distance" header="Distance from you" :sortable="true">
       <template #body="slotProps">
         {{ slotProps.data.distance }} km
@@ -92,11 +92,11 @@
       <template #body="slotProps">
         {{ slotProps.data.event_id }}
 
-          <Button
-              class="p-mx-1 p-my-1 p-button-info p-button-sm"
-              @click="showEventInfo(slotProps.data.event_id)"
-              label="Show info"
-          />
+        <Button
+            class="p-mx-1 p-my-1 p-button-info p-button-sm"
+            @click="showEventInfo(slotProps.data.event_id)"
+            label="Show info"
+        />
 
         <Button v-if="checkIfOwner(slotProps.data.event_creator_id)"
                 class="p-mx-1 p-my-1 p-button-warning p-button-sm">
@@ -132,11 +132,10 @@ import {mapActions, mapGetters} from 'vuex';
 
 export default {
 
-  name: "AvailableEvents",
+  name: "LocalEvents",
   components: {},
   mounted() {
     this.getProfile();
-    this.getEvents();
     this.getEventTypes();
     this.eventsLocal = this.events;
 
@@ -170,15 +169,39 @@ export default {
         edit: 'edit',
         delete: 'delete'
       }
-    }
+    },
+    color() {
+      let color = 'black';
+      switch (this.event.status) {
+        case 0:
+          color = 'red';
+          break;
+        case 1:
+          color = 'goldenrod';
+          break;
+        case 2:
+          color = 'green';
+          break;
+      }
+      return color;
+    },
+    joinButtonText() {
+      if (!this.status()) return 'Event ended'
 
+      if (this.checkIfOwner() && this.checkIfParticipating())
+        return 'Edit'
+      else if (this.checkIfParticipating())
+        return 'Leave'
+
+      return 'Join'
+    },
   },
   methods: {
     ...mapActions([
       'getEvents',
       'getProfile',
-        'getEventTypes',
-        'showEventInfo'
+      'getEventTypes',
+      'showEventInfo'
     ]),
     replaceIdWithName(id) {
       for (const el of this.eventTypes) {
@@ -214,18 +237,17 @@ export default {
     },
 
 
-
     async joinButtonAction(event) {
-      if(!this.eventActive(event.is_active)) return null;
+      if (!this.event.status) return null;
 
       if (this.checkIfOwner(event.event_creator_id)
           && this.checkIfParticipating(event.participants))
         return alert('EDIT');
 
       else if (this.checkIfParticipating(event.participants))
-        return await this.leaveEvent(event.event_id) | await this.getEvents({with_participants:true});
+        return await this.leaveEvent(event.event_id) | await this.getEvents({with_participants: true});
       else
-        return await this.joinEvent(event.event_id) |  await this.getEvents({with_participants:true});
+        return await this.joinEvent(event.event_id) | await this.getEvents({with_participants: true});
     },
 
     checkIfOwner(creator_id) {
@@ -238,8 +260,21 @@ export default {
       return false;
     },
 
-    eventActive(active){
-      return !!active;
+    status() {
+      let status;
+      switch (this.event.status) {
+        case 0:
+          status = 'Ended';
+          break;
+        case 1:
+          status = 'Started';
+          break;
+        case 2:
+          status = 'Not started yet';
+          break;
+      }
+
+      return status;
     }
 
   },

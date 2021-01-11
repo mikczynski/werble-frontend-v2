@@ -153,7 +153,6 @@ export default {
             context.commit('setResponseError', '');
             context.commit('setIsApiSyncActive', true);
             try {
-                await api.events.createEvent(payload);
                 const response = await api.events.createEvent(payload);
                 console.log(response)
                 context.commit('setResponseMessage', response.data.message);
@@ -174,7 +173,6 @@ export default {
                 });
                 const data = response.data.data;
                 context.commit('setEvent', data);
-                console.log(data);
             } catch (error) {
                 const handledError = api.handleResponseError(error);
                 context.commit('setResponseError', handledError);
@@ -208,6 +206,48 @@ export default {
                 context.commit('setResponseError', handledError);
             }
             context.commit('setIsApiSyncActive', false);
+        },
+
+        async createReview(context,payload){
+            context.commit('setResponseError', '');
+            context.commit('setIsApiSyncActive', true);
+            try {
+                console.log('action create')
+                await api.events.createReview(payload);
+            } catch (error) {
+                const handledError = api.handleResponseError(error);
+                context.commit('setResponseError', handledError);
+            }
+            context.commit('setIsApiSyncActive', false);
+        },
+
+
+        async editReview(context,payload){
+            context.commit('setResponseError', '');
+            context.commit('setIsApiSyncActive', true);
+
+            try {
+                await api.events.editReview(payload.event_id,payload.form_data);
+            } catch (error) {
+                const handledError = api.handleResponseError(error);
+                context.commit('setResponseError', handledError);
+            }
+            context.commit('setIsApiSyncActive', false);
+        },
+
+
+        async deleteReview(context,id){
+            context.commit('setResponseError', '');
+            context.commit('setIsApiSyncActive', true);
+            try {
+                await api.events.deleteReview(id);
+            } catch (error) {
+                const handledError = api.handleResponseError(error);
+                context.commit('setResponseError', handledError);
+            }
+            context.commit('setIsApiSyncActive', false);
         }
+
+
     },
 }

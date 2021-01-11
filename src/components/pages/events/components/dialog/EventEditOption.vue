@@ -1,5 +1,5 @@
 <template>
-  <h2>Create Event</h2>
+  <h2>Edit Event</h2>
   <form @submit.prevent="submitForm">
     <div class="p-fluid">
 
@@ -173,7 +173,7 @@ export default {
       'createEvent',
       'setClickedPosition',
       'getEventTypes',
-        'closeDialog'
+      'closeDialog'
     ]),
 
 
