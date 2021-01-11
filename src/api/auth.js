@@ -17,6 +17,10 @@ export default {
         return service({requiresAuth: true})
             .post('logout');
     },
+    logout_all(){
+        return service({requiresAuth: true})
+            .post('logout_all');
+    },
     changePassword(data) {
         return service({requiresAuth: true})
             .put('/user/profile/editpassword', data);

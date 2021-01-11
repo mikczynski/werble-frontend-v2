@@ -13,4 +13,9 @@ export default {
         return service({requiresAuth:true})
             .put('user/position',data,config);
     },
+    deactivate(){
+        return service({requiresAuth:true})
+            .delete('user/profile/deactivate');
+    },
+
 }

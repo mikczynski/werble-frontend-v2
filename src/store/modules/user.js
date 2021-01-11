@@ -1,4 +1,5 @@
 import api from '@/api'
+import router from "@/router";
 
 export default {
     state: () => {
@@ -51,6 +52,22 @@ export default {
 
         setIsAdmin(context, payload) {
             context.commit('setIsAdmin',payload);
+        },
+
+        async deactivate(context){
+            context.commit('setResponseError','');
+            context.commit('setIsApiSyncActive',true);
+            try
+            {
+                await api.user.deactivate();
+                await api.auth.logout();
+                await router.push('/logout');
+            }
+            catch(error){
+                const handledError = api.handleResponseError(error);
+                context.commit('setResponseError',handledError);
+            }
+            context.commit('setIsApiSyncActive',false);
         },
 
         async getProfile(context){

@@ -109,6 +109,22 @@ export default {
             console.log('(modules/auth.js) afterLogout: isAuthenticated:' + context.getters.isAuthenticated);
         },
 
+        async logout_all(context) {
+            context.commit('setResponseError', '');
+            context.commit('setIsApiSyncActive', true);
+            try {
+                await api.auth.logout_all();
+                context.commit('clearToken');
+                await router.push('/logout');
+
+            } catch (error) {
+                const handledError = api.handleResponseError(error);
+                context.commit('setResponseError', handledError);
+            }
+            context.commit('setIsApiSyncActive', false);
+            console.log('(modules/auth.js) afterLogout: isAuthenticated:' + context.getters.isAuthenticated);
+        },
+
         async changePassword(context,data) {
             context.commit('setResponseError', '');
             context.commit('setIsApiSyncActive', true);
