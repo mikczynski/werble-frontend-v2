@@ -60,7 +60,6 @@ export default {
             try
             {
                 await api.user.deactivate();
-                await api.auth.logout();
                 await router.push('/logout');
             }
             catch(error){
