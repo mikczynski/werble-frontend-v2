@@ -109,9 +109,31 @@ export default {
             console.log('(modules/auth.js) afterLogout: isAuthenticated:' + context.getters.isAuthenticated);
         },
 
-        async resetPassword() {
-            alert('TO DO: RESET-PASSWORD');
-        }
+        async changePassword(context,data) {
+            context.commit('setResponseError', '');
+            context.commit('setIsApiSyncActive', true);
+            try {
+                await api.auth.changePassword(data);
+
+            } catch (error) {
+                const handledError = api.handleResponseError(error);
+                context.commit('setResponseError', handledError);
+            }
+            context.commit('setIsApiSyncActive', false);
+        },
+
+        async changeEmail(context,data) {
+            context.commit('setResponseError', '');
+            context.commit('setIsApiSyncActive', true);
+            try {
+                await api.auth.changeEmail(data);
+
+            } catch (error) {
+                const handledError = api.handleResponseError(error);
+                context.commit('setResponseError', handledError);
+            }
+            context.commit('setIsApiSyncActive', false);
+        },
 
     },
 }

@@ -9,6 +9,7 @@ import ProfilePage from "@/components/pages/profile/ProfilePage";
 import ProfileInfo from "@/components/pages/profile/forms/ProfileInfo";
 import OwnedEventsPage from "@/components/pages/events/pages/Owned/OwnedEventsPage";
 import ParticipatingEventPage from "@/components/pages/events/pages/participating/ParticipatingEventPage";
+import Settings from "@/components/pages/profile/Settings";
 
 export default [
     //Not found placeholder
@@ -47,7 +48,7 @@ export default [
         redirect: {name: 'profile-info'},
         children: [
             {path: 'info', component: ProfileInfo, name: 'profile-info'},
-            {path: 'settings', component: NotFoundPage, name: 'profile-settings'},
+            {path: 'settings', component: Settings, name: 'profile-settings'},
         ]
     },
     {path: '/friend', component: NotFoundPage, name: 'participating', meta: {requiresAuth: true}},
