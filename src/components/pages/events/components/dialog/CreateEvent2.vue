@@ -195,7 +195,7 @@ export default {
           this.setClickedPosition(null);
           this.closeDialog();
           this.$toast.add(
-              {severity: 'success', summary: 'Success Message', detail: 'Event created', life: 1500}
+              {severity: 'success', summary: 'Success Message', detail: 'Event Owned', life: 1500}
           );
         },
 

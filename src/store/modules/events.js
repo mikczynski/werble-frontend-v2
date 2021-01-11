@@ -29,6 +29,9 @@ export default {
         createdEvents(state) {
             return state.createdEvents;
         },
+        participatingEvents(state){
+            return state.participatingEvents;
+        },
         searchDistance(state) {
             return state.searchDistance;
         },
@@ -67,6 +70,9 @@ export default {
         setCreatedEvents(state, payload) {
             state.createdEvents = payload;
         },
+        setParticipatingEvents(state, payload) {
+            state.participatingEvents = payload;
+        },
         toggleCreateEventEnabled(state) {
             state.createEventEnabled = !state.createEventEnabled;
         },
@@ -97,7 +103,6 @@ export default {
                 const response = await api.events.getEventTypes();
                 const data = response.data.data;
                 context.commit('setEventTypes', data);
-                console.log(data);
             } catch (error) {
                 const handledError = api.handleResponseError(error);
                 context.commit('setResponseError', handledError);
@@ -106,7 +111,7 @@ export default {
 
         },
 
-        async getEvents(context,with_participants) {
+        async getEvents(context,with_participants = true) {
             context.commit('setResponseError', '');
             context.commit('setIsApiSyncActive', true);
             try {
@@ -132,12 +137,15 @@ export default {
             context.commit('setIsApiSyncActive', false);
         },
 
-        async getCreatedEvents(context) {
+        async getCreatedEvents(context,with_participants = true) {
             context.commit('setResponseError', '');
             context.commit('setIsApiSyncActive', true);
-            try {
-                const response = await api.events.getCreatedEvents(
-                    // {params: { distance: context.getters.searchDistance}},
+            try {                // create request params object
+                const params = {}
+                if(with_participants)
+                    params.with_participants = with_participants;
+                const response = await api.events.getOwnedEvents(
+                    {params: params},
                 );
                 const data = response.data.data;
                 context.commit('setCreatedEvents', data);
@@ -148,6 +156,27 @@ export default {
             }
             context.commit('setIsApiSyncActive', false);
         },
+
+        async getParticipatingEvents(context,with_participants = true) {
+            context.commit('setResponseError', '');
+            context.commit('setIsApiSyncActive', true);
+            try {                // create request params object
+                const params = {}
+                if(with_participants)
+                    params.with_participants = with_participants;
+                const response = await api.events.getParticipatingEvents(
+                    {params: params},
+                );
+                const data = response.data.data;
+                context.commit('setParticipatingEvents', data);
+                context.commit('setResponseMessage', response.data.message);
+            } catch (error) {
+                const handledError = api.handleResponseError(error);
+                context.commit('setResponseError', handledError);
+            }
+            context.commit('setIsApiSyncActive', false);
+        },
+
 
         async createEvent(context, payload) {
             context.commit('setResponseError', '');
@@ -241,6 +270,18 @@ export default {
             context.commit('setIsApiSyncActive', true);
             try {
                 await api.events.deleteReview(id);
+            } catch (error) {
+                const handledError = api.handleResponseError(error);
+                context.commit('setResponseError', handledError);
+            }
+            context.commit('setIsApiSyncActive', false);
+        },
+
+        async deleteEvent(context,id){
+            context.commit('setResponseError', '');
+            context.commit('setIsApiSyncActive', true);
+            try {
+                await api.events.deleteEvent(id);
             } catch (error) {
                 const handledError = api.handleResponseError(error);
                 context.commit('setResponseError', handledError);

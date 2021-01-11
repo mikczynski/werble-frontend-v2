@@ -35,6 +35,16 @@ export default {
       this.marker.setVisible(newVal);
     },
 
+    event(newVal){
+      if(!newVal){
+        this.marker.setVisible(newVal);
+        this.marker.infoWindow.setMap(null);
+        this.marker.infoWindow = null;
+        this.marker.setMap(null);
+        this.marker = null
+      }
+    },
+
     position(newVal) {
       this.marker.setPosition(newVal)
 
@@ -102,6 +112,7 @@ export default {
       });
     }
   },
+
 
   mounted() {
 

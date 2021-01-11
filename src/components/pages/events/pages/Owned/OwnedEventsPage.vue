@@ -167,9 +167,8 @@ export default {
       'eventTypes',
       'isApiSyncActive',
     ]),
-
     ...mapGetters({
-      events :'participatingEvents'
+      events :'createdEvents'
     }),
 
     actions() {
@@ -192,10 +191,10 @@ export default {
       'deleteEvent',
       'closeDialog'
     ]),
-    ...mapActions({
-      getEvents: 'getParticipatingEvents',
-    }),
 
+    ...mapActions({
+      getEvents: 'getCreatedEvents',
+    }),
 
     async deleteEventButton(event){
 

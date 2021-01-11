@@ -1,7 +1,7 @@
 <template>
   <form @submit.prevent>
+    <p class="p-field"> <strong>Status:</strong> <strong  :style="{color: color}">{{ status }}</strong></p>
     <div class="p-fluid p-formgrid p-grid">
-
       <div class="p-field p-col-12 p-md-6">
         <label for="name">Event name:</label>
         <InputText :disabled="noEdit" id="name" v-model="eventLocal.name" type="text"/>
@@ -80,22 +80,29 @@
       <Button class="p-button-success p-button-raised" label="Create event" type="submit"/>
     </div>
 
-    <div class="p-mt-2 p-fluid p-formgrid p-grid" v-if="false">
-      <div class="p-field p-col-4">
-        <Button
+    <div class="p-mt-2 p-field p-fluid">
+      <Button
 
-            class="p-button-warning p-button"
-            label="Cancel"
-            type="reset"
-            @click="closeDialog"
-        />
-      </div>
+          class="p-button-secondary p-button"
+          :label="joinButtonText"
+          @click="joinButtonAction"
+          type="button"
+      />
 
-      <div class="p-field p-col" v-if="false">
-        <p><strong class="red">* - required fields </strong></p>
-      </div>
+
     </div>
+    <Button
+        class="p-button-danger p-button-outlined"
+
+        label="Delete event"
+        v-if="checkIfOwner"
+        @click="deleteEvent(event.event_id)"
+        type="button"
+    />
   </form>
+
+
+
 </template>
 
 <script>
@@ -128,13 +135,75 @@ name: "EventInfoOption",
       }
   },
   computed: {
-    ...mapGetters(['eventTypes']),
+    ...mapGetters(['eventTypes','user_id']),
+    status() {
+      let status;
+      switch (this.event.status) {
+        case 0:
+          status = 'Ended';
+          break;
+        case 1:
+          status = 'Started';
+          break;
+        case 2:
+          status = 'Not started yet';
+          break;
+      }
+
+      return status;
+    },
+    color() {
+      let color = 'black';
+      switch (this.event.status) {
+        case 0:
+          color = 'red';
+          break;
+        case 1:
+          color = 'goldenrod';
+          break;
+        case 2:
+          color = 'green';
+          break;
+      }
+      return color;
+    },
+    joinButtonText() {
+      if (!this.event.status) return 'Event ended'
+
+      if (this.checkIfOwner && this.checkIfParticipating)
+        return 'Edit'
+      else if (this.checkIfParticipating)
+        return 'Leave'
+
+      return 'Join'
+    },
+
+    checkIfOwner() {
+      return this.user_id === this.event.event_creator_id;
+    },
+
+    checkIfParticipating() {
+      for (const participant of this.event.participants)
+        if (this.user_id === participant.user_id) return true;
+      // console.log(participant);
+      return false;
+    },
+
   },
   methods:{
-    ...mapActions(['getEventTypes']),
+    ...mapActions(['getEventTypes','joinEvent','leaveEvent','getEvents','getEvent','deleteEvent']),
     toggleEdit(){
       this.noEdit = !this.noEdit;
-    }
+    },
+    async joinButtonAction() {
+      if (this.checkIfOwner && this.checkIfParticipating)
+        return alert('EDIT');
+      else if (this.checkIfParticipating)
+        return await this.leaveEvent(this.event.event_id) | await this.getEvents({with_participants: true});
+      else
+        return await this.joinEvent(this.event.event_id) | await this.getEvents({with_participants: true});
+    },
+
   }
 }
 

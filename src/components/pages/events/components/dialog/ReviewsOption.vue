@@ -215,7 +215,7 @@ export default {
           await this.createReview(form_data);
 
           this.$toast.add(
-              {severity:'success', summary: 'Success Message', detail:'Review created', life: 3000}
+              {severity:'success', summary: 'Success Message', detail:'Review Owned', life: 3000}
           );
 
           await this.getEvent(this.event.event_id)
@@ -263,7 +263,6 @@ export default {
             );
 
         }
-
 
 
         },

@@ -88,9 +88,14 @@
       </template>
     </Column>
 
+    <Column field="status" header="Status" :sortable="true">
+      <template #body="slotProps">
+        <strong :style="{color: colorStatus(slotProps.data)}"> {{ status(slotProps.data) }} </strong>
+      </template>
+    </Column>
+
     <Column header="Actions">
       <template #body="slotProps">
-        {{ slotProps.data.event_id }}
 
         <Button
             class="p-mx-1 p-my-1 p-button-info p-button-sm"
@@ -98,19 +103,20 @@
             label="Show info"
         />
 
-        <Button v-if="checkIfOwner(slotProps.data.event_creator_id)"
-                class="p-mx-1 p-my-1 p-button-warning p-button-sm">
+        <Button
+            class=" p-d-inline p-mx-1 p-my-1 p-button-secondary p-button-sm"
+            @click="joinButtonAction(slotProps.data)"
+            :label="joinButtonText(slotProps.data)"
+        />
 
-          Edit
-        </Button>
-
-        <Button v-if="checkIfOwner(slotProps.data.event_creator_id)"
-                class="p-mx-1 p-my-1 p-button-danger p-button-sm">
-          Delete
-        </Button>
-
-        <!--        <Button class="p-mx-1 p-my-1 p-button-help p-button-sm">Join</Button>-->
-      </template>
+        <Button
+            class="p-mx-1 p-my-1 p-button-danger p-button-outlined p-button-sm"
+            label="Delete"
+            v-if="checkIfOwner(slotProps.data)"
+            @click="deleteEventButton(slotProps.data);"
+            type="button"
+        />
+     </template>
     </Column>
 
 
@@ -170,39 +176,32 @@ export default {
         delete: 'delete'
       }
     },
-    color() {
-      let color = 'black';
-      switch (this.event.status) {
-        case 0:
-          color = 'red';
-          break;
-        case 1:
-          color = 'goldenrod';
-          break;
-        case 2:
-          color = 'green';
-          break;
-      }
-      return color;
-    },
-    joinButtonText() {
-      if (!this.status()) return 'Event ended'
 
-      if (this.checkIfOwner() && this.checkIfParticipating())
-        return 'Edit'
-      else if (this.checkIfParticipating())
-        return 'Leave'
-
-      return 'Join'
-    },
   },
+
   methods: {
     ...mapActions([
       'getEvents',
       'getProfile',
       'getEventTypes',
-      'showEventInfo'
+      'showEventInfo',
+      'joinEvent',
+      'leaveEvent',
+      'deleteEvent',
+        'closeDialog'
     ]),
+
+    async deleteEventButton(event){
+
+      await this.deleteEvent(event.event_id);
+      this.closeDialog()
+
+      this.$toast.add(
+          {severity:'success', summary: 'Success Message', detail:'Event deleted', life: 3000}
+      );
+
+    },
+
     replaceIdWithName(id) {
       for (const el of this.eventTypes) {
         if (el.event_type_id === id) return el.event_type_name;
@@ -238,31 +237,20 @@ export default {
 
 
     async joinButtonAction(event) {
-      if (!this.event.status) return null;
+      if (!event.status) return null;
 
-      if (this.checkIfOwner(event.event_creator_id)
-          && this.checkIfParticipating(event.participants))
+      if (this.checkIfOwner(event)
+          && this.checkIfParticipating(event))
         return alert('EDIT');
 
-      else if (this.checkIfParticipating(event.participants))
+      else if (this.checkIfParticipating(event))
         return await this.leaveEvent(event.event_id) | await this.getEvents({with_participants: true});
       else
         return await this.joinEvent(event.event_id) | await this.getEvents({with_participants: true});
     },
-
-    checkIfOwner(creator_id) {
-      return this.user_id === creator_id;
-    },
-
-    checkIfParticipating(participants) {
-      for (const participant of participants)
-        if (this.user_id === participant.user_id) return true;
-      return false;
-    },
-
-    status() {
+    status(event) {
       let status;
-      switch (this.event.status) {
+      switch (event.status) {
         case 0:
           status = 'Ended';
           break;
@@ -275,8 +263,43 @@ export default {
       }
 
       return status;
-    }
+    },
 
+    colorStatus(event)  {
+      let color = 'black';
+      switch (event.status) {
+        case 0:
+          color = 'red';
+          break;
+        case 1:
+          color = 'goldenrod';
+          break;
+        case 2:
+          color = 'green';
+          break;
+      }
+      return color;
+    },
+    checkIfOwner(event) {
+      return this.user_id === event.event_creator_id;
+    },
+
+    checkIfParticipating(event) {
+      for (const participant of event.participants)
+        if (this.user_id === participant.user_id) return true;
+      // console.log(participant);
+      return false;
+    },
+    joinButtonText(event ) {
+      if (!event.status) return 'Event ended'
+
+      if (this.checkIfOwner && this.checkIfParticipating)
+        return 'Edit'
+      else if (this.checkIfParticipating)
+        return 'Leave'
+
+      return 'Join'
+    },
   },
 
 

@@ -20,6 +20,7 @@
             v-for="marker in events"
             :map="map"
             :visible="eventsFilter(marker)"
+            v-show="Boolean(marker)"
             :google="google"
             :key="marker.event_id"
             :event="marker"
