@@ -28,12 +28,21 @@ export default {
     },
 
     'marker.map': function (newVal) {
-      console.log(newVal);
       if (!newVal) this.marker.setVisible(newVal);
     },
 
     visible(newVal) {
       this.marker.setVisible(newVal);
+    },
+
+    event(newVal){
+      if(!newVal){
+        this.marker.setVisible(newVal);
+        this.marker.infoWindow.setMap(null);
+        this.marker.infoWindow = null;
+        this.marker.setMap(null);
+        this.marker = null
+      }
     },
 
     position(newVal) {
@@ -104,6 +113,7 @@ export default {
     }
   },
 
+
   mounted() {
 
       let icon;
@@ -155,6 +165,8 @@ export default {
   },
 
   unmounted() {
+    this.marker.infoWindow.setMap(null);
+    this.marker.infoWindow = null;
     this.marker.setMap(null);
     this.marker = null;
   }

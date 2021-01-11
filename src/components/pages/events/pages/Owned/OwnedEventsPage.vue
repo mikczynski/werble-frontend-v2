@@ -1,5 +1,5 @@
 <template>
-  <DataTable :value="eventsLocal" :paginator="true" :rows="10"
+  <DataTable :value="events" :paginator="true" :rows="10"
              paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
              :rowsPerPageOptions="[10,20,50]"
              currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
@@ -145,6 +145,7 @@ export default {
     await this.getProfile();
     await this.getEventTypes();
     this.eventsLocal = this.events;
+
   },
   watch: {
     events() {
@@ -167,9 +168,8 @@ export default {
       'eventTypes',
       'isApiSyncActive',
     ]),
-
     ...mapGetters({
-      events :'participatingEvents'
+      events :'createdEvents'
     }),
 
     actions() {
@@ -192,10 +192,10 @@ export default {
       'deleteEvent',
       'closeDialog'
     ]),
-    ...mapActions({
-      getEvents: 'getParticipatingEvents',
-    }),
 
+    ...mapActions({
+      getEvents: 'getCreatedEvents',
+    }),
 
     async deleteEventButton(event){
 

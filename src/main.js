@@ -28,6 +28,7 @@ import ColumnGroup from "primevue/components/columngroup/ColumnGroup";
 import Row from "primevue/components/row/Row";
 import Toast from 'primevue/toast';
 import Dropdown from "primevue/components/dropdown/Dropdown";
+import Rating from "primevue/components/rating/Rating";
 
 /* Make Axios global */
 window.axios = require('axios');
@@ -58,8 +59,9 @@ app.component('DataTable',DataTable);
 app.component('Column',Column);
 app.component('ColumnGroup',ColumnGroup);
 app.component('Row',Row);
+app.component('Rating',Rating);
 app.component('Toast',Toast);
-app.component('Dropdown',Dropdown)
+app.component('Dropdown',Dropdown);
 
 /* Mount Vue App */
 app.mount('#app')

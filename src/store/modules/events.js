@@ -3,6 +3,7 @@ import api from '@/api'
 export default {
     state() {
         return {
+            event: null,
             events: [],
             createdEvents: [],
             eventTypes: [],
@@ -16,6 +17,9 @@ export default {
         }
     },
     getters: {
+        event(state) {
+            return state.event;
+        },
         events(state) {
             return state.events;
         },
@@ -24,6 +28,9 @@ export default {
         },
         createdEvents(state) {
             return state.createdEvents;
+        },
+        participatingEvents(state){
+            return state.participatingEvents;
         },
         searchDistance(state) {
             return state.searchDistance;
@@ -57,8 +64,14 @@ export default {
         setEvents(state, payload) {
             state.events = payload;
         },
+        setEvent(state, payload) {
+            state.event = payload;
+        },
         setCreatedEvents(state, payload) {
             state.createdEvents = payload;
+        },
+        setParticipatingEvents(state, payload) {
+            state.participatingEvents = payload;
         },
         toggleCreateEventEnabled(state) {
             state.createEventEnabled = !state.createEventEnabled;
@@ -90,7 +103,6 @@ export default {
                 const response = await api.events.getEventTypes();
                 const data = response.data.data;
                 context.commit('setEventTypes', data);
-                console.log(data);
             } catch (error) {
                 const handledError = api.handleResponseError(error);
                 context.commit('setResponseError', handledError);
@@ -99,13 +111,22 @@ export default {
 
         },
 
-        async getEvents(context) {
+        async getEvents(context,with_participants = true) {
             context.commit('setResponseError', '');
             context.commit('setIsApiSyncActive', true);
             try {
-                const response = await api.events.getEvents({
-                    params: {distance: context.getters.searchDistance},
-                });
+                // create request params object
+                const params = {}
+
+                // add params to object if they exist
+                if(context.getters.searchDistance)
+                    params.distance= context.getters.searchDistance
+                if(with_participants)
+                    params.with_participants = with_participants;
+
+                console.log(params)
+                const response = await api.events.getEvents({params : params});
+
                 const data = response.data.data;
                 context.commit('setEvents', data);
                 console.log(data);
@@ -116,12 +137,15 @@ export default {
             context.commit('setIsApiSyncActive', false);
         },
 
-        async getCreatedEvents(context) {
+        async getCreatedEvents(context,with_participants = true) {
             context.commit('setResponseError', '');
             context.commit('setIsApiSyncActive', true);
-            try {
-                const response = await api.events.getCreatedEvents(
-                    // {params: { distance: context.getters.searchDistance}},
+            try {                // create request params object
+                const params = {}
+                if(with_participants)
+                    params.with_participants = with_participants;
+                const response = await api.events.getOwnedEvents(
+                    {params: params},
                 );
                 const data = response.data.data;
                 context.commit('setCreatedEvents', data);
@@ -133,11 +157,31 @@ export default {
             context.commit('setIsApiSyncActive', false);
         },
 
+        async getParticipatingEvents(context,with_participants = true) {
+            context.commit('setResponseError', '');
+            context.commit('setIsApiSyncActive', true);
+            try {                // create request params object
+                const params = {}
+                if(with_participants)
+                    params.with_participants = with_participants;
+                const response = await api.events.getParticipatingEvents(
+                    {params: params},
+                );
+                const data = response.data.data;
+                context.commit('setParticipatingEvents', data);
+                context.commit('setResponseMessage', response.data.message);
+            } catch (error) {
+                const handledError = api.handleResponseError(error);
+                context.commit('setResponseError', handledError);
+            }
+            context.commit('setIsApiSyncActive', false);
+        },
+
+
         async createEvent(context, payload) {
             context.commit('setResponseError', '');
             context.commit('setIsApiSyncActive', true);
             try {
-                await api.events.createEvent(payload);
                 const response = await api.events.createEvent(payload);
                 console.log(response)
                 context.commit('setResponseMessage', response.data.message);
@@ -148,5 +192,103 @@ export default {
             }
             context.commit('setIsApiSyncActive', false);
         },
+
+        async getEvent(context,id) {
+            context.commit('setResponseError', '');
+            context.commit('setIsApiSyncActive', true);
+            try {
+                const response = await api.events.getEvent(id,{
+                    params: {wrap: true},
+                });
+                const data = response.data.data;
+                context.commit('setEvent', data);
+            } catch (error) {
+                const handledError = api.handleResponseError(error);
+                context.commit('setResponseError', handledError);
+            }
+            context.commit('setIsApiSyncActive', false);
+        },
+
+        async joinEvent(context,id){
+            context.commit('setResponseError', '');
+            context.commit('setIsApiSyncActive', true);
+            try {
+                const response = await api.events.joinEvent(id);
+                const data = response.data.data;
+                console.log(data);
+            } catch (error) {
+                const handledError = api.handleResponseError(error);
+                context.commit('setResponseError', handledError);
+            }
+            context.commit('setIsApiSyncActive', false);
+        },
+
+        async leaveEvent(context,id){
+            context.commit('setResponseError', '');
+            context.commit('setIsApiSyncActive', true);
+            try {
+                const response = await api.events.leaveEvent(id);
+                const data = response.data.data;
+                console.log(data);
+            } catch (error) {
+                const handledError = api.handleResponseError(error);
+                context.commit('setResponseError', handledError);
+            }
+            context.commit('setIsApiSyncActive', false);
+        },
+
+        async createReview(context,payload){
+            context.commit('setResponseError', '');
+            context.commit('setIsApiSyncActive', true);
+            try {
+                console.log('action create')
+                await api.events.createReview(payload);
+            } catch (error) {
+                const handledError = api.handleResponseError(error);
+                context.commit('setResponseError', handledError);
+            }
+            context.commit('setIsApiSyncActive', false);
+        },
+
+
+        async editReview(context,payload){
+            context.commit('setResponseError', '');
+            context.commit('setIsApiSyncActive', true);
+
+            try {
+                await api.events.editReview(payload.event_id,payload.form_data);
+            } catch (error) {
+                const handledError = api.handleResponseError(error);
+                context.commit('setResponseError', handledError);
+            }
+            context.commit('setIsApiSyncActive', false);
+        },
+
+
+        async deleteReview(context,id){
+            context.commit('setResponseError', '');
+            context.commit('setIsApiSyncActive', true);
+            try {
+                await api.events.deleteReview(id);
+            } catch (error) {
+                const handledError = api.handleResponseError(error);
+                context.commit('setResponseError', handledError);
+            }
+            context.commit('setIsApiSyncActive', false);
+        },
+
+        async deleteEvent(context,id){
+            context.commit('setResponseError', '');
+            context.commit('setIsApiSyncActive', true);
+            try {
+                await api.events.deleteEvent(id);
+            } catch (error) {
+                const handledError = api.handleResponseError(error);
+                context.commit('setResponseError', handledError);
+            }
+            context.commit('setIsApiSyncActive', false);
+        }
+
+
     },
 }

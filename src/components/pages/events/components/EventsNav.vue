@@ -14,13 +14,13 @@ export default {
       eventsNavItems: [
         {label: "Map", to: "/events/map", icon: "pi pi-fw pi-map"},
         {
-          label: "Available",
-          to: "/events/available",
+          label: "Local",
+          to: "/events/local",
           icon: "pi pi-fw pi-list",
         },
         {
-          label: "Created",
-          to: "/events/created",
+          label: "Owned",
+          to: "/events/owned",
           icon: "pi pi-fw pi-map-marker",
         },
 

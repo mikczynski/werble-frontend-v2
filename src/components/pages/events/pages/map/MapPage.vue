@@ -1,14 +1,4 @@
 <template>
-  <Dialog
-      header="Create event form"
-      v-model:visible="displayDialog"
-      :contentStyle="{ width: '80vw', overflow: 'visible' }"
-      :modal="true"
-  >
-    <CreateEventForm :close-dialog="closeDialog"></CreateEventForm>
-
-  </Dialog>
-
   <p v-if="position">
     Your position:
     <strong
@@ -57,16 +47,15 @@
           :max="searchDistanceMax"
           :min="searchDistanceMin"
           :step="searchDistanceStep"
-
-          @slideEnd="alert($event)"
           class="p-mt-2 p-pb-0"
+          @slideend="getEventsToast"
       />
     </div>
 
     <div>
       <Button
           :disabled="!(clickedPosition && createEventEnabled)"
-          @click="showDialog"
+          @click="showEventCreate"
           icon="pi pi-plus"
           class="p-button-success p-mr-2 p-mb-2 "
           type="button"
@@ -101,31 +90,33 @@
 <script>
 // import TheMap from "./TheMap";
 import {mapGetters, mapActions} from 'vuex'
-import CreateEventForm from "@/components/pages/events/pages/map/forms/CreateEventForm";
 import EventsMap from "@/components/pages/events/pages/map/components/EventsMap";
 
 export default {
   components: {
     EventsMap,
-    CreateEventForm,
-    // TheMap,
 
   },
   computed: {
     ...mapGetters([
+      // dialog
+        'displayDialog',
+        'dialogChosenAction',
+        'dialogAction',
+
+
       'searchDistance',
       'searchDistanceMin',
       'searchDistanceMax',
       'searchDistanceStep',
       'searchDistanceKM',
-      'events',
       'position',
       'profile',
       'clickedPosition',
       'googleMapsApiKey',
       'createEventEnabled',
       'geolocationLoaded',
-        'isMapLoaded'
+      'isMapLoaded'
     ]),
 
     createEventModeInfo() {
@@ -139,7 +130,6 @@ export default {
   data() {
     return {
       searchDistanceInput: 20,
-      displayDialog: false,
     };
   },
   watch: {
@@ -150,38 +140,35 @@ export default {
     },
     events() {
     },
+    displayDialog(newVal) {
+      if (!newVal) this.setClickedPosition(null);
+    }
   },
 
-  created() {
-    this.searchDistanceInput = this.searchDistance;
-    this.getEvents();
-  },
+
 
   methods: {
     ...mapActions([
       'setSearchDistance',
-      'getEvents',
       'setClickedPosition',
       'toggleCreateEventEnabled',
+      'showEventCreate',
+      'getEvents',
+      'closeDialog'
     ]),
-
     getEventsToast() {
-      this.getEvents();
+
+      this.getEvents({with_participants: true});
+      console.log(this.events);
       if (this.events) this.$toast.add({
         severity: 'success',
         summary: 'Success Message',
         detail: 'Events refreshed',
-        life: 3000
+        life: 1500
       });
     },
 
-    closeDialog() {
-      this.displayDialog = false
-    },
 
-    showDialog() {
-      this.displayDialog = true
-    },
   },
 };
 </script>

@@ -1,14 +1,4 @@
 <template>
-  <Dialog
-      header="Create event form"
-      v-model:visible="displayDialog"
-      :contentStyle="{ width: '80vw', overflow: 'visible' }"
-      :modal="true"
-  >
-
-    <CreateEventForm :close-dialog="displayDialog"></CreateEventForm>
-    <Button @click="displayDialog = false" type="button" style="p-button-danger">BOOOOOOOOOOOOOOOOOOOOI</Button>
-  </Dialog>
 
   <!--  Google map component-->
   <GoogleMapLoader
@@ -25,19 +15,17 @@
         <Circle :map="map" :google="google" :radius="searchDistance"></Circle>
 
         <!-- Creates event markers from array -->
+
         <Marker
-            v-for="marker in markers"
+            v-for="marker in events"
             :map="map"
-            :visible="marker.distance < searchDistance"
+            :visible="eventsFilter(marker)"
             :google="google"
             :key="marker.event_id"
             :event="marker"
             :position="{ lat: Number(marker.latitude), lng: Number(marker.longitude) }">
 
-          <img src="https://media1.tenor.com/images/19129351172ab23d7db284bf43c61b2a/tenor.gif?itemid=10549919"
-               style="width:50%"/>
-          <br>
-          <Button @click="alertEvent(marker)" class="p-button-sm">Show</Button>
+          <EventMarkerInfo :event="marker"/>
 
         </Marker>
 
@@ -51,14 +39,23 @@
             :openInfoWindow="true"
             type="create"
         >
-          <p v-if="clickedPositionLatLng">Location for new event:<br>
-            Lat: {{ clickedPositionLatLng.lat.toFixed(7) }}, Lng: ' +
+
+
+          <p v-if="clickedPositionLatLng">Location for new event:
+            <br><br>
+            <strong>Lat:</strong> {{ clickedPositionLatLng.lat.toFixed(7) }}<br><strong>Lng:</strong>
             {{ clickedPositionLatLng.lng.toFixed(7) }}
           </p>
 
 
-          <Button @click="alertEvent(marker)" class="p-button-sm">Create event here!</Button>
-
+          <Button
+              :disabled="!(clickedPosition && createEventEnabled)"
+              @click="showEventCreate"
+              icon="pi pi-plus"
+              class="p-button-success p-button-sm"
+              type="button"
+              label="Create event"
+          />
 
         </Marker>
 
@@ -79,6 +76,9 @@
           </p>
         </Marker>
 
+        <PanButton :map="map" :google="google"></PanButton>
+        <change-bounds-button :map="map" :google="google" :markers="markersFiltered"></change-bounds-button>
+
       </div>
 
     </template>
@@ -88,26 +88,24 @@
 
 <script>
 import GoogleMapLoader from "@/components/pages/events/pages/map/components/GoogleMapLoader";
-import Marker from "@/components/pages/events/pages/map/components/Marker";
+import Marker from "@/components/pages/events/pages/map/components/marker/Marker";
 import Circle from "@/components/pages/events/pages/map/components/Circle";
 
 import {mapGetters, mapActions} from 'vuex'
-import CreateEventForm from "@/components/pages/events/pages/map/forms/CreateEventForm";
+import PanButton from "@/components/pages/events/pages/map/components/map_buttons/PanButton";
+import ChangeBoundsButton from "@/components/pages/events/pages/map/components/map_buttons/ChangeBoundsButton";
+import EventMarkerInfo from "@/components/pages/events/pages/map/components/marker/EventInfo";
 
 
 export default {
   name: "EventsMap",
   components: {
-    CreateEventForm,
+    EventMarkerInfo,
+    ChangeBoundsButton,
+    PanButton,
     GoogleMapLoader,
     Marker,
     Circle
-  },
-
-  data() {
-    return {
-      displayDialog: false
-    }
   },
 
   computed: {
@@ -135,9 +133,11 @@ export default {
       return !!this.clickedPosition;
     },
 
-
     markers() {
       return [...this.events];
+    },
+    markersFiltered(){
+      return this.markers.filter(this.eventsFilter);
     },
 
     mapConfig() {
@@ -159,21 +159,40 @@ export default {
   watch: {
     markers() {
     },
+    markersFiltered() {
+    },
     clickedPosition() {
     },
+    displayDialog(newVal){
+      if(!newVal) this.setClickedPosition(null);
+    }
   },
 
   methods: {
-    ...mapActions(['getGeolocation']),
-    alertEvent() {
-      // alert(
-      //     'event_id: ' + event.event_id +
-      //     '\nevent_name: ' + event.event_name
-      //
-      // );
-      this.displayDialog = true;
-    }
+    ...mapActions(['getGeolocation','setClickedPosition','showEventCreate','getEvents','getEventTypes']),
+    alertEvent() {},
+    eventsFilter(event){
+      return event.distance < this.searchDistance
+    },
+    getEventsToast() {
+      this.getEvents({with_participants: true});
+      console.log(this.events);
+      if (this.events) this.$toast.add({
+        severity: 'success',
+        summary: 'Success Message',
+        detail: 'Events refreshed',
+        life: 1500
+      });
+    },
+
   },
+  async mounted() {
+    this.searchDistanceInput = this.searchDistance;
+    await this.getEventTypes();
+    await this.getEventsToast();
+  },
+
+
 }
 </script>
 

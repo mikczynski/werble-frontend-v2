@@ -1,6 +1,6 @@
 <template>
   <h2>HomePage</h2>
-  <h3 v-if="profile">Welcome back, <strong style="color:goldenrod">{{ fullName}}</strong> a.k.a. <strong style="color:goldenrod">{{ login}} </strong> </h3>
+  <h3 v-if="profile">Welcome back, <strong style="color:goldenrod">{{ fullName }}</strong> a.k.a. <strong style="color:goldenrod">{{ login}} </strong> </h3>
 </template>
 
 <script>

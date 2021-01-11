@@ -1,13 +1,14 @@
 <template>
   <Toast position="bottom-left" />
   <!--  request errors are shown here -->
-  <InlineMessage severity="success" v-if="responseMessage">
-    <p v-if="responseMessage">{{ responseMessage }}</p>
-  </InlineMessage>
+  <Message severity="success" :life="3000" :sticky="false" v-if="responseMessage">
+    <p >Server response: {{ responseMessage }}</p>
+  </Message>
 
   <br />
 
-  <InlineMessage severity="warn" v-if="responseError">
+  <Message severity="warn" v-if="responseError">
+    Server response: <br>
     <p v-if="responseError.message">{{ responseError.message }}</p>
     <p v-if="responseError.data.message">{{ responseError.data.message }}</p>
     <p v-if="responseError.data.error">
@@ -19,7 +20,7 @@
     >
       <li v-for="e in errorGroups" :key="e">{{ e }}</li>
     </ul>
-  </InlineMessage>
+  </Message>
 </template>
 
 <script>

@@ -116,7 +116,7 @@
             @click="deleteEventButton(slotProps.data);"
             type="button"
         />
-      </template>
+     </template>
     </Column>
 
 
@@ -140,11 +140,11 @@ export default {
 
   name: "LocalEvents",
   components: {},
-  async mounted() {
-    await this.getEvents();
-    await this.getProfile();
-    await this.getEventTypes();
+  mounted() {
+    this.getProfile();
+    this.getEventTypes();
     this.eventsLocal = this.events;
+
   },
   watch: {
     events() {
@@ -162,16 +162,13 @@ export default {
   },
   computed: {
     ...mapGetters([
+      'events',
       'searchDistance',
       'user_id',
       'eventTypes',
       'isApiSyncActive',
+
     ]),
-
-    ...mapGetters({
-      events :'participatingEvents'
-    }),
-
     actions() {
       return {
         show: 'show',
@@ -184,18 +181,15 @@ export default {
 
   methods: {
     ...mapActions([
+      'getEvents',
       'getProfile',
       'getEventTypes',
       'showEventInfo',
       'joinEvent',
       'leaveEvent',
       'deleteEvent',
-      'closeDialog'
+        'closeDialog'
     ]),
-    ...mapActions({
-      getEvents: 'getParticipatingEvents',
-    }),
-
 
     async deleteEventButton(event){
 

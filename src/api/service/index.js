@@ -17,12 +17,12 @@ export default ({requiresAuth = false,} = {}) => {
     //console.log(Store.getters.token.access_token);
     const instance = window.axios.create(options);
 
-    instance.interceptors.response.use(response => {
+/*    instance.interceptors.response.use(response => {
         console.log('OK!');
         return response;
     }, error => {
         return Promise.reject(error);
-    });
+    });*/
 
     return instance;
 };

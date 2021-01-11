@@ -10,12 +10,14 @@ import mutations from "./mutations";
 import auth from "@/store/modules/auth";
 import events from './modules/events';
 import user from "@/store/modules/user";
+import dialog from "@/store/modules/dialog";
 
 /* Store modules object*/
 const modules = {
     auth: auth,
     events: events,
     user: user,
+    dialog: dialog
 }
 
 /* Global Store configuration object */

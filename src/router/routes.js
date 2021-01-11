@@ -4,10 +4,12 @@ import LogoutPage from "@/components/pages/auth/LogoutPage";
 import Home from "@/components/pages/home/Home";
 import EventsPage from "@/components/pages/events/EventsPage";
 import MapPage from "@/components/pages/events/pages/map/MapPage";
-import AvailableEventsPage from "@/components/pages/events/pages/available/AvailableEventsPage"
+import LocalEventsPage from "@/components/pages/events/pages/local/LocalEventsPage"
 import ProfilePage from "@/components/pages/profile/ProfilePage";
 import ProfileInfo from "@/components/pages/profile/forms/ProfileInfo";
-import CreatedEventsPage from "@/components/pages/events/pages/created/CreatedEventsPage";
+import OwnedEventsPage from "@/components/pages/events/pages/Owned/OwnedEventsPage";
+import ParticipatingEventPage from "@/components/pages/events/pages/participating/ParticipatingEventPage";
+import Settings from "@/components/pages/profile/Settings";
 
 export default [
     //Not found placeholder
@@ -33,9 +35,9 @@ export default [
         redirect: {name: 'events-map'},
         children: [
             {path: 'map', component: MapPage, name: 'events-map'},
-            {path: 'created', component: CreatedEventsPage, name: 'events-created'},
-            {path: 'participating', component: NotFoundPage, name: 'events-participating'},
-            {path: 'available', component: AvailableEventsPage, name: 'events-available'},
+            {path: 'owned', component: OwnedEventsPage, name: 'events-owned'},
+            {path: 'participating', component: ParticipatingEventPage, name: 'events-participating'},
+            {path: 'local', component: LocalEventsPage, name: 'events-local'},
         ]
     },
     {
@@ -46,7 +48,7 @@ export default [
         redirect: {name: 'profile-info'},
         children: [
             {path: 'info', component: ProfileInfo, name: 'profile-info'},
-            {path: 'settings', component: NotFoundPage, name: 'profile-settings'},
+            {path: 'settings', component: Settings, name: 'profile-settings'},
         ]
     },
     {path: '/friend', component: NotFoundPage, name: 'participating', meta: {requiresAuth: true}},
