@@ -10,9 +10,9 @@
       :contentStyle="{ width: '60vw', overflow: 'visible' }"
       :modal="true"
   >
-    <show-event v-if="event && (show || edit)"></show-event>
-
+    <show-event v-if="!!event && (show || edit)"></show-event>
     <CreateEvent2 v-if="clickedPosition && create"></CreateEvent2>
+
 
   </Dialog>
 

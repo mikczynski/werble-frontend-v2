@@ -4,7 +4,6 @@
   <Button @click="participantsButton" class="p-mx-1" :class="option === 'participants' ? outline : text ">Participants</Button>
   <Button @click="reviewsButton" class="p-mx-1" :class="option === 'reviews' ? outline : text ">Reviews</Button>
 
-
   <EventInfoOption  v-if="option === 'info'" :event="event" />
   <ParticipantsOption v-if="option === 'participants'" :event="event"/>
   <ReviewsOption v-if="option === 'reviews'" :event="event"/>

@@ -5,13 +5,13 @@
     <div class="p-fluid p-formgrid p-grid">
       <div class="p-field p-col-12 p-md-6">
         <label for="name">Event name:</label>
-        <InputText :disabled="!editEvent" id="name" v-model="eventLocal.name" type="text"/>
+        <InputText :disabled="!editEvent" id="name" v-model="input.name" type="text"/>
         <InlineMessage v-if="errors.name">{{ errors.name }}</InlineMessage>
       </div>
 
       <div class="p-field p-col-12 p-md-6">
         <label for="event_type">Event type:</label>
-        <Dropdown id="event_type" v-model="eventLocal.event_type_id"
+        <Dropdown id="event_type" v-model="input.event_type_id"
                   :options="eventTypes" optionValue="event_type_id"
                   optionLabel="event_type_name"
                   placeholder="Select event type"
@@ -22,13 +22,13 @@
 
       <div class="p-field p-col-12">
         <label for="description">Description:</label>
-        <Textarea :disabled="!editEvent" id="description" v-model="eventLocal.description"/>
+        <Textarea :disabled="!editEvent" id="description" v-model="input.description"/>
         <InlineMessage v-if="errors.description">{{ errors.description }}</InlineMessage>
       </div>
 
       <div class="p-field p-col-12 p-md-6">
         <label for="start_datetime">Start date:</label>
-        <Calendar :disabled="!editEvent" id="start_datetime" :minDate="minDate" v-model="eventLocal.start_datetime" :showSeconds="false"
+        <Calendar :disabled="!editEvent" id="start_datetime" :minDate="minDate" v-model="input.start_datetime" :showSeconds="false"
                   :showTime="true"
                   dateFormat="yy-mm-dd"/>
         <InlineMessage v-if="errors.start_datetime">{{ errors.start_datetime }}</InlineMessage>
@@ -36,7 +36,7 @@
 
       <div class="p-field p-col-12 p-md-6">
         <label for="end_datetime">End date:</label>
-        <Calendar :disabled="!editEvent" id="end_datetime" :minDate="minDate" v-model="eventLocal.end_datetime" :showSeconds="false"
+        <Calendar :disabled="!editEvent" id="end_datetime" :minDate="minDate" v-model="input.end_datetime" :showSeconds="false"
                   :showTime="true"
                   dateFormat="yy-mm-dd"/>
         <InlineMessage v-if="errors.end_datetime">{{ errors.end_datetime }}</InlineMessage>
@@ -44,35 +44,35 @@
 
       <div class="p-field p-col-12 p-md-3">
         <label for="location">Location:</label>
-        <InputText :disabled="!editEvent" id="location" v-model="eventLocal.location" type="text"/>
+        <InputText :disabled="!editEvent" id="location" v-model="input.location" type="text"/>
         <InlineMessage v-if="errors.location">{{ errors.location }}</InlineMessage>
       </div>
       <div class="p-field p-col-12 p-md-3">
         <label for="address">Street name:</label>
-        <InputText :disabled="!editEvent" id="address" v-model="eventLocal.street_name" type="text"/>
+        <InputText :disabled="!editEvent" id="address" v-model="input.street_name" type="text"/>
         <InlineMessage v-if="errors.street_name">{{ errors.street_name }}</InlineMessage>
       </div>
       <div class="p-field p-col-12 p-md-3">
         <label for="house_number">House number:</label>
-        <InputText :disabled="!editEvent" id="house_number" v-model="eventLocal.house_number" type="text"/>
+        <InputText :disabled="!editEvent" id="house_number" v-model="input.house_number" type="text"/>
         <InlineMessage v-if="errors.house_number">{{ errors.house_number }}</InlineMessage>
       </div>
 
       <div class="p-field p-col-12 p-md-3">
         <label for="zipcode">ZipCode:</label>
-        <InputText :disabled="!editEvent" id="zipcode" v-model="eventLocal.zip_code" type="text"/>
+        <InputText :disabled="!editEvent" id="zipcode" v-model="input.zip_code" type="text"/>
         <InlineMessage v-if="errors.zip_code">{{ errors.zip_code }}</InlineMessage>
       </div>
 
       <div class="p-field p-col-12 p-md-6">
         <label for="latitude">Latitude:</label>
-        <InputText disabled id="latitude" v-model="eventLocal.latitude" type="text" />
+        <InputText disabled id="latitude" v-model="input.latitude" type="text" />
         <InlineMessage v-if="errors.latitude">{{ errors.latitude }}</InlineMessage>
       </div>
 
       <div class="p-field p-col-12 p-md-6">
         <label for="longitude">Longitude:</label>
-        <InputText disabled id="longitude" v-model="eventLocal.longitude" type="text" />
+        <InputText disabled id="longitude" v-model="input.longitude" type="text" />
         <InlineMessage v-if="errors.longitude">{{ errors.longitude }}</InlineMessage>
       </div>
     </div>
@@ -120,7 +120,7 @@ name: "EventInfoOption",
   data(){
       return{
         minDate: null,
-        eventLocal: {
+        input: {
           name: this.event.name ? this.event.name : '',
           description: this.event.description ? this.event.description : '',
           event_type_id: this.event.event_type_id,
@@ -252,20 +252,20 @@ name: "EventInfoOption",
           date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()
           + " " + date.getHours() + ":" + date.getMinutes() + ":" + "00";
 
-      const start_date = new Date(this.eventLocal.start_datetime);
-      const end_date = new Date(this.eventLocal.end_datetime);
+      const start_date = new Date(this.input.start_datetime);
+      const end_date = new Date(this.input.end_datetime);
 
       const formData = {
-        name: this.eventLocal.name.trim(),
-        description: this.eventLocal.description,
-        event_type_id: this.eventLocal.event_type_id,
+        name: this.input.name.trim(),
+        description: this.input.description,
+        event_type_id: this.input.event_type_id,
         start_datetime: formatDate(start_date),
         end_datetime: formatDate(end_date),
+        location: this.input.location.trim(),
+        street_name: this.input.street_name.trim(),
+        zip_code: this.input.zip_code.trim(),
+        house_number: this.input.house_number.trim(),
         status: 2,
-        location: this.eventLocal.location.trim(),
-        street_name: this.eventLocal.street_name.trim(),
-        zip_code: this.eventLocal.zip_code.trim(),
-        house_number: this.eventLocal.house_number.trim(),
 
         longitude: this.event['longitude'],
         latitude: this.event['latitude'],
@@ -303,19 +303,19 @@ name: "EventInfoOption",
     checkForm() {
       this.resetFormErrors();
 
-      if (!this.eventLocal.name)
+      if (!this.input.name)
         this.errors.name += 'Name field is required. ';
 
-      if (!this.eventLocal.event_type_id)
+      if (!this.input.event_type_id)
         this.errors.event_type_id += 'Event type field is required. ';
 
-      if (!this.eventLocal.start_datetime)
+      if (!this.input.start_datetime)
         this.errors.start_datetime += 'Start date field is required. ';
 
-      if (!this.eventLocal.end_datetime)
+      if (!this.input.end_datetime)
         this.errors.end_datetime += 'Start date field is required. ';
 
-      if (!this.eventLocal.latitude || !this.eventLocal.longitude)
+      if (!this.input.latitude || !this.input.longitude)
         this.errors.longitude = this.errors.latitude += 'Coordinates are required to create event';
 
       if (this.errors.name || this.errors.location
