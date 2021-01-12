@@ -154,12 +154,13 @@ export default {
       'toggleCreateEventEnabled',
       'showEventCreate',
       'getEvents',
+      'getEventTypes',
       'closeDialog'
     ]),
-    getEventsToast() {
 
-      this.getEvents({with_participants: true});
-      console.log(this.events);
+    async getEventsToast() {
+
+      await this.getEvents({with_participants: true});
       if (this.events) this.$toast.add({
         severity: 'success',
         summary: 'Success Message',
@@ -168,7 +169,11 @@ export default {
       });
     },
 
-
+  },
+  async mounted() {
+    this.searchDistanceInput = this.searchDistance;
+    await this.getEventTypes();
+    await this.getEventsToast();
   },
 };
 </script>

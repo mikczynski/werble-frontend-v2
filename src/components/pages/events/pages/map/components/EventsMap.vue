@@ -157,6 +157,9 @@ export default {
 
   // watch for changes in markrs ( global store events)
   watch: {
+    events(){
+
+    },
     markers() {
     },
     markersFiltered() {
@@ -186,11 +189,7 @@ export default {
     },
 
   },
-  async mounted() {
-    this.searchDistanceInput = this.searchDistance;
-    await this.getEventTypes();
-    await this.getEventsToast();
-  },
+
 
 
 }
