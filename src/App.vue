@@ -3,6 +3,8 @@
 
   <the-info></the-info>
 
+  <ConfirmDialog></ConfirmDialog>
+
   <loading
       :active="isApiSyncActive"
       :is-full-page="fullPage">
