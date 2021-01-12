@@ -5,8 +5,8 @@ import router from "@/router";
 export default {
     state: () => {
         return {
-            token: JSON.parse(localStorage.getItem('token')) || null,
-        }
+            token: localStorage.getItem('token') ? JSON.parse(localStorage.getItem('token')) : null,
+    }
     },
 
     getters: {
