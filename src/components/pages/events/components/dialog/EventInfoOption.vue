@@ -222,7 +222,7 @@ name: "EventInfoOption",
     },
     async joinButtonAction() {
       if (this.checkIfOwner && this.checkIfParticipating)
-        return await this.editEventButton | await this.getEvents({with_participants: true});
+        return await this.editEventButton();
       else if (this.checkIfParticipating)
         return await this.leaveEvent(this.event.event_id) | await this.getEvents({with_participants: true});
       else
@@ -231,14 +231,14 @@ name: "EventInfoOption",
 
     async deleteEventButton(){
       await this.deleteEvent(this.event.event_id);
-      await this.closeDialog();
       await this.getEvents();
+      this.closeDialog();
     },
 
     async editEventButton(){
       await this.submitForm();
-      await this.closeDialog();
       await this.getEvents();
+      this.closeDialog();
     },
 
 
