@@ -155,6 +155,7 @@ export default {
           'createEvent',
           'setClickedPosition',
           'getEventTypes',
+          'getEvents',
           'closeDialog'
         ]),
 
@@ -191,8 +192,8 @@ export default {
           }
 
           await this.createEvent(formData)
-
           this.setClickedPosition(null);
+          await this.getEvents();
           this.closeDialog();
           this.$toast.add(
               {severity: 'success', summary: 'Success Message', detail: 'Event Owned', life: 1500}
@@ -233,8 +234,13 @@ export default {
           if (!this.input.latitude || !this.input.longitude)
             this.errors.longitude = this.errors.latitude += 'Coordinates are required to create event';
 
-          if (this.errors.name || this.errors.location
-              || this.errors.datetime || this.errors.latitude || this.errors.longitude || this.errors.description || this.errors.event_type_id)
+          if (this.errors.name
+              || this.errors.location
+              || this.errors.datetime
+              || this.errors.latitude
+              || this.errors.longitude
+              || this.errors.description
+              || this.errors.event_type_id)
             this.errors.any = true;
         },
         isRequired(value) {
