@@ -108,8 +108,7 @@
             @click="joinButtonAction(slotProps.data)"
             :label="joinButtonText(slotProps.data)"
         />
-
-        <ConfirmDialog></ConfirmDialog>
+        
         <Button
             class="p-mx-1 p-my-1 p-button-danger p-button-outlined p-button-sm"
             label="Delete"
