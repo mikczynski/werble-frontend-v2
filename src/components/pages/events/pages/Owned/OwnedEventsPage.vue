@@ -299,12 +299,10 @@ export default {
     },
     joinButtonText(event ) {
       if (!event.status) return 'Event ended'
-
-      if (this.checkIfOwner && this.checkIfParticipating)
+      if (this.checkIfOwner(event))
         return 'Edit'
-      else if (this.checkIfParticipating)
+      else if (this.checkIfParticipating(event))
         return 'Leave'
-
       return 'Join'
     },
   },

@@ -13,7 +13,6 @@
     <Button
         class=" p-d-inline p-mx-1 p-my-1 p-button-info p-button-sm"
         @click="showEventInfo(event.event_id)"
-        :disable="Boolean(this.event.status)"
         label="Show info"
     />
 
