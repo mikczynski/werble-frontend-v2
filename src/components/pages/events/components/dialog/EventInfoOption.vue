@@ -89,12 +89,13 @@
 
 
     </div>
+    <ConfirmDialog></ConfirmDialog>
     <Button
         class="p-button-danger p-button-outlined"
 
         label="Delete event"
         v-if="checkIfOwner"
-        @click="deleteEvent(event.event_id)"
+        @click="confirmDelete($event)"
         type="button"
     />
     <div style="float:right"  v-if="checkIfOwner">
@@ -229,17 +230,38 @@ name: "EventInfoOption",
         return await this.joinEvent(this.event.event_id) | await this.getEvents({with_participants: true});
     },
 
-    async deleteEventButton(){
-      await this.deleteEvent(this.event.event_id);
-      await this.getEvents();
-      this.closeDialog();
-    },
+
 
     async editEventButton(){
       await this.submitForm();
       await this.getEvents();
       this.closeDialog();
     },
+
+
+
+    confirmDelete(event) {
+      this.$confirm.require({
+        target: event.currentTarget,
+        message: 'Do you want to delete this record?',
+        header: 'Delete Confirmation',
+        icon: 'pi pi-exclamation-triangle',
+        acceptClass: 'p-button-danger',
+        accept: () => {
+          this.deleteEventButton();
+          this.$toast.add({severity:'info', summary:'Confirmed', detail:'Event deleted', life: 3000});
+        },
+        reject: () => {
+          this.$toast.add({severity:'info', summary:'Rejected', detail:'You have rejected', life: 3000});
+        }
+      });
+    },
+    async deleteEventButton(){
+      await this.deleteEvent(this.event.event_id);
+      await this.getEvents();
+      this.closeDialog();
+    },
+
 
 
     async submitForm() {
@@ -279,7 +301,7 @@ name: "EventInfoOption",
 
       // this.closeDialog();
       this.$toast.add(
-          {severity: 'success', summary: 'Success Message', detail: 'Event Owned', life: 1500}
+          {severity: 'success', summary: 'Success Message', detail: 'Event edited', life: 1500}
       );
     },
 
@@ -358,6 +380,10 @@ name: "EventInfoOption",
 .p-dropdown-label{
   opacity:0.9;
   color: #0a428b;
+}
+
+.p-confirm-popup{
+  z-index: 999;
 }
 
 </style>

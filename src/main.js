@@ -29,7 +29,9 @@ import Row from "primevue/components/row/Row";
 import Toast from 'primevue/toast';
 import Dropdown from "primevue/components/dropdown/Dropdown";
 import Rating from "primevue/components/rating/Rating";
-
+import ConfirmationService from 'primevue/confirmationservice';
+import ConfirmPopup from 'primevue/confirmpopup';
+import ConfirmDialog from 'primevue/confirmdialog';
 /* Make Axios global */
 window.axios = require('axios');
 
@@ -41,6 +43,7 @@ app.use(router);
 app.use(store);
 app.use(PrimeVue);
 app.use(ToastService);
+app.use(ConfirmationService);
 
 /* Global components */
 app.component('Calendar',Calendar);
@@ -62,6 +65,8 @@ app.component('Row',Row);
 app.component('Rating',Rating);
 app.component('Toast',Toast);
 app.component('Dropdown',Dropdown);
+app.component('ConfirmPopup',ConfirmPopup);
+app.component('ConfirmDialog',ConfirmDialog);
 
 /* Mount Vue App */
 app.mount('#app')

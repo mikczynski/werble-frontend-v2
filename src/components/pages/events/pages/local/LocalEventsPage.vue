@@ -109,11 +109,12 @@
             :label="joinButtonText(slotProps.data)"
         />
 
+        <ConfirmDialog></ConfirmDialog>
         <Button
             class="p-mx-1 p-my-1 p-button-danger p-button-outlined p-button-sm"
             label="Delete"
             v-if="checkIfOwner(slotProps.data)"
-            @click="deleteEventButton(slotProps.data);"
+            @click="confirmDelete($event,slotProps.data.event_id)"
             type="button"
         />
      </template>
@@ -192,16 +193,28 @@ export default {
         'closeDialog'
     ]),
 
-    async deleteEventButton(event){
-
-      await this.deleteEvent(event.event_id);
-      this.closeDialog()
-
-      this.$toast.add(
-          {severity:'success', summary: 'Success Message', detail:'Event deleted', life: 3000}
-      );
-
+    confirmDelete(event,event_id) {
+      this.$confirm.require({
+        target: event.currentTarget,
+        message: 'Do you want to delete this record?',
+        header: 'Delete Confirmation',
+        icon: 'pi pi-exclamation-triangle',
+        acceptClass: 'p-button-danger',
+        accept: () => {
+          this.deleteEventButton(event_id);
+          this.$toast.add({severity:'info', summary:'Confirmed', detail:'Event deleted', life: 3000});
+        },
+        reject: () => {
+          this.$toast.add({severity:'info', summary:'Rejected', detail:'You have rejected', life: 3000});
+        }
+      });
     },
+    async deleteEventButton(event_id){
+      await this.deleteEvent(event_id);
+      await this.getEvents();
+      this.closeDialog();
+    },
+
 
     replaceIdWithName(id) {
       for (const el of this.eventTypes) {
