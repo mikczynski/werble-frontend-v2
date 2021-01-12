@@ -89,7 +89,7 @@
 
 
     </div>
-    <ConfirmDialog></ConfirmDialog>
+
     <Button
         class="p-button-danger p-button-outlined"
 
@@ -116,13 +116,8 @@ name: "EventInfoOption",
   props:['event'],
   mounted() {
     this.minDate = new Date();
-    this.editEvent = (this.dialogChosenAction ==="EDIT") || false;
-  },
-  data(){
-      return{
-        minDate: null,
-        input: {
-          name: this.event.name ? this.event.name : '',
+    this.input = {
+        name: this.event.name ? this.event.name : '',
           description: this.event.description ? this.event.description : '',
           event_type_id: this.event.event_type_id,
           start_datetime: this.event.start_datetime ? this.event.start_datetime : '',
@@ -131,9 +126,16 @@ name: "EventInfoOption",
           street_name: this.event.street_name ? this.event.street_name : '',
           zip_code: this.event.zip_code? this.event.zip_code : '',
           house_number: this.event.house_number? this.event.house_number : '',
+          status: this.event.status,
           latitude: this.event.longitude ? this.event.longitude : 0,
           longitude: this.event.latitude ? this.event.latitude : 0,
-        },
+    };
+    this.editEvent = (this.dialogChosenAction ==="EDIT") || false;
+  },
+  data(){
+      return{
+        minDate: null,
+        input: {},
         errors: {
           name: '',
           description: '',
@@ -213,10 +215,9 @@ name: "EventInfoOption",
           'editEventAction',
           'leaveEvent',
           'getEvents',
-          'getEvent',
           'deleteEvent',
           'setResponseError',
-            'closeDialog'
+            'closeDialog',
         ]),
     toggleEdit(){
       this.editEvent = !this.editEvent;
@@ -225,9 +226,9 @@ name: "EventInfoOption",
       if (this.checkIfOwner && this.checkIfParticipating)
         return await this.editEventButton();
       else if (this.checkIfParticipating)
-        return await this.leaveEvent(this.event.event_id) | await this.getEvents({with_participants: true});
+        return await this.leaveEventButton();
       else
-        return await this.joinEvent(this.event.event_id) | await this.getEvents({with_participants: true});
+        return await this.joinEventButton();
     },
 
 
@@ -236,6 +237,18 @@ name: "EventInfoOption",
       await this.submitForm();
       await this.getEvents();
       this.closeDialog();
+    },
+
+    async leaveEventButton(){
+      await this.leaveEvent(this.event.event_id)
+      await this.getEvents();
+
+    },
+
+    async joinEventButton(){
+      await this.joinEvent(this.event.event_id)
+      await this.getEvents();
+
     },
 
 
