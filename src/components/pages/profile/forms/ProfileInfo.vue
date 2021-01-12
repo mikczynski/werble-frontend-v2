@@ -171,9 +171,9 @@ export default {
       }
 
       //password
-      if (this.profile.description === '') {
-        this.errors.description = 'Description field is required. ';
-      }
+      // if (this.profile.description === '') {
+      //   this.errors.description = 'Description field is required. ';
+      // }
 
       if (this.profile.birth_date === '') {
         this.errors.birth_date = 'Birth date field is required. ';
