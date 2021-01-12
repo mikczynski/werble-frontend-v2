@@ -193,6 +193,23 @@ export default {
             context.commit('setIsApiSyncActive', false);
         },
 
+
+        async editEventAction(context, payload) {
+            context.commit('setResponseError', '');
+            context.commit('setIsApiSyncActive', true);
+            try {
+                const response = await api.events.editEvent(payload.id,payload.form_data);
+                console.log(response)
+                context.commit('setResponseMessage', response.data.message);
+
+            } catch (error) {
+                const handledError = api.handleResponseError(error);
+                context.commit('setResponseError', handledError);
+            }
+            context.commit('setIsApiSyncActive', false);
+        },
+
+
         async getEvent(context,id) {
             context.commit('setResponseError', '');
             context.commit('setIsApiSyncActive', true);

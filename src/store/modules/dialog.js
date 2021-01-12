@@ -48,6 +48,15 @@ export default {
             context.commit('showDialog');
         },
 
+        async showEventEdit(context, id) {
+            console.log('id: ' + id)
+            await context.dispatch('getEvent', id);
+            console.log('show event');
+            context.commit('setDialogChosenAction', context.getters.dialogActions.EDIT);
+            context.commit('showDialog');
+        },
+
+
         showEventCreate(context) {
             context.commit('setDialogChosenAction', context.getters.dialogActions.CREATE);
             context.commit('showDialog');

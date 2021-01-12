@@ -185,6 +185,7 @@ export default {
       'getProfile',
       'getEventTypes',
       'showEventInfo',
+      'showEventEdit',
       'joinEvent',
       'leaveEvent',
       'deleteEvent',
@@ -241,7 +242,7 @@ export default {
 
       if (this.checkIfOwner(event)
           && this.checkIfParticipating(event))
-        return alert('EDIT');
+       return this.showEventEdit(event.event_id);
 
       else if (this.checkIfParticipating(event))
         return await this.leaveEvent(event.event_id) | await this.getEvents({with_participants: true});

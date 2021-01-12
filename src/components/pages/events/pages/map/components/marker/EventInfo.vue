@@ -72,7 +72,7 @@ export default {
     event: {type: Object, required: true},
   },
   methods: {
-    ...mapActions(['showEventInfo', 'joinEvent', 'leaveEvent', 'getEvents']),
+    ...mapActions(['showEventInfo','showEventEdit', 'joinEvent', 'leaveEvent', 'getEvents']),
 
     replaceId(id) {
       for (const el of this.eventTypes) {
@@ -84,7 +84,7 @@ export default {
 
     async joinButtonAction() {
       if (this.checkIfOwner() && this.checkIfParticipating())
-        return alert('EDIT');
+        return this.showEventEdit(this.event.event_id);
       else if (this.checkIfParticipating())
         return await this.leaveEvent(this.event.event_id) | await this.getEvents({with_participants: true});
       else

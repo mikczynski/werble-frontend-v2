@@ -1,10 +1,11 @@
 <template>
   <form @submit.prevent>
+
     <p class="p-field"> <strong>Status:</strong> <strong  :style="{color: color}">{{ status }}</strong></p>
     <div class="p-fluid p-formgrid p-grid">
       <div class="p-field p-col-12 p-md-6">
         <label for="name">Event name:</label>
-        <InputText :disabled="noEdit" id="name" v-model="eventLocal.name" type="text"/>
+        <InputText :disabled="!editEvent" id="name" v-model="eventLocal.name" type="text"/>
         <InlineMessage v-if="errors.name">{{ errors.name }}</InlineMessage>
       </div>
 
@@ -14,20 +15,20 @@
                   :options="eventTypes" optionValue="event_type_id"
                   optionLabel="event_type_name"
                   placeholder="Select event type"
-                  :disabled="noEdit"/>
+                  :disabled="!editEvent"/>
         <InlineMessage v-if="errors.event_type_id">{{ errors.event_type_id }}</InlineMessage>
       </div>
 
 
       <div class="p-field p-col-12">
         <label for="description">Description:</label>
-        <Textarea :disabled="noEdit" id="description" v-model="eventLocal.description"/>
+        <Textarea :disabled="!editEvent" id="description" v-model="eventLocal.description"/>
         <InlineMessage v-if="errors.description">{{ errors.description }}</InlineMessage>
       </div>
 
       <div class="p-field p-col-12 p-md-6">
         <label for="start_datetime">Start date:</label>
-        <Calendar :disabled="noEdit" id="start_datetime" :minDate="minDate" v-model="eventLocal.start_datetime" :showSeconds="false"
+        <Calendar :disabled="!editEvent" id="start_datetime" :minDate="minDate" v-model="eventLocal.start_datetime" :showSeconds="false"
                   :showTime="true"
                   dateFormat="yy-mm-dd"/>
         <InlineMessage v-if="errors.start_datetime">{{ errors.start_datetime }}</InlineMessage>
@@ -35,7 +36,7 @@
 
       <div class="p-field p-col-12 p-md-6">
         <label for="end_datetime">End date:</label>
-        <Calendar :disabled="noEdit" id="end_datetime" :minDate="minDate" v-model="eventLocal.end_datetime" :showSeconds="false"
+        <Calendar :disabled="!editEvent" id="end_datetime" :minDate="minDate" v-model="eventLocal.end_datetime" :showSeconds="false"
                   :showTime="true"
                   dateFormat="yy-mm-dd"/>
         <InlineMessage v-if="errors.end_datetime">{{ errors.end_datetime }}</InlineMessage>
@@ -43,23 +44,23 @@
 
       <div class="p-field p-col-12 p-md-3">
         <label for="location">Location:</label>
-        <InputText :disabled="noEdit" id="location" v-model="eventLocal.location" type="text"/>
+        <InputText :disabled="!editEvent" id="location" v-model="eventLocal.location" type="text"/>
         <InlineMessage v-if="errors.location">{{ errors.location }}</InlineMessage>
       </div>
       <div class="p-field p-col-12 p-md-3">
         <label for="address">Street name:</label>
-        <InputText :disabled="noEdit" id="address" v-model="eventLocal.street_name" type="text"/>
+        <InputText :disabled="!editEvent" id="address" v-model="eventLocal.street_name" type="text"/>
         <InlineMessage v-if="errors.street_name">{{ errors.street_name }}</InlineMessage>
       </div>
       <div class="p-field p-col-12 p-md-3">
         <label for="house_number">House number:</label>
-        <InputText :disabled="noEdit" id="house_number" v-model="eventLocal.house_number" type="text"/>
+        <InputText :disabled="!editEvent" id="house_number" v-model="eventLocal.house_number" type="text"/>
         <InlineMessage v-if="errors.house_number">{{ errors.house_number }}</InlineMessage>
       </div>
 
       <div class="p-field p-col-12 p-md-3">
         <label for="zipcode">ZipCode:</label>
-        <InputText :disabled="noEdit" id="zipcode" v-model="eventLocal.zip_code" type="text"/>
+        <InputText :disabled="!editEvent" id="zipcode" v-model="eventLocal.zip_code" type="text"/>
         <InlineMessage v-if="errors.zip_code">{{ errors.zip_code }}</InlineMessage>
       </div>
 
@@ -76,16 +77,13 @@
       </div>
     </div>
 
-    <div class="p-fluid" v-if="false">
-      <Button class="p-button-success p-button-raised" label="Create event" type="submit"/>
-    </div>
-
     <div class="p-mt-2 p-field p-fluid">
       <Button
 
           class="p-button-secondary p-button"
           :label="joinButtonText"
           @click="joinButtonAction"
+          :disabled="checkIfOwner && !editEvent"
           type="button"
       />
 
@@ -99,6 +97,10 @@
         @click="deleteEvent(event.event_id)"
         type="button"
     />
+    <div style="float:right"  v-if="checkIfOwner">
+      <label for="toggleEdit">Editing event: </label>
+      <InputSwitch id="toggleEdit"  v-model="editEvent" class="p-mx-auto" @click="toggleEdit"/>
+    </div>
   </form>
 
 
@@ -113,11 +115,24 @@ name: "EventInfoOption",
   props:['event'],
   mounted() {
     this.minDate = new Date();
+    this.editEvent = (this.dialogChosenAction ==="EDIT") || false;
   },
   data(){
       return{
         minDate: null,
-        eventLocal: this.event,
+        eventLocal: {
+          name: this.event.name,
+          description: this.event.description,
+          event_type_id: this.event.event_type_id,
+          start_datetime: this.event.start_datetime,
+          end_datetime: this.event.end_datetime,
+          location: this.event.location,
+          street_name: this.event.street_name,
+          zip_code: this.event.zip_code,
+          house_number: this.event.house_number,
+          latitude: this.event.longitude,
+          longitude: this.event.latitude,
+        },
         errors: {
           name: '',
           description: '',
@@ -131,11 +146,11 @@ name: "EventInfoOption",
           latitude: 0,
           longitude: 0,
         },
-        noEdit: true,
+        editEvent: false,
       }
   },
   computed: {
-    ...mapGetters(['eventTypes','user_id']),
+    ...mapGetters(['eventTypes','user_id','dialogChosenAction']),
     status() {
       let status;
       switch (this.event.status) {
@@ -191,17 +206,108 @@ name: "EventInfoOption",
 
   },
   methods:{
-    ...mapActions(['getEventTypes','joinEvent','leaveEvent','getEvents','getEvent','deleteEvent']),
+    ...mapActions(
+        ['getEventTypes',
+          'joinEvent',
+          'editEventAction',
+          'leaveEvent',
+          'getEvents',
+          'getEvent',
+          'deleteEvent',
+          'setResponseError'
+        ]),
     toggleEdit(){
-      this.noEdit = !this.noEdit;
+      this.editEvent = !this.editEvent;
     },
     async joinButtonAction() {
       if (this.checkIfOwner && this.checkIfParticipating)
-        return alert('EDIT');
+        return await this.submitForm() | await this.getEvents({with_participants: true});
       else if (this.checkIfParticipating)
         return await this.leaveEvent(this.event.event_id) | await this.getEvents({with_participants: true});
       else
         return await this.joinEvent(this.event.event_id) | await this.getEvents({with_participants: true});
+    },
+
+
+    async submitForm() {
+      this.setResponseError('');
+      this.checkForm();
+      if (this.errors.any) return;
+      if (this.responseError) return;
+
+      const formatDate = (date) =>
+          date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()
+          + " " + date.getHours() + ":" + date.getMinutes() + ":" + "00";
+
+      const start_date = new Date(this.eventLocal.start_datetime);
+      const end_date = new Date(this.eventLocal.end_datetime);
+
+      const formData = {
+        name: this.eventLocal.name.trim(),
+        description: this.eventLocal.description,
+        event_type_id: this.eventLocal.event_type_id,
+        start_datetime: formatDate(start_date),
+        end_datetime: formatDate(end_date),
+        status: 2,
+        location: this.eventLocal.location.trim(),
+        street_name: this.eventLocal.street_name.trim(),
+        zip_code: this.eventLocal.zip_code.trim(),
+        house_number: this.eventLocal.house_number.trim(),
+
+        longitude: this.event['longitude'],
+        latitude: this.event['latitude'],
+      }
+
+      const payload = {
+        id : this.event.event_id,
+        form_data : formData
+      }
+      await this.editEventAction(payload)
+
+      // this.closeDialog();
+      this.$toast.add(
+          {severity: 'success', summary: 'Success Message', detail: 'Event Owned', life: 1500}
+      );
+    },
+
+
+    resetFormErrors() {
+      this.errors.any = false;
+      this.errors.name = '';
+      this.errors.description = '';
+      this.errors.event_type_id = '';
+      this.errors.datetime = '';
+      this.errors.latitude = '';
+      this.errors.longitude = '';
+      this.errors.location = '';
+      this.errors.start_datetime = '';
+      this.errors.end_datetime = '';
+      this.errors.street_name = '';
+      this.errors.zip_code = '';
+      this.errors.house_number = '';
+    },
+
+    checkForm() {
+      this.resetFormErrors();
+
+      if (!this.eventLocal.name)
+        this.errors.name += 'Name field is required. ';
+
+      if (!this.eventLocal.event_type_id)
+        this.errors.event_type_id += 'Event type field is required. ';
+
+      if (!this.eventLocal.start_datetime)
+        this.errors.start_datetime += 'Start date field is required. ';
+
+      if (!this.eventLocal.end_datetime)
+        this.errors.end_datetime += 'Start date field is required. ';
+
+      if (!this.eventLocal.latitude || !this.eventLocal.longitude)
+        this.errors.longitude = this.errors.latitude += 'Coordinates are required to create event';
+
+      if (this.errors.name || this.errors.location
+          || this.errors.datetime || this.errors.latitude || this.errors.longitude || this.errors.description || this.errors.event_type_id)
+        this.errors.any = true;
     },
 
   }

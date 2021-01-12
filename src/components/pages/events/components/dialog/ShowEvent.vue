@@ -5,9 +5,9 @@
   <Button @click="reviewsButton" class="p-mx-1" :class="option === 'reviews' ? outline : text ">Reviews</Button>
 
 
-  <EventInfoOption class="" v-if="option === 'info'"  :edit="edit" :event="event" ></EventInfoOption>
-  <ParticipantsOption v-if="option === 'participants'" :event="event"></ParticipantsOption>
-  <ReviewsOption v-if="option === 'reviews'" :event="event"></ReviewsOption>
+  <EventInfoOption  v-if="option === 'info'" :event="event" />
+  <ParticipantsOption v-if="option === 'participants'" :event="event"/>
+  <ReviewsOption v-if="option === 'reviews'" :event="event"/>
 
 
   <div class="p-field">
@@ -32,7 +32,6 @@ import ReviewsOption from "@/components/pages/events/components/dialog/ReviewsOp
 export default {
   name: "ShowEvent",
   components: {ReviewsOption, ParticipantsOption, EventInfoOption},
-  props:['edit'],
 
   computed: {
     ...mapGetters(['event', 'eventTypes','user_id']),
@@ -51,7 +50,6 @@ export default {
   async mounted() {
     await this.getEventTypes();
     this.eventLocal = this.event;
-    console.log(this.event)
   },
 
   data() {

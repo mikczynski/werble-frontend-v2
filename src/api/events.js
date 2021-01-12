@@ -39,6 +39,10 @@ export default {
         return service({requiresAuth:true})
             .get('user/events/' + id + '/wrapped',params);
     },
+    editEvent(id,params){
+        return service({requiresAuth:true})
+            .put('user/events/' +id +'/edit',params);
+    },
     joinEvent(id,params){
         return service({requiresAuth:true})
             .post('user/events/' + id + '/join',params);
