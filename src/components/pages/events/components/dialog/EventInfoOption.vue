@@ -121,17 +121,17 @@ name: "EventInfoOption",
       return{
         minDate: null,
         eventLocal: {
-          name: this.event.name,
-          description: this.event.description,
+          name: this.event.name ? this.event.name : '',
+          description: this.event.description ? this.event.description : '',
           event_type_id: this.event.event_type_id,
-          start_datetime: this.event.start_datetime,
-          end_datetime: this.event.end_datetime,
-          location: this.event.location,
-          street_name: this.event.street_name,
-          zip_code: this.event.zip_code,
-          house_number: this.event.house_number,
-          latitude: this.event.longitude,
-          longitude: this.event.latitude,
+          start_datetime: this.event.start_datetime ? this.event.start_datetime : '',
+          end_datetime: this.event.end_datetime ? this.event.end_datetime : '',
+          location: this.event.location ? this.event.location : '',
+          street_name: this.event.street_name ? this.event.street_name : '',
+          zip_code: this.event.zip_code? this.event.zip_code : '',
+          house_number: this.event.house_number? this.event.house_number : '',
+          latitude: this.event.longitude ? this.event.longitude : 0,
+          longitude: this.event.latitude ? this.event.latitude : 0,
         },
         errors: {
           name: '',
@@ -214,18 +214,31 @@ name: "EventInfoOption",
           'getEvents',
           'getEvent',
           'deleteEvent',
-          'setResponseError'
+          'setResponseError',
+            'closeDialog'
         ]),
     toggleEdit(){
       this.editEvent = !this.editEvent;
     },
     async joinButtonAction() {
       if (this.checkIfOwner && this.checkIfParticipating)
-        return await this.submitForm() | await this.getEvents({with_participants: true});
+        return await this.editEventButton | await this.getEvents({with_participants: true});
       else if (this.checkIfParticipating)
         return await this.leaveEvent(this.event.event_id) | await this.getEvents({with_participants: true});
       else
         return await this.joinEvent(this.event.event_id) | await this.getEvents({with_participants: true});
+    },
+
+    async deleteEventButton(){
+      await this.deleteEvent(this.event.event_id);
+      await this.closeDialog();
+      await this.getEvents();
+    },
+
+    async editEventButton(){
+      await this.submitForm();
+      await this.closeDialog();
+      await this.getEvents();
     },
 
 
