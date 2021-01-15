@@ -4,13 +4,13 @@
     <div class="p-fluid">
       <div class="p-field">
         <label for="login">Login:</label>
-        <InputText id="login" type="text" v-model="input.login" :class="inputLoginClass"/>
+        <InputText id="login" type="text" v-model="input.login" :class="inputLoginClass" placeholder="Login"/>
         <InlineMessage v-if="errors.login">{{ errors.login }}</InlineMessage>
       </div>
 
       <div class="p-field">
         <label for="password">Password:</label>
-        <InputText id="password" type="password" v-model="input.password" :class="inputPasswordClass"/>
+        <InputText id="password" type="password" v-model="input.password" :class="inputPasswordClass" placeholder="Password"/>
         <InlineMessage v-if="errors.password">{{ errors.password }}</InlineMessage>
       </div>
 
@@ -33,8 +33,8 @@ export default {
   data() {
     return {
       input: {
-        login: 'mikczynski',
-        password: '12345678'
+        login: '',
+        password: ''
       },
       errors: {
         login: '',
@@ -60,10 +60,6 @@ export default {
     inputPasswordClass() {
       return {'p-invalid': this.errors.password !== ''};
     },
-    // isApiSyncActive() {
-    //   return this.$store.getters.isApiSyncActive;
-    // },
-
   },
   methods: {
     ...mapActions([

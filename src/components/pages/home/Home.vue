@@ -1,19 +1,33 @@
 <template>
   <h2>HomePage</h2>
-  <h3 v-if="profile">Welcome back, <strong style="color:goldenrod">{{ fullName }}</strong> a.k.a. <strong style="color:goldenrod">{{ login}} </strong> </h3>
+  <h3 v-if="profile">
+    Welcome back,
+    <strong style="color:goldenrod">{{ fullname }}</strong>
+    {{ fullname ? 'a.k.a. ' : ' ' }}<strong style="color:goldenrod">{{ login }}
+  </strong>
+  </h3>
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import {mapGetters, mapActions} from 'vuex'
+
 export default {
   created() {
-    this.$store.dispatch('getGeolocation');
-    this.$store.dispatch('getProfile');
+    this.getGeolocation();
+    this.getProfile();
   },
   computed: {
-      ...mapGetters(['fullName','login','profile']),
+    ...mapGetters(['login', 'profile']),
+
+    fullname() {
+      let fullname = '';
+      if (this.profile.first_name)  fullname += this.profile.first_name + ' ';
+      if (this.profile.last_name)   fullname += this.profile.last_name;
+      return fullname;
+    }
   },
   methods: {
+    ...mapActions(['getGeolocation', 'getProfile']),
   },
   components: {},
   data() {

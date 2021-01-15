@@ -20,7 +20,7 @@ export default {
 
     createEvent(data){
         return service({requiresAuth:true})
-            .post('user/events/create',data);
+            .post('user/events',data);
     },
 
    updateEvent(data, config){
@@ -29,7 +29,7 @@ export default {
     },
     deleteEvent(id){
         return  service({requiresAuth:true})
-            .delete('user/events/'+ id  + '/softdelete');
+            .delete('user/events/'+ id);
     },
     getEventTypes(){
         return service({requiresAuth:true})
@@ -41,7 +41,7 @@ export default {
     },
     editEvent(id,params){
         return service({requiresAuth:true})
-            .put('user/events/' +id +'/edit',params);
+            .put('user/events/' + id,params);
     },
     joinEvent(id,params){
         return service({requiresAuth:true})
@@ -54,14 +54,14 @@ export default {
 
     createReview(data){
         return service({requiresAuth:true})
-            .post('user/events/review/create',data);
+            .post('user/reviews',data);
     },
     editReview(id,data){
         return service({requiresAuth:true})
-            .put('user/events/'+ id + '/review/edit',data);
+            .put('user/events/'+ id + '/review',data);
     },
     deleteReview(id){
         return service({requiresAuth:true})
-            .delete('user/events/review/' + id + '/softdelete');
+            .delete('user/reviews/' + id);
     },
 }

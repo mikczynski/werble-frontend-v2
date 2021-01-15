@@ -1,7 +1,7 @@
 <template>
   <form @submit.prevent>
-
-    <p class="p-field"> <strong>Status:</strong> <strong  :style="{color: color}">{{ status }}</strong></p>
+    <p class="p-d-inline p-mx-2"> <strong>Owner: </strong> <strong  style="color: darkgoldenrod">{{ event.owner_login }}</strong></p>
+    <p class="p-d-inline p-mx-2"> <strong>Status: </strong> <strong  :style="{color: color}">{{ status }}</strong></p>
     <div class="p-fluid p-formgrid p-grid">
       <div class="p-field p-col-12 p-md-6">
         <label for="name">Event name:</label>
@@ -83,7 +83,7 @@
           class="p-button-secondary p-button"
           :label="joinButtonText"
           @click="joinButtonAction"
-          :disabled="checkIfOwner && !editEvent"
+          :disabled="checkIfOwner && !editEvent && !status"
           type="button"
       />
 
@@ -92,7 +92,7 @@
 
     <Button
         class="p-button-danger p-button-outlined"
-
+        :disabled="!editEvent"
         label="Delete event"
         v-if="checkIfOwner"
         @click="confirmDelete($event)"
@@ -256,7 +256,7 @@ name: "EventInfoOption",
     confirmDelete(event) {
       this.$confirm.require({
         target: event.currentTarget,
-        message: 'Do you want to delete this record?',
+        message: 'Do you want to delete this event?',
         header: 'Delete Confirmation',
         icon: 'pi pi-exclamation-triangle',
         acceptClass: 'p-button-danger',

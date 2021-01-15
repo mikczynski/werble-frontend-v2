@@ -1,10 +1,9 @@
 <template>
   <p v-if="position">
-    Your position:
-    <strong
-    >Lat: {{ position.latitude.toFixed(7) }}, Lng:
-      {{ position.longitude.toFixed(7) }}</strong
-    >
+    <Strong>User:</Strong> <strong style="color: darkgoldenrod">{{ profile.login }}&nbsp;</strong>
+    <strong>Your position:</strong>
+    Lat: {{ position.latitude.toFixed(7) }}, Lng:
+      {{ position.longitude.toFixed(7) }}
   </p>
 
   <div class="p-d-block p-d-md-block border p-p-2 p-my-2">

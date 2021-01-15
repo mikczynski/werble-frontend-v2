@@ -30,7 +30,7 @@
       Additional options
     </template>
 
-    <Button  @click="deactivateButton"  class="p-field p-mx-2 p-button-danger">Deactivate account</Button>
+    <Button  @click="confirmDelete($event)"  class="p-field p-mx-2 p-button-danger">Deactivate account</Button>
     <Button @clik="logout_allButton" class="p-field p-mx-2 p-button-warning">Logout from all devices</Button>
 
   </Fieldset>
@@ -53,32 +53,44 @@ export default {
     async changePasswordButton(){
       await this.changePassword({password: this.password});
       this.$toast.add(
-          {severity:'info', summary: 'Info Message', detail:'Password changed', life: 3000}
+          {severity:'info', summary: 'Info Message', detail:'Password changed', life: 10000}
       );
     },
 
     async changeEmailButton(){
       await this.changeEmail({email: this.email});
       this.$toast.add(
-          {severity:'info', summary: 'Info Message', detail:'Email changed', life: 3000}
+          {severity:'info', summary: 'Info Message', detail:'Email changed', life: 10000}
       );
     },
 
     async logout_allButton(){
       await this.logout_all();
       this.$toast.add(
-          {severity:'info', summary: 'Info Message', detail:'Logged out', life: 3000}
+          {severity:'info', summary: 'Info Message', detail:'Logged out', life: 10000}
       );
     },
 
     async deactivateButton(){
       await this.deactivate();
-      this.$toast.add(
-          {severity:'warn', summary: 'Info Message', detail:'Account deactivated', life: 3000}
-      );
     },
 
-
+    confirmDelete(event) {
+      this.$confirm.require({
+        target: event.currentTarget,
+        message: 'Do you want to deactivate your account?',
+        header: 'Delete Confirmation',
+        icon: 'pi pi-exclamation-triangle',
+        acceptClass: 'p-button-danger',
+        accept: () => {
+          this.deactivateButton();
+          this.$toast.add({severity:'info', summary:'Confirmed', detail:'Account deactivated', life: 3000});
+        },
+        reject: () => {
+          this.$toast.add({severity:'info', summary:'Rejected', detail:'You have rejected', life: 3000});
+        }
+      });
+    },
   }
 
 

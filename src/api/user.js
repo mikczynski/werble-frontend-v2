@@ -7,15 +7,15 @@ export default {
     },
     editProfile(data, config){
         return service({requiresAuth:true})
-            .put('user/profile/edit', data, config);
+            .put('user/profile', data, config);
     },
     setPosition(data,config){
         return service({requiresAuth:true})
-            .put('user/position',data,config);
+            .put('user/profile/position',data,config);
     },
     deactivate(){
         return service({requiresAuth:true})
-            .delete('user/profile/deactivate');
+            .delete('user/profile');
     },
 
 }

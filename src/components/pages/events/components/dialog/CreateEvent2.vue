@@ -196,7 +196,7 @@ export default {
           await this.getEvents();
           this.closeDialog();
           this.$toast.add(
-              {severity: 'success', summary: 'Success Message', detail: 'Event Owned', life: 1500}
+              {severity: 'success', summary: 'Success Message', detail: 'Event Created', life: 1500}
           );
         },
 

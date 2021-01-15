@@ -3,17 +3,17 @@
     <div class="p-fluid">
       <div class="p-field">
         <label for="login">Login:</label>
-        <InputText id="login" type="text" v-model="input.login"/>
+        <InputText id="login" type="text" v-model="input.login" placeholder="Login"/>
         <InlineMessage v-if="errors.login">{{ errors.login }}</InlineMessage>
       </div>
       <div class="p-field">
         <label for="email">Email:</label>
-        <InputText id="email" type="text" v-model="input.email"/>
+        <InputText id="email" type="text" v-model="input.email" placeholder="Email"/>
         <InlineMessage v-if="errors.email">{{ errors.email }}</InlineMessage>
       </div>
       <div class="p-field">
         <label for="password">Password:</label>
-        <InputText id="password" type="password" v-model="input.password"/>
+        <InputText id="password" type="password" v-model="input.password" placeholder="Password"/>
         <InlineMessage v-if="errors.password">{{ errors.password }}</InlineMessage>
       </div>
       <div class="p-field">
@@ -21,6 +21,7 @@
         <InputText
             id="password_confirmation"
             type="password"
+            placeholder="Password confirmation"
             v-model="input.password_confirmation"
         />
         <InlineMessage v-if="errors.password_confirmation">{{ errors.password_confirmation }}</InlineMessage>

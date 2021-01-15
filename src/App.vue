@@ -37,8 +37,6 @@ export default {
     Loading
   },
   created() {
-
-
     if(localStorage.getItem('token') && !localStorage.getItem('token') === 'null')
     {
       this.$store.commit('setToken',JSON.parse(localStorage.getItem('token')));
@@ -46,7 +44,9 @@ export default {
       this.getEventTypes();
     }
     else
+    {
       this.$router.push('login');
+    }
   },
   mounted() {
 

@@ -14,7 +14,7 @@
     <template #header>
       <div>
         <Button @click="getEvents" icon="pi pi-refresh" style="float: left" content="Refresh events"/>
-        <h3>List of Local events in <strong style="color:goldenrod">{{ searchDistance }} km</strong> radius.</h3>
+        <h3>List of owned events.</h3>
         <span>In total there are <span style="color:green">{{ events ? events.length : 0 }}</span> events.</span>
       </div>
     </template>

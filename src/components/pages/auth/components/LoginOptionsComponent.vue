@@ -7,12 +7,6 @@
         <strong>Register</strong>
       </router-link>
     </div>
-    <div class="p-d-block p-mr-2 p-ml-5 p-mb-2">
-      Forgotten credentials?
-      <router-link :to="{ name: 'reset-password' }">
-        <strong>Reset password</strong>
-      </router-link>
-    </div>
   </div>
 
 </template>

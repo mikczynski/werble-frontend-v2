@@ -1,6 +1,6 @@
 <template>
   <div class="p-d-block p-mx-auto">
-    <Fieldset class="p-p-2 p-my-2 p-mx-auto"  style="width:50vw">
+    <Fieldset class="p-p-2 p-mx-auto"  style="width:50vw">
       <template #legend>
         Account info
       </template>
@@ -216,31 +216,31 @@ export default {
 </script>
 
 <style scoped>
-/*label {*/
-/*  font-weight: bold;*/
-/*  margin-bottom: 0.5rem;*/
-/*  display: block;*/
-/*}*/
+label {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  display: block;
+}
 
-/*input,*/
-/*textarea {*/
-/*  display: block;*/
-/*  width: 100%;*/
-/*  font: inherit;*/
-/*  border: 1px solid #ccc;*/
-/*  padding: 0.15rem;*/
-/*}*/
+input,
+textarea {
+  display: block;
+  width: 100%;
+  font: inherit;
+  border: 1px solid #ccc;
+  padding: 0.15rem;
+}
 
-/*textarea:disabled,*/
-/*input:disabled {*/
-/*  opacity: 0.6;*/
-/*  color: #3d008d;*/
-/*}*/
+textarea:disabled,
+input:disabled {
+  opacity: 0.6;
+  color: #3d008d;
+}
 
-/*input:focus,*/
-/*textarea:focus {*/
-/*  border-color: #3d008d;*/
-/*  background-color: #faf6ff;*/
-/*  outline: none;*/
-/*}*/
+input:focus,
+textarea:focus {
+  border-color: #3d008d;
+  background-color: #faf6ff;
+  outline: none;
+}
 </style>

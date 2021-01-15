@@ -1,11 +1,10 @@
 <template>
   <div style="text-align: left">
-    event_id: {{ event.event_id }}
     <div><strong>Name: </strong>{{ event.name }}<br></div>
     <div><strong>Type: </strong>{{ replaceId(event.event_type_id) }}<br></div>
     <div><strong>Start date: </strong>{{ event.start_datetime }}<br></div>
     <div><strong>End date: </strong>{{ event.end_datetime }}<br></div>
-    <div><strong>Owner: </strong>{{ event.event_creator_id }}</div>
+    <div><strong>Owner: </strong>{{ event.owner_login }}</div>
     <div><strong>Distance from you: </strong>{{ event.distance }} km<br></div>
     <div><strong>Status:</strong> <span :style="{'color': color }">{{ status() }}</span>
     </div>
@@ -20,6 +19,7 @@
         class=" p-d-inline p-mx-1 p-my-1 p-button-secondary p-button-sm"
         @click="joinButtonAction()"
         :label="joinButtonText"
+        :disabled="!event.status"
     />
 
   </div>
