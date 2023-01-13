@@ -1,4 +1,4 @@
-# frontend
+# Frontend Aplikacji Internetowej do Pracy Inżynierskiej
 
 ## Project setup
 ```
